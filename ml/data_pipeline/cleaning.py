@@ -17,7 +17,8 @@ class DataValidationError(ValueError):
     """Raised when normalized records violate the shared demand-data contract."""
 
 
-def clean_normalized_demand(frame: pd.DataFrame, timezone: str = BMRCL_TIMEZONE) -> tuple[pd.DataFrame, dict[str, Any]]:
+def clean_normalized_demand(frame: pd.DataFrame, timezone: str = BMRCL_TIMEZONE,
+                            period_seconds: int = 3600) -> tuple[pd.DataFrame, dict[str, Any]]:
     if frame.empty:
         raise DataValidationError("Normalized demand input is empty.")
     missing_columns = set(CANONICAL_COLUMNS) - set(frame.columns)
@@ -46,8 +47,18 @@ def clean_normalized_demand(frame: pd.DataFrame, timezone: str = BMRCL_TIMEZONE)
         raise DataValidationError("Observed passenger-demand counts must be non-negative.")
     if (numeric % 1 != 0).any():
         raise DataValidationError("Observed station-hour demand must be a whole count.")
-    if ((parsed.dt.minute != 0) | (parsed.dt.second != 0) | (parsed.dt.microsecond != 0)).any():
-        raise DataValidationError("Station demand timestamps must be aligned to the start of a clock hour.")
+    if period_seconds % 3600 == 0:
+        # Hour-aligned (which also covers day-aligned frames stamped at 00:00).
+        misaligned = ((parsed.dt.minute != 0) | (parsed.dt.second != 0) | (parsed.dt.microsecond != 0))
+        unit = "the start of a clock hour"
+    else:
+        step = pd.Timedelta(seconds=int(period_seconds))
+        misaligned = parsed.dt.floor(step).ne(parsed)
+        unit = f"the start of a {int(period_seconds)}-second period"
+    if bool(misaligned.any()):
+        raise DataValidationError(
+            f"Station demand timestamps must be aligned to {unit}; {int(misaligned.sum())} row(s) are not."
+        )
 
     data["timestamp"] = parsed
     data["demand_count"] = numeric.astype(float)

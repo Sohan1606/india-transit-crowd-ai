@@ -50,7 +50,9 @@ function ConfusionMatrix({ metrics }: { metrics: MetricSet }) {
   )
 }
 
-export function ModelLabSection({ report, activeSystemId }: { report: ModelReport | null; activeSystemId: string }) {
+export function ModelLabSection({ report, activeSystemId, granularity = 'hour' }: { report: ModelReport | null; activeSystemId: string; granularity?: 'hour' | 'day' }) {
+  const unit = granularity === 'day' ? 'entries / day' : 'boardings / hour'
+  const rowUnit = granularity === 'day' ? 'station-day targets' : 'station-hour targets'
   const [tab, setTab] = useState<'regression' | 'classification'>('regression')
   const reportMatchesSystem = Boolean(report && report.model_family.system_id === activeSystemId)
   const regressionModels = reportMatchesSystem ? report?.regression.models ?? [] : []
@@ -76,17 +78,17 @@ export function ModelLabSection({ report, activeSystemId }: { report: ModelRepor
           <SectionHeading eyebrow="THE MODEL LAB" title={<>Measured, not<br /><em>assumed.</em></>} copy="Six regression candidates and six classifiers. Champions are selected on chronological validation—not on a label or a promise." />
           <div className="model-eval-note"><GitCompareArrows size={17} /><span>FINAL TEST<br />REMAINS UNTOUCHED</span></div>
         </div>
-        {!reportMatchesSystem ? <div className="unsupported-panel analytics-unavailable" role="status"><p className="eyebrow">NO BENCHMARK FOR THIS SYSTEM</p><h3>Model results are system-specific.</h3><p>The displayed benchmark is only for Bengaluru Namma Metro/BMRCL's verified historical station-hour boardings. No scores are inferred for this selected system.</p></div> : !report ? <div className="analytics-loading"><span className="chart-spinner" />Loading saved model evaluation…</div> : (
+        {!reportMatchesSystem ? <div className="unsupported-panel analytics-unavailable" role="status"><p className="eyebrow">NO BENCHMARK FOR THIS SYSTEM</p><h3>Model results are system-specific.</h3><p>Each benchmark belongs to one model family and one granularity. No scores are inferred for a system other than the one that produced them.</p></div> : !report ? <div className="analytics-loading"><span className="chart-spinner" />Loading saved model evaluation…</div> : (
           <Reveal className="model-lab-frame">
             <div className="model-lab-top"><span>MODEL PERFORMANCE / {report.model_version.toUpperCase()}</span><span>{report.training_timestamp_utc.slice(0, 10)} · CHRONOLOGICAL HOLDOUT</span></div>
             <div className="model-overview">
-              <div className="model-stat"><span>SUPERVISED ROWS</span><strong><NumberTicker value={report.dataset.supervised_rows} /></strong><small>station-hour targets</small></div>
+              <div className="model-stat"><span>SUPERVISED ROWS</span><strong><NumberTicker value={report.dataset.supervised_rows} /></strong><small>{rowUnit}</small></div>
               <div className="model-stat"><span>ENGINEERED INPUTS</span><strong>{report.feature_schema.feature_count.toString().padStart(2, '0')}</strong><small>calendar + lagged demand</small></div>
               <div className="model-stat"><span>TRAIN / VALIDATE / TEST</span><strong>{report.split.train.rows.toLocaleString()} <i>/</i> {report.split.validation.rows.toLocaleString()} <i>/</i> {report.split.test.rows.toLocaleString()}</strong><small>chronological samples</small></div>
-              <div className="model-stat"><span>TIME-SERIES CV</span><strong>{report.cross_validation.n_splits} folds</strong><small>expanding window · no shuffle</small></div>
+              <div className="model-stat"><span>TIME-SERIES CV</span><strong>{report.cross_validation ? `${report.cross_validation.n_splits} folds` : 'not recorded'}</strong><small>{report.cross_validation ? 'expanding window · no shuffle' : 'see chronological holdout'}</small></div>
             </div>
             <div className="champion-spotlight-grid">
-              <article className="champion-spotlight"><span className="champion-number">01</span><div><p className="eyebrow"><BadgeCheck size={13} /> VALIDATION CHAMPION · REGRESSION</p><h3>{report.regression.champion_name}</h3><p>Chosen by lowest validation MAE. Latest-period test metrics remain a separate final measure.</p></div><div className="champion-metric"><span>TEST MAE</span><strong>{bestRegression ? format(bestRegression.test.mae, 1) : '—'}</strong><small>boardings / hour</small></div></article>
+              <article className="champion-spotlight"><span className="champion-number">01</span><div><p className="eyebrow"><BadgeCheck size={13} /> VALIDATION CHAMPION · REGRESSION</p><h3>{report.regression.champion_name}</h3><p>Chosen by lowest validation MAE. Latest-period test metrics remain a separate final measure.</p></div><div className="champion-metric"><span>TEST MAE</span><strong>{bestRegression ? format(bestRegression.test.mae, 1) : '—'}</strong><small>{unit}</small></div></article>
               <article className="champion-spotlight champion-classifier"><span className="champion-number">02</span><div><p className="eyebrow"><BadgeCheck size={13} /> VALIDATION CHAMPION · CLASSIFICATION</p><h3>{report.classification.champion_name}</h3><p>Chosen by validation macro F1; HIGH and SEVERE class recall is shown below.</p></div><div className="champion-metric"><span>TEST MACRO F1</span><strong>{bestClassifier ? format(bestClassifier.test.f1_macro) : '—'}</strong><small>four historical-relative bands</small></div></article>
             </div>
             <div className="model-tab-row" role="tablist" aria-label="Model task">

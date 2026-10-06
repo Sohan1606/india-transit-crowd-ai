@@ -9,3 +9,6 @@ xgboost-cpu==2.1.4
 joblib==1.5.3
 httpx2==2.13.1
 pytest==9.0.3
+# Needed only to re-run scripts/extract_mumbai_pdf_surveys.py against the source PDF; the shipped
+# research extract under data/research/ does not require it at API or training time.
+pymupdf==1.28.2

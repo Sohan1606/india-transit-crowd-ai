@@ -1,6 +1,17 @@
 # Data sources, provenance and licensing
 
-**Review date: 2026-10-06.** The prediction model in this release is trained only from the verified BMRCL/Namma Metro station-hour observed-demand archive. Other Indian sources below are explicitly classified as candidates or service/network discovery; they are not silently joined to the target data.
+**Review date: 2026-10-06.** Prediction in this release is trained only from verified observed-demand archives, one per registered model family:
+
+* **Bengaluru · BMRCL — station-hour boardings** (hourly family, unchanged by this work).
+* **Chennai · CMRL — station-day entries** (day family; full write-up in
+  [`chennai-metro-dataset.md`](chennai-metro-dataset.md)).
+
+Two further systems were assessed and **refused**: the Mumbai suburban railway survey extract
+(see [`mumbai-wilbur-smith-dataset.md`](mumbai-wilbur-smith-dataset.md)) and the MMRDA daily
+line-level resource. Refusals are recorded with the failing criteria, and the other sources
+below stay classified as candidates or network discovery. Families are never silently joined
+to each other's target data, and `scripts/validate_demand_dataset.py` recomputes the gate for
+any dataset that claims to be trainable.
 
 ## Enabled prediction source: BMRCL/Namma Metro
 
@@ -38,6 +49,28 @@ The final observed source timestamp is 2025-09-30 23:00 IST. Most station projec
 
 The database is used under ODbL-1.0. Keep the upstream attribution and license with the source and any adapted database; share adaptations to the database under the same license as required by ODbL, and indicate changes. The project preserves the license text and source notice, and records the source commit and both source/normalized checksums. The upstream repository cautions that some database contents may carry underlying BMRCL rights; this project does not assert BMRCL endorsement or a blanket waiver of those rights. See the attribution notice before redistribution. This documentation is not legal advice.
 
+## Enabled prediction source: CMRL / Chennai Metro (station-day)
+
+| Property | Verified value |
+|---|---|
+| Publisher | Chennai Metro Rail Limited (CMRL), via its public passenger-flow API `commuters-dataapi.chennaimetrorail.org/api/PassengerFlow/*`. |
+| Historical archive | Community collector `PratyushBalaji/chennai-metro-ridership-tracker`, pinned commit `72ee5eadb6ca890bfd9900d6464a1a371566c86b`. |
+| Raw file SHA-256 (at the pinned commit) | `ChennaiMetro_Station_Ridership.csv` `2630ea1b083e…709190`; `ChennaiMetro_Daily_Ridership.csv` `6f16712ee90a…a02bc`; `ChennaiMetro_Hourly_Ridership.csv` `4ae938c6c392…3f19e`. |
+| Bundled in repository | **No.** `data/raw/` and the normalized CSV are git-ignored; `scripts/download_cmrl_data.py` + `scripts/prepare_chennai_data.py` regenerate them and verify the digests. |
+| Granularity | One record per station-line entity per calendar day. |
+| Measure | `daily_station_entries` — one counting event per journey at the station. Verified against the same day's system ticket count: mean ratio 1.0061 over 255 days (entries+exits would be ≈2.0). |
+| Entities | 43 station-line ids for 41 physical stations; Chennai Central and Alandur are reported once per corridor and are kept as two entities, never summed. |
+| Coverage | 2026-01-24 → 2026-10-05, 255 consecutive days, 10,965 rows, 0 missing station-days, 0 filled values, 0 source-reported zeros, no duplicate station-date keys. |
+| Timezone | `Asia/Kolkata`, day-aligned at 00:00 local. |
+| Licence / rights | The tracker's MIT licence covers its code only; CMRL asserts no bulk-reuse terms. Documented in [`../data/licenses/CMRL-DATA-NOTICE.md`](../data/licenses/CMRL-DATA-NOTICE.md); data is fetched, not redistributed. |
+| Gate | All ten criteria pass → `data/research/chennai-cmrl-metro_validation_gate.json`. |
+
+The last observed day (2026-10-05) is one day behind today, so a request for 2026-10-06 or
+later is a genuine future forecast, bounded to 60 days of recursive projection and measured
+recursively at MAE 902.29 / R² 0.8691 over a 69-day projection. Day granularity cannot answer
+hour-of-day questions at all; the API returns 409 for a heatmap on this family rather than
+dividing a daily total across hours.
+
 ## Other observed-demand sources reviewed
 
 These records establish leads for future, source-specific adapters. **None is enabled for prediction in this build.** A candidate must be reproducibly downloadable, have a well-defined observed-demand target and timezone/resolution, have re-use terms reviewed, and pass data-quality and chronological evaluation before registration.
@@ -46,7 +79,8 @@ These records establish leads for future, source-specific adapters. **None is en
 |---|---|---|---|
 | **Delhi Metro (DMRC)** | Delhi Transport Stack catalog describes hourly station entry and exit footfall. The catalog labels the item approval-based Excel. OTD separately exposes static DMRC GTFS, which is stations/routes/schedules, not footfall. | Footfall file not downloaded; approval, reproducible export and dataset-specific re-use rights need confirmation. No private key or account was assumed. | The strongest next station-hour candidate if an authorized file is obtained and validated. **Not enabled.** |
 | **Mumbai MMRDA Metro 2A / 7 / Monorail** | OGD resource page: “Ridership Data Monorail from 01-10-2024 to 21-09-2025”; daily granularity; fields include date, line, Paper QR, NCMC/other-trip categories and total ridership. The page lists a 13 KB CSV; reference URL and webservice/API fields are `NA`. | <https://www.data.gov.in/resource/ridership-data-monorail-01-10-2024-21-09-2025>. OGD platform terms refer users to each resource's license metadata and state that portal content is under Government Open Data License—India (GODL-India); the reviewed resource view did not show an individual license field. Recheck the live record and attribution before redistribution. The downloadable file has not been bundled or used for training. | Real observed demand at **daily line** level, but not station-hour. Could support a separately defined daily-line study after a reproducible file and license audit; **not** this model. |
-| **Chennai Metro (CMRL)** | OpenCity, sourced to Government of Tamil Nadu, publishes monthly system totals from 2023–24 through June 2026. Resource page lists a 2.9 KB CSV and reports an August 3, 2026 update. | <https://data.opencity.in/dataset/chennai-metro-monthly-usage-data/resource/c63ef5a0-e7d2-49b3-9c88-5ca5ce309fcf>. Resource metadata shows `Other (Public Domain)`. Re-fetch the file and metadata before ingestion; the official passenger-flow visualization is not a bundled bulk-history dataset. | Credible monthly aggregate, but no station key or hourly resolution. Suitable for monthly trend/total analysis only; **not** a next-hour station target. |
+| **Chennai Metro (CMRL)** — station-day | Official passenger-flow API (previous complete day only) plus the community daily archive described above. OpenCity separately publishes monthly system totals for 2023–24 → June 2026 (2.9 KB CSV, metadata `Other (Public Domain)`). | The **daily** source is enabled as its own family (fetched, checksum-pinned, not redistributed). The **monthly** aggregate is not re-fetched or merged: mixing a monthly network total with station-day counts would combine incompatible measures. | Daily station entries support a next-day forecast. Monthly totals support context only, never a next-hour station target. |
+| **Mumbai Suburban Railway (MRVC / Wilbur Smith 2013)** | Extract of all quantitative tables from the Executive Summary PDF: 249 observed/derived records across 8 measures, 50 stations, 42 interval labels, with per-row table and page citations. | `data/research/mumbai_suburban_rail_pdf_observed.csv` + sidecar. The PDF prints no licence or reuse statement and is **not** redistributed. Re-download from MRVC before publishing any figure. | **Rejected for prediction** by 6 of 10 gate criteria: one typical weekday per survey window (no repeat dates), two-stage survey expansion for the hourly tables, licence unresolved. Accepted as a labelled historical baseline (peak-hour shape, station entry/exit structure, crowding ratios). Its 2016/2021/2031 OD forecast is quarantined as `HISTORICAL STUDY MODEL OUTPUT` and never used as a label. |
 
 The candidate list returned by `GET /api/demand-sources` is also kept aligned with the reviewed sources above. Catalog presence is not model availability.
 
@@ -63,14 +97,73 @@ GTFS Schedule contains public-transport service descriptions such as agencies, r
 | **Kochi Metro (KMRL) open data** | Official KMRL page provides GTFS-static routes, schedules and fares. <https://kochimetro.org/open-data/>. | KMRL's posted terms grant free, non-exclusive use/adaptation/reproduction/redistribution, including commercial and non-commercial applications, subject to KMRL attribution (“Contains data provided by Kochi Metro Rail Limited”) and no implied endorsement. Terms can change. | Network and schedule discovery only; not boardings. |
 | **Hyderabad Metro (HMRL) / Open Data Telangana** | HMRL announcement of November 25, 2025 reports publication of a GTFS dataset covering three corridors, 118 stations and 6,958 scheduled weekly trips. <https://hmrl.co.in/hyderabad-metro-rail-data-goes-live-on-google-maps/>. | The announcement describes the GTFS publication but does not pin a downloadable revision or state its data-reuse license. Recheck the portal/license before reuse; no feed is bundled. | Service/schedule discovery only; no observed-demand target or live-occupancy claim. |
 
+## Registering another observed-demand dataset (adaptive path)
+
+`scripts/register_demand_dataset.py` is the front door for a dataset nobody wrote an adapter for. It
+adapts to the file instead of forcing the file to match the code, and it refuses rather than inventing:
+
+```bash
+python3 scripts/register_demand_dataset.py --csv incoming.csv --system-id pune-metro --city Pune \
+    --mode METRO --operator Maha-Metro --source-id maha-afc --source-url https://example.org/afc \
+    --licence "CC BY 4.0" --provenance-statement "Who counted, when, how." \
+    --write --install-registry --train
+```
+
+1. **Profiling** (`ml/data_pipeline/profile.py`) decides the column roles from the data: parseable
+   datetime share, distinct-per-row coverage, monotonicity, repeats per entity, integer share, range,
+   variability, autocorrelation at the modal spacing. Header names only ever add a capped +/-0.30
+   prior, never a decision. Consequences: `Date`/`Station`/`Total` in a CMRL export and
+   `service_date`/`station_code`/`boarding_count` elsewhere both resolve; a per-row surrogate key is
+   disqualified as a measure; a column whose header says `forecast`/`predicted`/`modelled`/`simulated`
+   is disqualified as a label; a small-integer code column is disqualified as a demand count.
+2. **Granularity is measured, not declared.** The modal timestamp spacing sets the period (5 minutes
+   to 7 days are supported); `--granularity` may only confirm it. A 15-minute file is profiled,
+   normalized and gated with the period-aware feature schema in `ml/features/periodic.py` (lags 1 /
+   1 week / 2 weeks / 4 weeks at that period), but training and serving are implemented for `day` and
+   `hour` only - other periods are refused at that step with a reason instead of being answered with a
+   day model.
+3. **Semantic validation**: two or more near-tied candidate measures -> refusal listing them, never a
+   guess; an additive relation between candidate columns (entries + exits = total) is reported and the
+   columns are never summed into one target; missing entities and irregular spacing are counted, not
+   filled; `clean_normalized_demand` enforces period alignment, whole non-negative counts, one
+   system/city/mode/operator/entity-type per family and one record per entity-period.
+4. **Normalization** to the canonical schema in `data/processed/<system>_demand_timeseries.csv` plus a
+   `.metadata.json` sidecar carrying the chosen mapping, the profiler scores, both SHA-256 digests and
+   the provenance fields.
+5. **The ten-criterion gate** (`scripts/validate_demand_dataset.py`) runs on the normalized file. The
+   gate is a conjunction: anything less than 10/10 is not registered, and the report is kept either way
+   at `data/processed/<system>_validation_gate.json`.
+6. **Registration** writes `data/registry/model_families.json` (read by `ml/training/registry.py`; a
+   JSON family can add a system but can never replace a code-defined one), then `--train` runs the
+   offline trainer, which saves model + preprocessor + config + metadata + training cut-off + horizon
+   bands into `backend/models/<system_id>/`.
+
+**Synthetic and simulated files are development input only.** A dataset declared
+`--dataset-class synthetic_development|simulated|modelled_output|historical_study_output` can be
+profiled and gated - which is exactly how the two teammate 365-day synthetic CSVs were tested - but it
+fails `target_values_are_actual_observations`, is never registered as a served family, and is written
+under `data/development/` instead of `data/processed/`. Registering one requires the explicit
+`--allow-development-family` flag and marks it `development_only: true`, which `backend/app/main.py`
+skips, so no endpoint can serve it. The synthetic fixtures themselves are not redistributed here.
+
 ## Reproducible commands
 
 ```bash
-# From the repository root
+# From the repository root — Bengaluru (hour-granularity family)
 python scripts/download_data.py       # downloads pinned archive; SHA-256 is enforced
 python scripts/prepare_data.py        # writes normalized CSV + provenance sidecar
 python scripts/train_models.py        # trains only a registered family
 python scripts/evaluate_models.py     # replays persisted champion on held-out data
+
+# Chennai (day-granularity family)
+python3 scripts/download_cmrl_data.py                                  # pinned + SHA-256 verified
+python3 scripts/prepare_chennai_data.py                                # canonical record contract
+python3 scripts/validate_demand_dataset.py --system-id chennai-cmrl-metro   # the 10-criterion gate
+python3 scripts/train_chennai_models.py --target-date 2026-10-07       # benchmarks + future snapshot
+
+# Any other system: collect observations until a series exists (nothing is interpolated)
+python3 scripts/collect_transit_observations.py --source cmrl
+python3 scripts/collect_transit_observations.py --status
 ```
 
 To use a different registered family, pass its normalized data with `--data` and its provenance sidecar with `--metadata`. The training registry rejects systems without a verified adapter/model-family entry. A source or license revision requires new review and a new pinned checksum; do not bypass the checksum to make a changed file appear equivalent.

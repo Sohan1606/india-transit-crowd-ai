@@ -23,10 +23,21 @@ const limitationItems = [
 ]
 
 function coverageText(metadata: AppMetadata) {
-  return metadata.dataset.source_periods.map((period) => `${period.start_inclusive}–${period.end_inclusive}`).join(' · ')
+  const rows = metadata.dataset.source_periods ?? []
+  const text = rows
+    .map((period) => {
+      const start = period.start_inclusive ?? period.start ?? ''
+      const end = period.end_inclusive ?? period.end ?? start
+      return [start, end].filter(Boolean).join('–')
+    })
+    .filter(Boolean)
+    .join(' · ')
+  return text || `${metadata.dataset.timestamp_min.slice(0, 10)}–${metadata.dataset.timestamp_max.slice(0, 10)}`
 }
 
-export function MethodologySection({ metadata, report, activeSystemId }: { metadata: AppMetadata; report: ModelReport | null; activeSystemId: string }) {
+export function MethodologySection({ metadata, report, activeSystemId, granularity = 'hour' }: { metadata: AppMetadata; report: ModelReport | null; activeSystemId: string; granularity?: 'hour' | 'day' }) {
+  const isDay = granularity === 'day'
+  const countWord = isDay ? 'day' : 'hour'
   const reportMatchesSystem = Boolean(report && report.model_family.system_id === activeSystemId)
   return (
     <section id="methodology" className="methodology-section section-anchor section-pad">
@@ -59,17 +70,17 @@ export function MethodologySection({ metadata, report, activeSystemId }: { metad
               <div><span className="risk-step risk-high" /><span>HIGH</span><b>&gt; P80 · ≤ P95</b></div>
               <div><span className="risk-step risk-severe" /><span>SEVERE</span><b>&gt; P95</b></div>
             </div>
-            {reportMatchesSystem && report && <div className="global-thresholds"><span>FITTED GLOBAL FALLBACK · TRAINING ONLY</span><strong>P50 {Math.round(report.demand_risk.global.q50).toLocaleString('en-IN')} <i>/</i> P80 {Math.round(report.demand_risk.global.q80).toLocaleString('en-IN')} <i>/</i> P95 {Math.round(report.demand_risk.global.q95).toLocaleString('en-IN')}</strong><small>station boardings per hour · adequately sampled station cuts take precedence</small></div>}
+            {reportMatchesSystem && report && <div className="global-thresholds"><span>FITTED GLOBAL FALLBACK · TRAINING ONLY</span><strong>P50 {Math.round(report.demand_risk.global.q50).toLocaleString('en-IN')} <i>/</i> P80 {Math.round(report.demand_risk.global.q80).toLocaleString('en-IN')} <i>/</i> P95 {Math.round(report.demand_risk.global.q95).toLocaleString('en-IN')}</strong><small>{isDay ? 'station entries per day' : 'station boardings per hour'} · adequately sampled station cuts take precedence</small></div>}
           </Reveal>
           <Reveal className="data-transparency-card" delay={0.08} id="data-source">
             <p className="eyebrow"><span className="eyebrow-dot" /> DATA TRANSPARENCY</p>
             <h3>One verified system.<br /><em>A precise scope.</em></h3>
             <div className="source-info-row"><span>DATA SOURCE</span><b>{metadata.dataset.title}</b></div>
             <div className="source-info-row"><span>OBSERVED WINDOWS</span><b>{coverageText(metadata)}</b></div>
-            <div className="source-info-row"><span>VERIFIED RECORDS</span><b>{metadata.dataset.observed_rows.toLocaleString()} station-hours · {metadata.dataset.station_count} source stations</b></div>
+            <div className="source-info-row"><span>VERIFIED RECORDS</span><b>{metadata.dataset.observed_rows.toLocaleString()} station-{countWord}s · {metadata.dataset.station_count} source stations{metadata.dataset.unique_days ? ` · ${metadata.dataset.unique_days} distinct days` : ''}</b></div>
             <div className="source-info-row"><span>PRIMARY SIGNAL</span><b>Station boardings · one observed hour</b></div>
-            <div className="source-info-row"><span>LICENSE</span><b>{metadata.dataset.license ?? 'ODbL-1.0'} · attribution and share-alike apply</b></div>
-            <div className="source-info-row"><span>FORECAST SCOPE</span><b>{metadata.city} · {metadata.mode} · {metadata.operator} only</b></div>
+            <div className="source-info-row"><span>LICENSE</span><b>{metadata.dataset.license ?? 'ODbL-1.0'}</b></div>
+            <div className="source-info-row"><span>FORECAST SCOPE</span><b>{metadata.city} · {metadata.mode} · {metadata.operator} only · {isDay ? 'next-day and future-day' : 'next-hour'} horizon</b></div>
             <a className="source-link" href={metadata.dataset.source_url} target="_blank" rel="noreferrer">Open source repository <ExternalLink size={14} /></a>
             {metadata.dataset.license_url && <a className="source-link secondary-source-link" href={metadata.dataset.license_url} target="_blank" rel="noreferrer">Read the license <ExternalLink size={14} /></a>}
           </Reveal>
@@ -77,7 +88,8 @@ export function MethodologySection({ metadata, report, activeSystemId }: { metad
         <Reveal className="limitations-block">
           <div className="limitations-title"><ShieldAlert size={19} /><div><p className="eyebrow">WHAT THIS MODEL CANNOT KNOW</p><h3>Useful, because it is honest.</h3></div></div>
           <div className="limitations-grid">{limitationItems.map(([title, copy], index) => <div className="limitation-item" key={title}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{title}</strong><p>{copy}</p></div></div>)}</div>
-          <p className="future-note"><b>Future work:</b> an approved, reproducible observed-demand extract with suitable hourly station granularity, explicit reuse terms, longer evaluation history, service-context features, capacity data and calibrated prediction intervals would be prerequisites for expansion. GTFS can enrich network discovery, never supply the demand target.</p>
+          <p className="future-note"><b>Future work:</b> an approved, reproducible observed-demand extract with suitable hourly station granularity, explicit reuse terms, longer evaluation history, service-context features, capacity data and calibrated prediction intervals would be prerequisites for expansion. What ships today is an
+          empirical per-horizon error band measured on validation days, labelled uncalibrated in every response. GTFS can enrich network discovery, never supply the demand target.</p>
         </Reveal>
       </div>
     </section>

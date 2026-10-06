@@ -5,8 +5,11 @@ from pathlib import Path
 import pandas as pd
 from ml.data_pipeline.source import BMRCL_SOURCE_ID, BMRCLRidershipAdapter, SourceError, SourceAdapter
 
+from ml.data_pipeline.cmrl import CMRL_SOURCE_ID, CMRLStationDailyAdapter
+
 _ADAPTERS: dict[str, SourceAdapter] = {
     BMRCL_SOURCE_ID: BMRCLRidershipAdapter(),
+    CMRL_SOURCE_ID: CMRLStationDailyAdapter(),
 }
 
 

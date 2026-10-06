@@ -82,7 +82,29 @@ Risk thresholds are trained-only historical percentiles, frozen for validation/t
 
 - Global: Permutation importance on chronological validation observations, scoring increase in MAE; associational, not causal.
 - Local: At inference, one feature at a time is replaced with its training median and the selected model is re-run; not SHAP and not causal attribution.
-- Uncertainty: No calibrated prediction interval or confidence percentage is produced.
+- Uncertainty: no calibrated prediction interval or confidence percentage is produced. The API's `forecast_interval`
+  is an empirical per-horizon p90 of absolute error measured on validation days (see *Horizon accuracy and forecast
+  bands* below), explicitly labelled uncalibrated.
+
+## Horizon accuracy and forecast bands (Chennai day family)
+
+Measured by re-running the champion recursively over the validation partition
+(`ml/training/horizon.py`; the full table lives in `forecast_horizon` inside
+`backend/models/chennai-cmrl-metro/model_report.json`):
+
+| Horizon | Samples | MAE | p90 absolute error | p95 absolute error |
+| --- | --- | --- | --- | --- |
+| +1 day | 43 | 555.1 | 1,523.2 | 1,715.4 |
+| +3 days | 43 | 702.2 | 1,740.4 | 2,435.5 |
+| +7 days | 43 | 821.2 | 1,790.7 | 2,064.0 |
+| +14 days (worst) | 43 | 2,923.7 | 5,388.9 | 6,135.6 |
+| +34 days | 43 | 584.3 | 1,378.6 | 1,519.0 |
+
+Reference dispersion (standard deviation of validation targets) is 3,873.6, and no measured horizon
+lost to it, so the API keeps its documented 60-day technical ceiling with 34 days labelled as
+validated. Beyond 34 days the answer is served with `horizon_status: beyond_validated_range`, the
+widest measured band applied, and `band_basis: worst_measured_horizon`. `forecast_interval` is that
+empirical band, explicitly not a calibrated confidence interval.
 
 ## Limitations
 

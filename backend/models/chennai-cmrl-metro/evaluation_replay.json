@@ -1,0 +1,130 @@
+{
+  "note": "Historical replay modes. Neither is a future forecast; both stop at the last observed day.",
+  "held_out_window": {
+    "start": "2026-09-01",
+    "end": "2026-10-05",
+    "days": 35
+  },
+  "one_step_replay_using_true_history": {
+    "overall": {
+      "mae": 711.8178998066342,
+      "rmse": 1395.7831018794964,
+      "r2": 0.8705753503649265,
+      "evaluated_rows": 1505,
+      "mape_percent": 17.201
+    },
+    "per_entity_sample": [
+      {
+        "entity_id": "line-01-stg",
+        "entity_name": "Tollgate (Blue Line)",
+        "observations": 35,
+        "mae": 208.2456,
+        "rmse": 359.6155,
+        "r2": 0.3045,
+        "mean_actual": 2032.26
+      },
+      {
+        "entity_id": "line-02-snp",
+        "entity_name": "Nehru Park (Green Line)",
+        "observations": 35,
+        "mae": 210.1244,
+        "rmse": 348.3764,
+        "r2": 0.5136,
+        "mean_actual": 2391.83
+      },
+      {
+        "entity_id": "line-02-skm",
+        "entity_name": "Kilpauk (Green Line)",
+        "observations": 35,
+        "mae": 233.7717,
+        "rmse": 417.3013,
+        "r2": 0.4793,
+        "mean_actual": 2228.97
+      },
+      {
+        "entity_id": "line-01-sot",
+        "entity_name": "Ota - Nanganallur Road (Blue Line)",
+        "observations": 35,
+        "mae": 274.7889,
+        "rmse": 516.9125,
+        "r2": 0.5376,
+        "mean_actual": 2280.97
+      },
+      {
+        "entity_id": "line-02-ssn",
+        "entity_name": "Shenoy Nagar (Green Line)",
+        "observations": 35,
+        "mae": 304.4847,
+        "rmse": 497.5648,
+        "r2": 0.4545,
+        "mean_actual": 2811.8
+      },
+      {
+        "entity_id": "line-02-sar",
+        "entity_name": "Arumbakkam (Green Line)",
+        "observations": 35,
+        "mae": 337.0122,
+        "rmse": 575.0881,
+        "r2": 0.3252,
+        "mean_actual": 3696.29
+      },
+      {
+        "entity_id": "line-01-stv",
+        "entity_name": "Thiruvotriyur (Blue Line)",
+        "observations": 35,
+        "mae": 374.2708,
+        "rmse": 635.2817,
+        "r2": 0.3562,
+        "mean_actual": 3663.69
+      },
+      {
+        "entity_id": "line-01-swd",
+        "entity_name": "Wimco Nagar Depot (Blue Line)",
+        "observations": 35,
+        "mae": 406.8072,
+        "rmse": 684.5261,
+        "r2": 0.4538,
+        "mean_actual": 3874.34
+      },
+      {
+        "entity_id": "line-01-snw",
+        "entity_name": "New Washermanpet (Blue Line)",
+        "observations": 35,
+        "mae": 415.9439,
+        "rmse": 701.4248,
+        "r2": 0.3933,
+        "mean_actual": 3665.09
+      },
+      {
+        "entity_id": "line-01-skp",
+        "entity_name": "Kaladipet (Blue Line)",
+        "observations": 35,
+        "mae": 433.6406,
+        "rmse": 737.1348,
+        "r2": 0.3828,
+        "mean_actual": 3941.77
+      }
+    ]
+  },
+  "recursive_projection_over_same_window": {
+    "mode": "recursive multi-day-ahead projection from the training cutoff only",
+    "projection_window_caveat": "The window runs from the day after the training cutoff to the last observed day, so it also covers the validation calendar days. They are not inputs here: nothing after the cutoff enters this audit. It is a measurement of the serving path, not a second model-selection signal.",
+    "why_this_is_the_relevant_number": "Training stopped at the cutoff; every day after it is produced by re-feeding the model's own forecasts, exactly as the live future-forecast path does. Held-out observations are used only as answers for scoring, never as inputs.",
+    "projection_start": "2026-07-29",
+    "projection_end": "2026-10-05",
+    "evaluated_rows": 2967,
+    "entities": 43,
+    "mae": 902.2931,
+    "rmse": 1402.5079,
+    "r2": 0.86913,
+    "smape_percent": 16.174,
+    "first_7_days_mae": 888.8607,
+    "last_7_days_mae": 1330.876
+  },
+  "final_test_partition_reported_once": {
+    "rows": 1505,
+    "start": "2026-09-01 00:00:00+05:30",
+    "end": "2026-10-05 00:00:00+05:30",
+    "unique_days": 35
+  }
+}

@@ -1,0 +1,169 @@
+﻿Metro_Line,Line_Name,Operational_Status,Station_Position,Stations_On_Line,Station,Morning_Peak_Destination,Evening_Peak_Destination
+Line 1,Versova-Andheri-Ghatkopar,Operational,1,12,Versova,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,2,12,D.N. Nagar,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,3,12,Azad Nagar,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,4,12,Andheri,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,5,12,Western Express Highway,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,6,12,Chakala,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,7,12,Airport Road,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,8,12,Marol Naka,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,9,12,Saki Naka,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,10,12,Asalpha Road,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,11,12,Jagruti Nagar,Versova,Ghatkopar
+Line 1,Versova-Andheri-Ghatkopar,Operational,12,12,Ghatkopar,Versova,Ghatkopar
+Line 2A,Dahisar-D.N. Nagar,Operational,1,17,Dahisar East,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,2,17,Anand Nagar,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,3,17,Kandarpada,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,4,17,Mandapeshwar-IC Colony,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,5,17,Eksar,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,6,17,Borivali West,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,7,17,Pahadi Eksar,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,8,17,Kandivali West,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,9,17,Dahanukarwadi,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,10,17,Valnai,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,11,17,Malad West,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,12,17,Lower Malad,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,13,17,Pahadi Goregaon,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,14,17,Goregaon West,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,15,17,Oshiwara,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,16,17,Lower Oshiwara,Andheri West,Dahisar East
+Line 2A,Dahisar-D.N. Nagar,Operational,17,17,Andheri West,Andheri West,Dahisar East
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,1,20,ESIC Nagar,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,2,20,Prem Nagar,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,3,20,Indira Nagar,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,4,20,Nanavati Hospital,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,5,20,Khira Nagar,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,6,20,Saraswat Nagar,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,7,20,National College,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,8,20,Bandra Metro,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,9,20,Income Tax Office,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,10,20,ILFS,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,11,20,MTNL Metro,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,12,20,SG Barve Marg,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,13,20,Kurla East,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,14,20,EEH,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,15,20,Chembur,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,16,20,Diamond Garden,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,17,20,Shivaji Chowk,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,18,20,BSNL Metro,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,19,20,Mankhurd,Bandra Metro,Mandale Metro
+Line 2B,D.N. Nagar-Mandale,Under Construction / Partial,20,20,Mandale Metro,Bandra Metro,Mandale Metro
+Line 3,Colaba-Bandra-SEEPZ,Operational,1,27,Cuffe Parade,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,2,27,Vidhan Bhavan,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,3,27,Churchgate,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,4,27,Hutatma Chowk,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,5,27,CSMT,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,6,27,Kalbadevi,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,7,27,Girgaon,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,8,27,Grant Road,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,9,27,Mumbai Central,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,10,27,Mahalaxmi,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,11,27,Science Museum,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,12,27,Acharya Atre Chowk,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,13,27,Worli,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,14,27,Siddhivinayak,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,15,27,Dadar,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,16,27,Shitladevi Temple,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,17,27,Dharavi,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,18,27,Bandra-Kurla Complex,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,19,27,Vidyanagari,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,20,27,Santacruz,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,21,27,CSMIA Domestic T1,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,22,27,Sahar Road,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,23,27,CSMIA International T2,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,24,27,Marol Naka,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,25,27,MIDC,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,26,27,SEEPZ,SEEPZ,Cuffe Parade
+Line 3,Colaba-Bandra-SEEPZ,Operational,27,27,Aarey JVLR,SEEPZ,Cuffe Parade
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,1,30,Bhakti Park Metro,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,2,30,Wadala TT,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,3,30,Anik Nagar Bus Depot,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,4,30,Siddharth Colony,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,5,30,Garodia Nagar,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,6,30,Pant Nagar,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,7,30,Laxmi Nagar,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,8,30,Shreyes Cinema,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,9,30,Godrej Company,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,10,30,Vikhroli Metro,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,11,30,Surya Nagar,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,12,30,Gandhi Nagar,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,13,30,Naval Housing,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,14,30,Bhandup Mahapalika,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,15,30,Bhandup Metro,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,16,30,Shangrila,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,17,30,Sonapur,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,18,30,Mulund Fire Station,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,19,30,Mulund Naka,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,20,30,Thane Teen Haath Naka,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,21,30,RTO Thane,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,22,30,Mahapalika Marg,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,23,30,Cadbury Junction,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,24,30,Majiwada,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,25,30,Kapurbawdi,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,26,30,Manpada,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,27,30,Tikuji-Ni-Wadi,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,28,30,Dongari Pada,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,29,30,Vijay Garden,Wadala TT,Kasarvadavali
+Line 4,Wadala-Thane-Kasarvadavali,Under Construction,30,30,Kasarvadavali,Wadala TT,Kasarvadavali
+Line 4A,Kasarvadavali-Gaimukh,Under Construction,1,2,Kasarvadavali,Kasarvadavali,Gaimukh
+Line 4A,Kasarvadavali-Gaimukh,Under Construction,2,2,Gaimukh,Kasarvadavali,Gaimukh
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,1,15,Balkum Naka,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,2,15,Kasheli,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,3,15,Kalher,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,4,15,Purna,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,5,15,Anjurphata,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,6,15,Dhamankar Naka,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,7,15,Bhiwandi,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,8,15,Gopal Nagar,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,9,15,Temghar,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,10,15,Rajnouli,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,11,15,Gove Gaon,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,12,15,Kon Gaon,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,13,15,Lal Chowki,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,14,15,Kalyan Station,Thane,Kalyan
+Line 5,Thane-Bhiwandi-Kalyan,Under Construction,15,15,Kalyan APMC,Thane,Kalyan
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,1,13,Swami Samarth Nagar,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,2,13,Adarsh Nagar,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,3,13,Jogeshwari West,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,4,13,JVLR,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,5,13,Shyam Nagar,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,6,13,Mahakali Caves,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,7,13,SEEPZ Village,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,8,13,Saki Vihar Road,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,9,13,Rambaug,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,10,13,Powai Lake,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,11,13,IIT Powai,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,12,13,Kanjur Marg West,Vikhroli EEH,Swami Samarth Nagar
+Line 6,Swami Samarth Nagar-Vikhroli,Under Construction,13,13,Vikhroli EEH,Vikhroli EEH,Swami Samarth Nagar
+Line 7,Andheri East-Dahisar East,Operational,1,13,Gundavali,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,2,13,Mogra,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,3,13,Jogeshwari East,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,4,13,Goregaon East,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,5,13,Aarey,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,6,13,Dindoshi,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,7,13,Kurar,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,8,13,Akurli,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,9,13,Poisar,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,10,13,Magathane,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,11,13,Devipada,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,12,13,Rashtriya Udyan,Gundavali,Dahisar East
+Line 7,Andheri East-Dahisar East,Operational,13,13,Ovaripada,Gundavali,Dahisar East
+Line 9,Dahisar-Mira Bhayander,Operational / Phase-wise,1,8,Dahisar East,Dahisar East,Subhash Chandra Bose Stadium
+Line 9,Dahisar-Mira Bhayander,Operational / Phase-wise,2,8,Pandhurang Wadi,Dahisar East,Subhash Chandra Bose Stadium
+Line 9,Dahisar-Mira Bhayander,Operational / Phase-wise,3,8,Miragaon,Dahisar East,Subhash Chandra Bose Stadium
+Line 9,Dahisar-Mira Bhayander,Operational / Phase-wise,4,8,Kashigaon,Dahisar East,Subhash Chandra Bose Stadium
+Line 9,Dahisar-Mira Bhayander,Operational / Phase-wise,5,8,Sai Baba Nagar,Dahisar East,Subhash Chandra Bose Stadium
+Line 9,Dahisar-Mira Bhayander,Operational / Phase-wise,6,8,Meditiya Nagar,Dahisar East,Subhash Chandra Bose Stadium
+Line 9,Dahisar-Mira Bhayander,Operational / Phase-wise,7,8,Shahid Bhagat Singh Garden,Dahisar East,Subhash Chandra Bose Stadium
+Line 9,Dahisar-Mira Bhayander,Operational / Phase-wise,8,8,Subhash Chandra Bose Stadium,Dahisar East,Subhash Chandra Bose Stadium
+Line 11,Wadala-CSMT,Planned / Under Development,1,5,Wadala,CSMT,Wadala
+Line 11,Wadala-CSMT,Planned / Under Development,2,5,Sewri,CSMT,Wadala
+Line 11,Wadala-CSMT,Planned / Under Development,3,5,Dockyard Road,CSMT,Wadala
+Line 11,Wadala-CSMT,Planned / Under Development,4,5,Mazgaon,CSMT,Wadala
+Line 11,Wadala-CSMT,Planned / Under Development,5,5,CSMT,CSMT,Wadala
+Line 12,Kalyan-Taloja,Under Development,1,6,Kalyan,Taloja,Kalyan
+Line 12,Kalyan-Taloja,Under Development,2,6,Dombivli,Taloja,Kalyan
+Line 12,Kalyan-Taloja,Under Development,3,6,Nilje,Taloja,Kalyan
+Line 12,Kalyan-Taloja,Under Development,4,6,Hedutane,Taloja,Kalyan
+Line 12,Kalyan-Taloja,Under Development,5,6,Amandoot,Taloja,Kalyan
+Line 12,Kalyan-Taloja,Under Development,6,6,Taloja,Taloja,Kalyan

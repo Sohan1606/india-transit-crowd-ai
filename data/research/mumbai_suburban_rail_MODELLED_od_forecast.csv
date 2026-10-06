@@ -1,0 +1,5 @@
+classification,eligible_as_supervised_label,year,western_line_lakhs,central_line_lakhs,harbour_line_lakhs,total_lakhs
+HISTORICAL STUDY MODEL OUTPUT,False,2012,38.15,26.34,18.76,83.25
+HISTORICAL STUDY MODEL OUTPUT,False,2016,41.19,29.86,24.6,95.65
+HISTORICAL STUDY MODEL OUTPUT,False,2021,44.65,33.85,30.82,109.32
+HISTORICAL STUDY MODEL OUTPUT,False,2031,51.14,40.84,42.67,134.65

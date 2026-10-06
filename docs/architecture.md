@@ -1,16 +1,23 @@
 # India Transit Crowd AI — Architecture
 
 **PREDICT THE CROWD. PLAN THE JOURNEY.**  
-Last reviewed: 2026-10-05.
+Last reviewed: 2026-10-06.
 
 ## Design boundary
 
-The application is a multimodal India transit **discovery** surface, but passenger-demand prediction is enabled only for one verified family in this release: Bengaluru Namma Metro / BMRCL hourly station boardings. Static schedules, GTFS, API announcements and network maps are not passenger-demand observations and cannot enter a model target.
+The application is a multimodal India transit **discovery** surface, and passenger-demand prediction is enabled only for verified, gate-passed model families — one per system, one granularity each:
+
+* `bengaluru-namma-metro` — BMRCL station-**hour** boardings (ODbL-1.0 archive, pinned by SHA-256).
+* `chennai-cmrl-metro` — CMRL station-**day** entries (collector archive pinned by commit and three SHA-256 digests, not redistributed).
+
+Systems whose data cannot support a future-labelled target are catalogued but prediction-disabled: the Mumbai suburban-rail survey extract is the clearest case (one typical weekday per survey window, licence unresolved), and its 2021/2031 forecast block is quarantined as model output. Static schedules, GTFS, API announcements and network maps are not passenger-demand observations and cannot enter a model target.
+
+Registration is enforced by `scripts/validate_demand_dataset.py` (ten criteria, report written per system) and the feature builder's refusal to train without history strictly before the target. A dataset that cannot satisfy them yields documentation and a collector, not a model.
 
 ## Data and model path
 
 ```text
-Verified source archive (pinned BMRCL upstream revision)
+Verified source archive (pinned BMRCL / CMRL upstream revision)
       │  source ID + pinned URL/hash + license/attribution
       ▼
 Source adapter registry (ml/data_pipeline/adapters.py, source.py)
@@ -23,22 +30,44 @@ Validation + leakage-safe temporal features
       │  only observations strictly before target T
       ▼
 Model-family registry (system ID → mode/operator/entity/timezone/artifact path)
-      │  presently: bengaluru-namma-metro only
+      │  bengaluru-namma-metro (hourly) · chennai-cmrl-metro (daily)
       ├── separate regression benchmark and saved champion
       ├── separate relative-demand classification benchmark and saved champion
       ├── train-only frozen risk distributions
       └── training-window PCA + DBSCAN station analytics
       ▼
 Family-scoped artifact directory
-      ├── transitcrowd.joblib
-      ├── model_report.json
-      ├── station_analytics.json
-      └── evaluation_replay.json
+      ├── transitcrowd.joblib                # both families (bundle carries model_family + granularity)
+      ├── model_report.json                  # both families
+      ├── station_analytics.json             # hourly family only
+      ├── evaluation_replay.json             # hourly family only (full hourly replay)
+      └── future_forecast.json               # daily family: saved snapshot of a future day + recursive projection
       ▼
 FastAPI inference / analytics endpoints ── same-origin Vite or Nginx proxy ── React UI
 
 Official/community transit schedules ──> discovery catalog only (never into demand targets)
 ```
+
+## Adaptive front door
+
+```
+any compatible CSV -> profile (ml/data_pipeline/profile.py)   column roles + measured period
+                   -> decide (refuse on ties, ids, forecast-like columns, period conflicts)
+                   -> normalize (ml/data_pipeline/cleaning.py, period-aware alignment)
+                   -> gate (scripts/validate_demand_dataset.py, 10 criteria, conjunction)
+                   -> register (data/registry/model_families.json, read by ml/training/registry.py)
+                   -> train offline (ml/training/train_daily.py + ml/training/horizon.py)
+                   -> artifacts (backend/models/<system_id>/: model, preprocessor, config, metadata,
+                                 training cut-off, horizon bands, reports)
+                   -> serve (backend/app/inference/{service.py,daily_service.py}: lookup only)
+```
+
+A registered family carries its own `granularity`, `period_seconds`, `target`, `measure`,
+`dataset_relative_path` and `metadata_relative_path`, so the API routes a request to the right service
+by family metadata (`backend/app/api/routes.py::_granularity`) rather than by a per-city branch.
+`development_only: true` families are loaded by the tooling and skipped by
+`backend/app/main.py::_build_services`, so a synthetic family can exist in a development checkout
+without ever becoming answerable.
 
 ## Boundaries and responsibilities
 
@@ -76,6 +105,11 @@ All application endpoints are under `/api`:
 | `GET /station-comparison?...` | Same-target station model outputs with station-specific training-history context. |
 | `GET /station-analytics` | Saved PCA/DBSCAN station profiles. |
 | `GET /model-performance` | Saved chronological benchmark and source-specific report. |
+| `GET /future-preview?system_id=...&days=...` | Projection over the days/hours the source has not published yet, plus the recursive and one-step accuracy of that projection. |
+| `GET /source-gap?system_id=...` | How far the archive trails today, when the next observation is expected, and what would close the gap. |
+| `GET /api/systems` | Per-system `granularity`, `label_unit`, `max_horizon` and, for prediction-disabled systems, `prediction_unavailable_reason`. |
+
+Granularity is enforced at the API edge: a day-granularity system rejects `target_hour` (422) and `heatmap` (409) rather than inventing hourly values, and an hourly system requires `target_hour`. Predictions for times at or before the data frontier are labelled `forecast_kind: "historical_replay"` / `is_model_forecast: false`; only post-frontier responses are labelled as forecasts.
 
 ## Runtime and deployment
 
@@ -85,4 +119,4 @@ All application endpoints are under `/api`:
 - Render configuration is in `render.yaml`; set `CORS_ORIGINS` to the exact deployed frontend origin.
 - Vercel frontend: configure build-time `VITE_API_BASE` to the hosted API's `/api` base and configure backend CORS.
 
-The runtime image needs the pinned XGBoost CPU package because the saved regression artifact contains an XGBoost estimator. The training, runtime, Docker and deployment paths all point to the same BMRCL model family; there is no legacy route model fallback.
+The runtime image needs the pinned XGBoost CPU package because the saved regression artifact contains an XGBoost estimator. The training, runtime, Docker and deployment paths all point to the same system-specific model family; there is no legacy route model fallback and no pooling of systems or granularities into one model.

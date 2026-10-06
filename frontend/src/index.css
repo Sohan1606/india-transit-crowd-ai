@@ -952,3 +952,23 @@ main { display: block; }
   .unsupported-stage { min-height: 340px; padding: 27px 22px; }
   .unsupported-stage-mark { margin-bottom: 26px; }
 }
+
+/* Day-granularity family additions */
+.headline-unit { font-style: inherit; }
+.single-field-split { grid-template-columns: 1fr; }
+.form-hint-future { color: #c7ee7b; }
+.weekday-bars { display: grid; gap: 9px; padding: 6px 2px 2px; }
+.weekday-bar-row { display: grid; grid-template-columns: 46px 1fr 92px 1fr; align-items: center; gap: 10px; }
+.weekday-bar-row .weekday-name { color: #858980; font-size: 11px; letter-spacing: .08em; }
+.weekday-track { position: relative; height: 8px; background: #2b2f28; border-radius: 999px; overflow: hidden; }
+.weekday-track i { position: absolute; inset: 0 auto 0 0; background: #c7ee7b; opacity: .82; border-radius: 999px; }
+.weekday-bar-row strong { font-variant-numeric: tabular-nums; font-size: 13px; }
+.weekday-bar-row small { color: #767b71; font-size: 10.5px; grid-column: 2 / -1; margin-top: -4px; }
+.weekday-bars-foot { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-top: 6px; padding-top: 9px; border-top: 1px dashed #2b2f28; }
+.weekday-bars-foot span { color: #c7ee7b; font-size: 10px; letter-spacing: .09em; }
+.weekday-bars-foot b { font-size: 12px; font-variant-numeric: tabular-nums; }
+.alternative-day-list { display: grid; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
+.alternative-day-list li { display: grid; grid-template-columns: 1fr auto auto; gap: 4px 10px; align-items: baseline; font-size: 12px; }
+.alternative-day-list li span { color: #858980; }
+.alternative-day-list li em { font-style: normal; color: #c7ee7b; font-size: 10.5px; letter-spacing: .08em; }
+.alternative-day-list li small { grid-column: 1 / -1; color: #767b71; font-size: 10.5px; }

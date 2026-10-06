@@ -16,16 +16,17 @@ def _quantiles(values: pd.Series | np.ndarray) -> dict[str, Any]:
 
 
 def fit_risk_thresholds(train: pd.DataFrame, min_entity_targets: int = MIN_ENTITY_TRAIN_TARGETS,
-                         min_system_targets: int = MIN_SYSTEM_TRAIN_TARGETS) -> dict[str, Any]:
+                         min_system_targets: int = MIN_SYSTEM_TRAIN_TARGETS,
+                         target_column: str = "target_next_hour_demand") -> dict[str, Any]:
     """Fit entity cuts, then city/mode/operator system cuts, then global cuts.
 
     All values are estimated exclusively from the chronological training
     partition. The returned maps are frozen before validation/test inference.
     """
-    required = {"entity_id", "target_next_hour_demand"}
+    required = {"entity_id", target_column}
     if not required.issubset(train.columns):
         raise ValueError(f"Training data must contain {sorted(required)}.")
-    values = pd.to_numeric(train["target_next_hour_demand"], errors="coerce").dropna().to_numpy(float)
+    values = pd.to_numeric(train[target_column], errors="coerce").dropna().to_numpy(float)
     if not len(values):
         raise ValueError("Cannot fit historical-relative demand thresholds without training targets.")
     global_thresholds = _quantiles(values)
@@ -33,13 +34,13 @@ def fit_risk_thresholds(train: pd.DataFrame, min_entity_targets: int = MIN_ENTIT
     system_col = "system_id" if "system_id" in train.columns else None
     if system_col:
         for system_id, part in train.groupby(system_col, sort=True):
-            fitted = _quantiles(part["target_next_hour_demand"])
+            fitted = _quantiles(part[target_column])
             source = "system_training_distribution" if fitted["sample_count"] >= min_system_targets else "global_training_fallback"
             systems[str(system_id)] = {**(fitted if source == "system_training_distribution" else global_thresholds), "source": source}
 
     entities: dict[str, dict[str, Any]] = {}
     for entity_id, part in train.groupby("entity_id", sort=True):
-        fitted = _quantiles(part["target_next_hour_demand"])
+        fitted = _quantiles(part[target_column])
         if fitted["sample_count"] >= min_entity_targets:
             entities[str(entity_id)] = {**fitted, "source": "entity_training_distribution"}
             continue

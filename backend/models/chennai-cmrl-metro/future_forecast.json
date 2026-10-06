@@ -1,0 +1,402 @@
+{
+  "kind": "MODEL_FORECAST_NOT_LIVE_COUNT",
+  "statement": "These are machine-learned forecasts for a calendar day that has not yet been observed by the source. They are not live passengers, not occupancy and not a measured count.",
+  "system_id": "chennai-cmrl-metro",
+  "target_date": "2026-10-07",
+  "forecast_horizon_days": 2,
+  "data_frontier": "2026-10-05",
+  "training_cutoff": "2026-07-28",
+  "model": "xgboost",
+  "generated_at_utc": "2026-10-06T15:18:05.262019+00:00",
+  "stations": [
+    {
+      "station_id": "line-01-stl",
+      "station_name": "Thousand Lights (Blue Line)",
+      "predicted_entries": 18808.79,
+      "risk_band": "SEVERE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-scc",
+      "station_name": "Chennai Central (Blue Line)",
+      "predicted_entries": 17262.69,
+      "risk_band": "SEVERE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sap",
+      "station_name": "Chennai Airport (Blue Line)",
+      "predicted_entries": 15588.64,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sti",
+      "station_name": "Thirumangalam (Green Line)",
+      "predicted_entries": 14701.13,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sgu",
+      "station_name": "Guindy (Blue Line)",
+      "predicted_entries": 13937.44,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-scc",
+      "station_name": "Chennai Central (Green Line)",
+      "predicted_entries": 12958.44,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sko",
+      "station_name": "Koyambedu (Green Line)",
+      "predicted_entries": 12711.22,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sva",
+      "station_name": "Vadapalani (Green Line)",
+      "predicted_entries": 12582.63,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-shc",
+      "station_name": "High Court (Blue Line)",
+      "predicted_entries": 12313.93,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sli",
+      "station_name": "LIC (Blue Line)",
+      "predicted_entries": 11328.74,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-ste",
+      "station_name": "Teynampet (Blue Line)",
+      "predicted_entries": 10550.8,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sge",
+      "station_name": "Government Estate (Blue Line)",
+      "predicted_entries": 10473.32,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-ssi",
+      "station_name": "Ekkattuthangal (Green Line)",
+      "predicted_entries": 9293.1,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sgm",
+      "station_name": "AG-DMS (Blue Line)",
+      "predicted_entries": 9138.13,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-san",
+      "station_name": "Ashok Nagar (Green Line)",
+      "predicted_entries": 8919.73,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-slm",
+      "station_name": "Little Mount (Blue Line)",
+      "predicted_entries": 8327.34,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-smm",
+      "station_name": "St. Thomas Mount (Green Line)",
+      "predicted_entries": 8149.22,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-swa",
+      "station_name": "Washermanpet (Blue Line)",
+      "predicted_entries": 7855.73,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sme",
+      "station_name": "Meenambakkam (Blue Line)",
+      "predicted_entries": 7523.99,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-scr",
+      "station_name": "Nandanam (Blue Line)",
+      "predicted_entries": 7199.26,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-ssa",
+      "station_name": "Saidapet (Blue Line)",
+      "predicted_entries": 7094.84,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sae",
+      "station_name": "Anna Nagar East (Green Line)",
+      "predicted_entries": 6813.25,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-stc",
+      "station_name": "Thiagaraya College (Blue Line)",
+      "predicted_entries": 6671.19,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sal",
+      "station_name": "Alandur (Blue Line)",
+      "predicted_entries": 6658.94,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-scm",
+      "station_name": "CMBT (Green Line)",
+      "predicted_entries": 6566.05,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sma",
+      "station_name": "Mannadi (Blue Line)",
+      "predicted_entries": 6340.77,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sal",
+      "station_name": "Alandur (Green Line)",
+      "predicted_entries": 6125.12,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-str",
+      "station_name": "Tondiarpet (Blue Line)",
+      "predicted_entries": 6120.3,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sat",
+      "station_name": "Anna Nagar Tower (Green Line)",
+      "predicted_entries": 5832.59,
+      "risk_band": "MODERATE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-stt",
+      "station_name": "Thiruvotriyur Theradi (Blue Line)",
+      "predicted_entries": 5399.61,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-seg",
+      "station_name": "Egmore (Green Line)",
+      "predicted_entries": 5145.63,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-swn",
+      "station_name": "Wimco Nagar (Blue Line)",
+      "predicted_entries": 5097.6,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-swd",
+      "station_name": "Wimco Nagar Depot (Blue Line)",
+      "predicted_entries": 5042.31,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-skp",
+      "station_name": "Kaladipet (Blue Line)",
+      "predicted_entries": 5024.1,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-snw",
+      "station_name": "New Washermanpet (Blue Line)",
+      "predicted_entries": 4939.34,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-stv",
+      "station_name": "Thiruvotriyur (Blue Line)",
+      "predicted_entries": 4626.94,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sar",
+      "station_name": "Arumbakkam (Green Line)",
+      "predicted_entries": 4455.29,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-ssn",
+      "station_name": "Shenoy Nagar (Green Line)",
+      "predicted_entries": 3236.81,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sot",
+      "station_name": "Ota - Nanganallur Road (Blue Line)",
+      "predicted_entries": 2859.18,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-snp",
+      "station_name": "Nehru Park (Green Line)",
+      "predicted_entries": 2796.93,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-skm",
+      "station_name": "Kilpauk (Green Line)",
+      "predicted_entries": 2702.87,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-stg",
+      "station_name": "Tollgate (Blue Line)",
+      "predicted_entries": 2297.25,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-spc",
+      "station_name": "Pachaiappa's College (Green Line)",
+      "predicted_entries": 1884.42,
+      "risk_band": "LOW",
+      "threshold_source": "system_training_fallback"
+    }
+  ],
+  "top_stations": [
+    {
+      "station_id": "line-01-stl",
+      "station_name": "Thousand Lights (Blue Line)",
+      "predicted_entries": 18808.79,
+      "risk_band": "SEVERE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-scc",
+      "station_name": "Chennai Central (Blue Line)",
+      "predicted_entries": 17262.69,
+      "risk_band": "SEVERE",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sap",
+      "station_name": "Chennai Airport (Blue Line)",
+      "predicted_entries": 15588.64,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sti",
+      "station_name": "Thirumangalam (Green Line)",
+      "predicted_entries": 14701.13,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sgu",
+      "station_name": "Guindy (Blue Line)",
+      "predicted_entries": 13937.44,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-scc",
+      "station_name": "Chennai Central (Green Line)",
+      "predicted_entries": 12958.44,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sko",
+      "station_name": "Koyambedu (Green Line)",
+      "predicted_entries": 12711.22,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-02-sva",
+      "station_name": "Vadapalani (Green Line)",
+      "predicted_entries": 12582.63,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-shc",
+      "station_name": "High Court (Blue Line)",
+      "predicted_entries": 12313.93,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sli",
+      "station_name": "LIC (Blue Line)",
+      "predicted_entries": 11328.74,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-ste",
+      "station_name": "Teynampet (Blue Line)",
+      "predicted_entries": 10550.8,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    },
+    {
+      "station_id": "line-01-sge",
+      "station_name": "Government Estate (Blue Line)",
+      "predicted_entries": 10473.32,
+      "risk_band": "HIGH",
+      "threshold_source": "system_training_fallback"
+    }
+  ],
+  "unprojectable_stations": [],
+  "system_total_predicted_entries": 343356.0
+}

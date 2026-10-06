@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
+from ml.data_pipeline.cmrl import CMRL_SYSTEM_ID as CHENNAI_SYSTEM_ID
 from ml.data_pipeline.source import BMRCL_SYSTEM_ID
 
 
@@ -120,20 +121,81 @@ _SYSTEMS: list[dict[str, Any]] = [
         "prediction_unavailable_reason": "No compatible, verified observed passenger-demand history and trained PMPML model are available. GTFS schedules are not a demand target.",
     },
     {
-        "system_id": "chennai-cmrl-metro",
+        "system_id": CHENNAI_SYSTEM_ID,
         "system_name": "Chennai Metro",
         "city": "Chennai",
         "state": "Tamil Nadu",
         "mode": "METRO",
         "operator": "CMRL",
-        "prediction_available": False,
-        "prediction_status": "UNAVAILABLE_NO_COMPATIBLE_STATION_HOUR_HISTORY",
-        "observed_demand_status": "Monthly system-total ridership is publicly catalogued; the official passenger-flow portal is a visualization, with bulk historical reuse unresolved.",
-        "demand_source_url": "https://data.opencity.in/dataset/chennai-metro-monthly-usage-data/resource/c63ef5a0-e7d2-49b3-9c88-5ca5ce309fcf",
+        "prediction_available": True,
+        "prediction_status": "VERIFIED_OBSERVED_DEMAND",
+        "observed_demand_status": (
+            "Verified station-day entries (43 station-line entities, contiguous daily history) fetched from the pinned "
+            "public archive and checksum-verified at prepare time; granularity is one calendar day, not one hour."
+        ),
+        "demand_source_url": "https://github.com/PratyushBalaji/chennai-metro-ridership-tracker",
         "network_reference_url": "https://commuters-data.chennaimetrorail.org/passengerflow",
-        "network_reference_kind": "official passenger-flow visualization; no bulk source integrated",
-        "network_reference_note": "Monthly system totals are too coarse for a next-hour station model. Dashboard history and reuse rights require confirmation.",
-        "prediction_unavailable_reason": "No verified, reusable station-hour observation file is available for this model; monthly system totals are insufficient for next-hour station predictions.",
+        "network_reference_kind": "official CMRL passenger-flow portal (source of the archived observations)",
+        "network_reference_note": (
+            "The portal JSON (allTicketCount/stationData/hourlybaseddata) is the upstream of the archived CSVs. CMRL holds "
+            "copyright over the data, so this project fetches it on demand instead of bundling it. No live feed, "
+            "occupancy or train positions are integrated."
+        ),
+        "prediction_unavailable_reason": None,
+    },
+    {
+        "system_id": "mumbai-suburban-railway",
+        "system_name": "Mumbai Suburban Railway",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "mode": "SUBURBAN_RAIL",
+        "operator": "Indian Railways (WR / CR) with MRVC",
+        "prediction_available": False,
+        "prediction_status": "UNAVAILABLE_SOURCE_REJECTED_BY_VALIDATION_GATE",
+        "observed_demand_status": (
+            "Observed counts exist only as a 2011-12 / 2013 survey cross-section extracted from the MRVC / Wilbur Smith "
+            "Executive Summary: one typical weekday per survey window, 37-46 stations, no repeat dates. Canonical "
+            "extract is in data/research/mumbai_suburban_rail_pdf_observed.csv (249 records, 4 modelled rows quarantined)."
+        ),
+        "demand_source_url": "https://www.mrvc.in/",
+        "network_reference_url": "docs/mumbai-wilbur-smith-dataset.md",
+        "network_reference_kind": "in-repo provenance write-up of the Executive Summary PDF (tables E-1 to E-22)",
+        "network_reference_note": (
+            "Publicly available longitudinal numbers are press-release or annual aggregates (division totals, monthly "
+            "lakhs), not station-day or station-hour observations, so none can serve as a supervised label. The PDF's "
+            "2016/2021/2031 values are historical study model output and are stored separately, never as labels."
+        ),
+        "prediction_unavailable_reason": (
+            "Six of ten dataset-validation criteria fail (no repeat dates, no time ordering, no genuine future test "
+            "period), so no model is trained for this system. A collector is provided to accumulate station-day counts "
+            "until a longitudinal series exists."
+        ),
+    },
+    {
+        "system_id": "mumbai-mmrda-metro-monorail",
+        "system_name": "Mumbai Metro 2A / 7 and Mumbai Monorail",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "mode": "METRO",
+        "operator": "MMRDA / MNRL",
+        "prediction_available": False,
+        "prediction_status": "UNAVAILABLE_SOURCE_NOT_RETRIEVABLE_IN_BUILD_ENVIRONMENT",
+        "observed_demand_status": (
+            "One genuine longitudinal observed series was found: an MMRDA/NDSAP daily ridership resource on data.gov.in "
+            "covering 2024-10-01 to 2025-09-21 at line level (daily totals plus ticket-category splits)."
+        ),
+        "demand_source_url": "https://www.data.gov.in/resource/ridership-data-monorail-01-10-2024-21-09-2025",
+        "network_reference_url": "https://www.mmmocl.co.in/ridership-information",
+        "network_reference_kind": "operator ridership page (Looker Studio dashboard, no bulk export)",
+        "network_reference_note": (
+            "The data.gov.in resource was reviewed through an archived copy; the sandbox had no route to data.gov.in, so "
+            "no file hash was captured and the licence field was not visible in the reviewed view. It is line-level, so "
+            "it cannot produce station predictions even once downloaded."
+        ),
+        "prediction_unavailable_reason": (
+            "Unverified licence terms, no station identifier, and the file could not be retrieved and hashed in this "
+            "build environment. Documented rather than bundled; usable only for a line-level daily analysis."
+        ),
     },
     {
         "system_id": "hyderabad-hmrl-metro",
@@ -191,6 +253,16 @@ OBSERVED_DEMAND_CANDIDATES: list[dict[str, Any]] = [
         "prediction_enabled": False,
     },
     {
+        "city": "Mumbai",
+        "system": "Suburban railway (all lines)",
+        "source_title": "MRVC / Wilbur Smith passenger survey extract (observed cross-section) + station-day collector",
+        "url": "data/research/mumbai_suburban_rail_pdf_observed.csv",
+        "published_granularity": "one typical weekday per survey window (2011-12 and 2013), station/section/queue measures",
+        "access_status": "Extracted from the Executive Summary PDF with per-table page citations; redistribution of the PDF is not claimed - re-download from MRVC before publishing.",
+        "forecast_suitability": "reference distribution and feature engineering only; no repeat dates, so it cannot supply a future-labelled target",
+        "prediction_enabled": False,
+    },
+    {
         "city": "Delhi",
         "system": "DMRC",
         "source_title": "Delhi Metro: Hourly Footfall data at metro stations — Delhi Transport Stack",
@@ -206,22 +278,33 @@ OBSERVED_DEMAND_CANDIDATES: list[dict[str, Any]] = [
 SYSTEM_CATALOG = {item["system_id"]: item for item in _SYSTEMS}
 
 
-def list_systems(service=None) -> list[dict[str, Any]]:
-    """Return discovery metadata with availability derived from loaded artifacts."""
+def list_systems(service=None, services: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    """Return discovery metadata with availability derived from loaded artifacts.
+
+    ``services`` maps ``system_id`` to the loaded inference service for that family.
+    ``service`` is the single-service form kept for the hour-granularity family and
+    tests; when both are given the per-system map wins.
+    """
     items = deepcopy(_SYSTEMS)
+    registry = dict(services or {})
+    if service is not None and BMRCL_SYSTEM_ID not in registry:
+        registry[BMRCL_SYSTEM_ID] = service
     for item in items:
-        if item["system_id"] == BMRCL_SYSTEM_ID:
-            ready = bool(service and service.ready and service.system_id == BMRCL_SYSTEM_ID)
-            item["prediction_available"] = ready
-            item["prediction_status"] = "AVAILABLE" if ready else "UNAVAILABLE_ARTIFACT_OR_DATA_NOT_READY"
-            item["prediction_unavailable_reason"] = None if ready else (
-                service.unavailable_detail if service else "Model artifacts and normalized observed-demand data are not loaded."
-            )
-            item["station_count"] = len(service.stations) if ready else None
-            item["data_period"] = service.metadata()["dataset"]["source_periods"] if ready else []
-        else:
+        system_id = item["system_id"]
+        candidate = registry.get(system_id)
+        if candidate is None:
             item["station_count"] = None
             item["data_period"] = []
+            continue
+        ready = bool(getattr(candidate, "ready", False) and getattr(candidate, "system_id", None) == system_id)
+        item["prediction_available"] = ready
+        item["prediction_status"] = "AVAILABLE" if ready else "UNAVAILABLE_ARTIFACT_OR_DATA_NOT_READY"
+        item["prediction_unavailable_reason"] = None if ready else (
+            candidate.unavailable_detail or "Model artifacts and normalized observed-demand data are not loaded."
+        )
+        item["station_count"] = len(candidate.stations) if ready else None
+        item["granularity"] = "hour" if system_id == BMRCL_SYSTEM_ID else "day"
+        item["data_period"] = candidate.metadata()["dataset"].get("source_periods", []) if ready else []
     return items
 
 

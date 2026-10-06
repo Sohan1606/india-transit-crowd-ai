@@ -1,0 +1,2954 @@
+{
+  "project": "INDIA TRANSIT CROWD AI",
+  "tagline": "PREDICT THE CROWD. PLAN THE JOURNEY.",
+  "model_version": "2.1.0-india-daily",
+  "training_timestamp_utc": "2026-10-06T15:15:57.720150+00:00",
+  "model_family": {
+    "system_id": "chennai-cmrl-metro",
+    "granularity": "day",
+    "target": "target_next_day_demand"
+  },
+  "dataset": {
+    "source_id": "cmrl-passenger-flow-daily",
+    "source_title": "Chennai Metro (CMRL) official passenger-flow station data, archived daily",
+    "publisher": "Chennai Metro Rail Limited (CMRL); archived daily by the upstream collector",
+    "provenance": "Values are the counts CMRL publishes on its public passenger-flow dashboard. The dashboard serves only the previous day, so the pinned upstream GitHub Actions archive is the historical record; each day it appends one row set from the live official API.",
+    "source_url": "https://github.com/PratyushBalaji/chennai-metro-ridership-tracker",
+    "upstream_commit": "72ee5eadb6ca890bfd9900d6464a1a371566c86b",
+    "official_dashboard_url": "https://commuters-data.chennaimetrorail.org/passengerflow",
+    "official_api_base": "https://commuters-dataapi.chennaimetrorail.org/api/PassengerFlow",
+    "source_file": "ChennaiMetro_Station_Ridership.csv",
+    "source_sha256": "2630ea1b083e491c225ec49760156b01302e8bfbd4383784045576306a709190",
+    "expected_source_sha256": "2630ea1b083e491c225ec49760156b01302e8bfbd4383784045576306a709190",
+    "license": "Upstream data notice: CMRL copyright; not redistributed by this project",
+    "license_note": "The upstream repository is MIT-licensed for its CODE only and states explicitly that the licence grants no rights in the CMRL-published data, which remains copyrighted by Chennai Metro Rail Limited, and that the project is for research/educational use. This project therefore does not bundle or redistribute CMRL data: it is downloaded at preparation time from the pinned upstream revision and verified against a recorded SHA-256.",
+    "system": {
+      "system_id": "chennai-cmrl-metro",
+      "city": "Chennai",
+      "mode": "METRO",
+      "operator": "CMRL"
+    },
+    "granularity": "one calendar day per station-line entity",
+    "measure": "daily_station_entries",
+    "measure_definition": "passengers recorded by CMRL as using the station that day on that corridor; empirically one boarding event per journey, not entries plus exits, and not onboard load or occupancy",
+    "timezone": "Asia/Kolkata",
+    "rows": 10965,
+    "entity_count": 43,
+    "station_count": 41,
+    "line_ids": [
+      "01",
+      "02"
+    ],
+    "date_min": "2026-01-24",
+    "date_max": "2026-10-05",
+    "unique_dates": 255,
+    "expected_contiguous_dates": 255,
+    "entities_per_date_min": 43,
+    "entities_per_date_max": 43,
+    "duplicate_station_dates": 0,
+    "missing_station_days_filled": 0,
+    "explicit_zero_observations": 0,
+    "measure_semantics_check": {
+      "method": "per-date sum(station Total) divided by the CMRL daily system total (allTicketCount)",
+      "daily_total_rows_available": 255,
+      "ratio_mean": 1.0061,
+      "ratio_min": 0.9502,
+      "ratio_max": 1.2106,
+      "interpretation": "A ratio near 1.0 means each journey is counted once at a station, so the field is entries/boardings; a ratio near 2.0 would have indicated entries plus exits."
+    },
+    "retrieved_at_utc": "2026-10-06T12:10:48.871194+00:00",
+    "notes": [
+      "Chennai Central (SCC) and Alandur (SAL) are interchange stations reported once per corridor; the adapter keeps them as two distinct line entities instead of summing them.",
+      "No station-day row is created for a date the source does not report; absent observations stay absent.",
+      "Payment-mode breakdown columns are retained upstream but are not needed for the demand target and are not silently merged into it."
+    ],
+    "normalized_output": "data/processed/chennai_metro_demand_timeseries.csv",
+    "normalized_sha256": "db4d20442233946306400deb310b611a505f29d33d3d2aa49a53bc647ade1a44",
+    "validation": {
+      "rows_in": 10965,
+      "rows_out": 10965,
+      "system_id": "chennai-cmrl-metro",
+      "entity_count": 43,
+      "timestamp_min": "2026-01-24T00:00:00+05:30",
+      "timestamp_max": "2026-10-05T00:00:00+05:30",
+      "explicit_zero_observations": 0,
+      "missing_observations_filled": 0,
+      "timezone": "Asia/Kolkata"
+    },
+    "source_periods": [
+      {
+        "start": "2026-01-24",
+        "end": "2026-10-05",
+        "granularity": "day",
+        "basis": "observed",
+        "note": "Contiguous daily observations published by CMRL's passenger-flow portal and archived by the upstream collector; every day in the window is present, so the period is exact rather than approximate."
+      }
+    ],
+    "redistribution": "Not bundled: CMRL holds copyright over the source data, so the pinned public archive is downloaded on demand and SHA-256 verified at prepare time.",
+    "how_to_fetch": "python3 scripts/download_cmrl_data.py",
+    "normalized_schema": [
+      "system_id",
+      "city",
+      "mode",
+      "operator",
+      "entity_id",
+      "entity_name",
+      "entity_type",
+      "timestamp",
+      "demand_count",
+      "measure",
+      "source_id"
+    ],
+    "training_input": "data/processed/chennai_metro_demand_timeseries.csv",
+    "training_input_sha256": "db4d20442233946306400deb310b611a505f29d33d3d2aa49a53bc647ade1a44",
+    "training_quality_check": {
+      "rows_in": 10965,
+      "rows_out": 10965,
+      "system_id": "chennai-cmrl-metro",
+      "entity_count": 43,
+      "timestamp_min": "2026-01-24T00:00:00+05:30",
+      "timestamp_max": "2026-10-05T00:00:00+05:30",
+      "explicit_zero_observations": 0,
+      "missing_observations_filled": 0,
+      "timezone": "Asia/Kolkata"
+    },
+    "observed_entity_day_rows": 10965,
+    "supervised_rows": 9761,
+    "timestamp_min": "2026-01-24T00:00:00+05:30",
+    "timestamp_max": "2026-10-05T00:00:00+05:30",
+    "target_measure": "daily_station_entries",
+    "target_semantics": "observed station entries on target day T, predicted only from observations strictly before T"
+  },
+  "feature_schema": {
+    "feature_count": 17,
+    "features": [
+      "entity_id",
+      "day_of_week",
+      "day_of_month",
+      "month",
+      "week_of_year",
+      "is_weekend",
+      "is_month_start",
+      "lag_1",
+      "lag_7",
+      "lag_14",
+      "lag_28",
+      "rolling_mean_7",
+      "rolling_mean_28",
+      "rolling_std_7",
+      "rolling_std_28",
+      "same_weekday_mean_4wk",
+      "trend_ratio_7_28"
+    ],
+    "time_features": [
+      "day_of_week",
+      "day_of_month",
+      "month",
+      "week_of_year",
+      "is_weekend",
+      "is_month_start"
+    ],
+    "historical_features": [
+      "lag_1",
+      "lag_7",
+      "lag_14",
+      "lag_28",
+      "rolling_mean_7",
+      "rolling_mean_28",
+      "rolling_std_7",
+      "rolling_std_28",
+      "same_weekday_mean_4wk",
+      "trend_ratio_7_28"
+    ],
+    "target": "target_next_day_demand",
+    "minimum_contiguous_history_days": 28
+  },
+  "split": {
+    "strategy": "Chronological split over unique target days: earliest 70% train, next 15% validation, latest 15% test; every station on the same day stays in the same partition.",
+    "train": {
+      "rows": 6794,
+      "start": "2026-02-21 00:00:00+05:30",
+      "end": "2026-07-28 00:00:00+05:30",
+      "unique_days": 158
+    },
+    "validation": {
+      "rows": 1462,
+      "start": "2026-07-29 00:00:00+05:30",
+      "end": "2026-08-31 00:00:00+05:30",
+      "unique_days": 34
+    },
+    "test": {
+      "rows": 1505,
+      "start": "2026-09-01 00:00:00+05:30",
+      "end": "2026-10-05 00:00:00+05:30",
+      "unique_days": 35
+    },
+    "train_cutoff": "2026-07-28T00:00:00+05:30",
+    "validation_cutoff": "2026-08-31T00:00:00+05:30",
+    "leakage_controls": [
+      "Lags and rolling windows for target day T use observations up to and including T-1 only.",
+      "Entities or target days lacking 28 contiguous prior observation days are dropped, never bridged or zero-filled.",
+      "Risk thresholds are fitted on the chronological training targets only and frozen for validation, test and inference.",
+      "Validation selects the champion; the final test window is reported once and never used for selection.",
+      "Behaviour profiles/PCA/DBSCAN use observations through the training cutoff only."
+    ]
+  },
+  "regression": {
+    "selection_metric": "validation MAE; tie-break on validation RMSE, then model key",
+    "uses_test_metrics": false,
+    "champion_key": "xgboost",
+    "champion_name": "Xgboost",
+    "ranking_by_validation": [
+      "xgboost",
+      "random_forest",
+      "decision_tree",
+      "seasonal_naive",
+      "linear_regression",
+      "svr"
+    ],
+    "models": [
+      {
+        "key": "seasonal_naive",
+        "name": "Seasonal Naive",
+        "validation": {
+          "mae": 809.9199726402189,
+          "rmse": 1385.7899960429413,
+          "r2": 0.8719251061637401
+        },
+        "test": {
+          "mae": 929.7847176079734,
+          "rmse": 1829.0180845164905,
+          "r2": 0.7777626116447103
+        },
+        "fit_seconds": 0.001,
+        "validation_rank": 4
+      },
+      {
+        "key": "linear_regression",
+        "name": "Linear Regression",
+        "validation": {
+          "mae": 833.1087054771453,
+          "rmse": 1247.3790172456838,
+          "r2": 0.8962313828006849
+        },
+        "test": {
+          "mae": 922.8729508039872,
+          "rmse": 1550.462888753255,
+          "r2": 0.8403003822037576
+        },
+        "fit_seconds": 0.052,
+        "validation_rank": 5
+      },
+      {
+        "key": "decision_tree",
+        "name": "Decision Tree",
+        "validation": {
+          "mae": 798.5635090860469,
+          "rmse": 1276.0147861334335,
+          "r2": 0.8914123149421272
+        },
+        "test": {
+          "mae": 862.46715575917,
+          "rmse": 1548.361077718181,
+          "r2": 0.8407330670642008
+        },
+        "fit_seconds": 0.09,
+        "validation_rank": 3
+      },
+      {
+        "key": "random_forest",
+        "name": "Random Forest",
+        "validation": {
+          "mae": 714.8090791703299,
+          "rmse": 1199.777414139499,
+          "r2": 0.9040001565163676
+        },
+        "test": {
+          "mae": 714.271103260766,
+          "rmse": 1362.0902226665044,
+          "r2": 0.87674831181405
+        },
+        "fit_seconds": 5.992,
+        "validation_rank": 2
+      },
+      {
+        "key": "svr",
+        "name": "Svr",
+        "validation": {
+          "mae": 3386.656745987666,
+          "rmse": 4398.955664991623,
+          "r2": -0.2905306716255307
+        },
+        "test": {
+          "mae": 3246.134214102822,
+          "rmse": 4255.5863010806615,
+          "r2": -0.2030950223696486
+        },
+        "fit_seconds": 0.013,
+        "validation_rank": 6
+      },
+      {
+        "key": "xgboost",
+        "name": "Xgboost",
+        "validation": {
+          "mae": 684.6214658056173,
+          "rmse": 1174.4794768214506,
+          "r2": 0.9080058893495443
+        },
+        "test": {
+          "mae": 711.8178998066342,
+          "rmse": 1395.7831018794964,
+          "r2": 0.8705753503649265
+        },
+        "fit_seconds": 0.381,
+        "validation_rank": 1
+      }
+    ]
+  },
+  "classification": {
+    "selection_metric": "validation macro F1; tie-break on HIGH recall, then model key",
+    "uses_test_metrics": false,
+    "champion_key": "xgboost",
+    "champion_name": "Xgboost",
+    "ranking_by_validation": [
+      "xgboost",
+      "random_forest",
+      "logistic_regression",
+      "svm",
+      "decision_tree",
+      "baseline"
+    ],
+    "models": [
+      {
+        "key": "baseline",
+        "name": "Baseline",
+        "validation": {
+          "accuracy": 0.506155950752394,
+          "precision_macro": 0.1265389876880985,
+          "recall_macro": 0.25,
+          "f1_macro": 0.16802906448683017,
+          "f1_weighted": 0.3401956435574674,
+          "cohen_kappa": 0.0,
+          "confusion_matrix": [
+            [
+              740,
+              0,
+              0,
+              0
+            ],
+            [
+              427,
+              0,
+              0,
+              0
+            ],
+            [
+              249,
+              0,
+              0,
+              0
+            ],
+            [
+              46,
+              0,
+              0,
+              0
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.506155950752394,
+              "recall": 1.0,
+              "f1-score": 0.6721162579473207,
+              "support": 740.0
+            },
+            "MODERATE": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 427.0
+            },
+            "HIGH": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 249.0
+            },
+            "SEVERE": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 46.0
+            },
+            "accuracy": 0.506155950752394,
+            "macro avg": {
+              "precision": 0.1265389876880985,
+              "recall": 0.25,
+              "f1-score": 0.16802906448683017,
+              "support": 1462.0
+            },
+            "weighted avg": {
+              "precision": 0.25619384648205984,
+              "recall": 0.506155950752394,
+              "f1-score": 0.3401956435574674,
+              "support": 1462.0
+            }
+          },
+          "high_recall": 0.0,
+          "severe_recall": 0.0,
+          "roc_auc_ovr_macro": 0.5,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.5242524916943522,
+          "precision_macro": 0.13106312292358804,
+          "recall_macro": 0.25,
+          "f1_macro": 0.17197035745422842,
+          "f1_weighted": 0.3606235535717906,
+          "cohen_kappa": 0.0,
+          "confusion_matrix": [
+            [
+              789,
+              0,
+              0,
+              0
+            ],
+            [
+              423,
+              0,
+              0,
+              0
+            ],
+            [
+              248,
+              0,
+              0,
+              0
+            ],
+            [
+              45,
+              0,
+              0,
+              0
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.5242524916943522,
+              "recall": 1.0,
+              "f1-score": 0.6878814298169137,
+              "support": 789.0
+            },
+            "MODERATE": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 423.0
+            },
+            "HIGH": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 248.0
+            },
+            "SEVERE": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 45.0
+            },
+            "accuracy": 0.5242524916943522,
+            "macro avg": {
+              "precision": 0.13106312292358804,
+              "recall": 0.25,
+              "f1-score": 0.17197035745422842,
+              "support": 1505.0
+            },
+            "weighted avg": {
+              "precision": 0.2748406750477368,
+              "recall": 0.5242524916943522,
+              "f1-score": 0.3606235535717906,
+              "support": 1505.0
+            }
+          },
+          "high_recall": 0.0,
+          "severe_recall": 0.0,
+          "roc_auc_ovr_macro": null,
+          "roc_auc_note": "Not available: a probability score for every risk class and all four classes in the evaluation partition are required."
+        },
+        "fit_seconds": 0.001,
+        "validation_rank": 6
+      },
+      {
+        "key": "logistic_regression",
+        "name": "Logistic Regression",
+        "validation": {
+          "accuracy": 0.8454172366621067,
+          "precision_macro": 0.7905297592883241,
+          "recall_macro": 0.783187323468906,
+          "f1_macro": 0.7867830363705285,
+          "f1_weighted": 0.8449256286024404,
+          "cohen_kappa": 0.7531158281079078,
+          "confusion_matrix": [
+            [
+              680,
+              56,
+              4,
+              0
+            ],
+            [
+              71,
+              329,
+              25,
+              2
+            ],
+            [
+              0,
+              39,
+              197,
+              13
+            ],
+            [
+              0,
+              0,
+              16,
+              30
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9054593874833555,
+              "recall": 0.918918918918919,
+              "f1-score": 0.9121395036887995,
+              "support": 740.0
+            },
+            "MODERATE": {
+              "precision": 0.7759433962264151,
+              "recall": 0.7704918032786885,
+              "f1-score": 0.7732079905992949,
+              "support": 427.0
+            },
+            "HIGH": {
+              "precision": 0.8140495867768595,
+              "recall": 0.7911646586345381,
+              "f1-score": 0.8024439918533605,
+              "support": 249.0
+            },
+            "SEVERE": {
+              "precision": 0.6666666666666666,
+              "recall": 0.6521739130434783,
+              "f1-score": 0.6593406593406593,
+              "support": 46.0
+            },
+            "accuracy": 0.8454172366621067,
+            "macro avg": {
+              "precision": 0.7905297592883241,
+              "recall": 0.783187323468906,
+              "f1-score": 0.7867830363705285,
+              "support": 1462.0
+            },
+            "weighted avg": {
+              "precision": 0.8445504724353399,
+              "recall": 0.8454172366621067,
+              "f1-score": 0.8449256286024404,
+              "support": 1462.0
+            }
+          },
+          "high_recall": 0.7911646586345381,
+          "severe_recall": 0.6521739130434783,
+          "roc_auc_ovr_macro": 0.9660303564565923,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.8159468438538205,
+          "precision_macro": 0.7559880655232326,
+          "recall_macro": 0.740802813305462,
+          "f1_macro": 0.7478506882501362,
+          "f1_weighted": 0.8159273300009536,
+          "cohen_kappa": 0.702103500784963,
+          "confusion_matrix": [
+            [
+              705,
+              76,
+              6,
+              2
+            ],
+            [
+              81,
+              307,
+              34,
+              1
+            ],
+            [
+              0,
+              47,
+              190,
+              11
+            ],
+            [
+              0,
+              0,
+              19,
+              26
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.8969465648854962,
+              "recall": 0.8935361216730038,
+              "f1-score": 0.8952380952380953,
+              "support": 789.0
+            },
+            "MODERATE": {
+              "precision": 0.713953488372093,
+              "recall": 0.7257683215130024,
+              "f1-score": 0.7198124267291911,
+              "support": 423.0
+            },
+            "HIGH": {
+              "precision": 0.7630522088353414,
+              "recall": 0.7661290322580645,
+              "f1-score": 0.7645875251509054,
+              "support": 248.0
+            },
+            "SEVERE": {
+              "precision": 0.65,
+              "recall": 0.5777777777777777,
+              "f1-score": 0.611764705882353,
+              "support": 45.0
+            },
+            "accuracy": 0.8159468438538205,
+            "macro avg": {
+              "precision": 0.7559880655232326,
+              "recall": 0.740802813305462,
+              "f1-score": 0.7478506882501362,
+              "support": 1505.0
+            },
+            "weighted avg": {
+              "precision": 0.8160665203104429,
+              "recall": 0.8159468438538205,
+              "f1-score": 0.8159273300009536,
+              "support": 1505.0
+            }
+          },
+          "high_recall": 0.7661290322580645,
+          "severe_recall": 0.5777777777777777,
+          "roc_auc_ovr_macro": null,
+          "roc_auc_note": "Not available: a probability score for every risk class and all four classes in the evaluation partition are required."
+        },
+        "fit_seconds": 2.698,
+        "validation_rank": 3
+      },
+      {
+        "key": "decision_tree",
+        "name": "Decision Tree",
+        "validation": {
+          "accuracy": 0.8563611491108071,
+          "precision_macro": 0.7848088353650926,
+          "recall_macro": 0.7521083084322142,
+          "f1_macro": 0.7633088954772415,
+          "f1_weighted": 0.8544258428742145,
+          "cohen_kappa": 0.7711181899982928,
+          "confusion_matrix": [
+            [
+              683,
+              53,
+              4,
+              0
+            ],
+            [
+              63,
+              331,
+              32,
+              1
+            ],
+            [
+              1,
+              19,
+              218,
+              11
+            ],
+            [
+              0,
+              0,
+              26,
+              20
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9143239625167336,
+              "recall": 0.922972972972973,
+              "f1-score": 0.9186281102891728,
+              "support": 740.0
+            },
+            "MODERATE": {
+              "precision": 0.8213399503722084,
+              "recall": 0.775175644028103,
+              "f1-score": 0.7975903614457831,
+              "support": 427.0
+            },
+            "HIGH": {
+              "precision": 0.7785714285714286,
+              "recall": 0.8755020080321285,
+              "f1-score": 0.8241965973534972,
+              "support": 249.0
+            },
+            "SEVERE": {
+              "precision": 0.625,
+              "recall": 0.43478260869565216,
+              "f1-score": 0.5128205128205128,
+              "support": 46.0
+            },
+            "accuracy": 0.8563611491108071,
+            "macro avg": {
+              "precision": 0.7848088353650926,
+              "recall": 0.7521083084322142,
+              "f1-score": 0.7633088954772415,
+              "support": 1462.0
+            },
+            "weighted avg": {
+              "precision": 0.8549426653800284,
+              "recall": 0.8563611491108071,
+              "f1-score": 0.8544258428742145,
+              "support": 1462.0
+            }
+          },
+          "high_recall": 0.8755020080321285,
+          "severe_recall": 0.43478260869565216,
+          "roc_auc_ovr_macro": 0.9448620387675591,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.8199335548172757,
+          "precision_macro": 0.6812389435628872,
+          "recall_macro": 0.6847116295209903,
+          "f1_macro": 0.680364273168823,
+          "f1_weighted": 0.8185964172351865,
+          "cohen_kappa": 0.7104382243836638,
+          "confusion_matrix": [
+            [
+              704,
+              74,
+              11,
+              0
+            ],
+            [
+              77,
+              305,
+              40,
+              1
+            ],
+            [
+              0,
+              11,
+              213,
+              24
+            ],
+            [
+              0,
+              0,
+              33,
+              12
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9014084507042254,
+              "recall": 0.8922686945500634,
+              "f1-score": 0.8968152866242038,
+              "support": 789.0
+            },
+            "MODERATE": {
+              "precision": 0.782051282051282,
+              "recall": 0.7210401891252955,
+              "f1-score": 0.7503075030750308,
+              "support": 423.0
+            },
+            "HIGH": {
+              "precision": 0.7171717171717171,
+              "recall": 0.8588709677419355,
+              "f1-score": 0.781651376146789,
+              "support": 248.0
+            },
+            "SEVERE": {
+              "precision": 0.32432432432432434,
+              "recall": 0.26666666666666666,
+              "f1-score": 0.2926829268292683,
+              "support": 45.0
+            },
+            "accuracy": 0.8199335548172757,
+            "macro avg": {
+              "precision": 0.6812389435628872,
+              "recall": 0.6847116295209903,
+              "f1-score": 0.680364273168823,
+              "support": 1505.0
+            },
+            "weighted avg": {
+              "precision": 0.820247269346516,
+              "recall": 0.8199335548172757,
+              "f1-score": 0.8185964172351865,
+              "support": 1505.0
+            }
+          },
+          "high_recall": 0.8588709677419355,
+          "severe_recall": 0.26666666666666666,
+          "roc_auc_ovr_macro": null,
+          "roc_auc_note": "Not available: a probability score for every risk class and all four classes in the evaluation partition are required."
+        },
+        "fit_seconds": 0.1,
+        "validation_rank": 5
+      },
+      {
+        "key": "random_forest",
+        "name": "Random Forest",
+        "validation": {
+          "accuracy": 0.8803009575923393,
+          "precision_macro": 0.8403321905404137,
+          "recall_macro": 0.789597647753686,
+          "f1_macro": 0.8086365097042405,
+          "f1_weighted": 0.8791588888068116,
+          "cohen_kappa": 0.8091174489108466,
+          "confusion_matrix": [
+            [
+              691,
+              46,
+              3,
+              0
+            ],
+            [
+              49,
+              355,
+              22,
+              1
+            ],
+            [
+              0,
+              26,
+              217,
+              6
+            ],
+            [
+              0,
+              0,
+              22,
+              24
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9337837837837838,
+              "recall": 0.9337837837837838,
+              "f1-score": 0.9337837837837838,
+              "support": 740.0
+            },
+            "MODERATE": {
+              "precision": 0.8313817330210773,
+              "recall": 0.8313817330210773,
+              "f1-score": 0.8313817330210773,
+              "support": 427.0
+            },
+            "HIGH": {
+              "precision": 0.821969696969697,
+              "recall": 0.8714859437751004,
+              "f1-score": 0.8460038986354775,
+              "support": 249.0
+            },
+            "SEVERE": {
+              "precision": 0.7741935483870968,
+              "recall": 0.5217391304347826,
+              "f1-score": 0.6233766233766234,
+              "support": 46.0
+            },
+            "accuracy": 0.8803009575923393,
+            "macro avg": {
+              "precision": 0.8403321905404137,
+              "recall": 0.789597647753686,
+              "f1-score": 0.8086365097042405,
+              "support": 1462.0
+            },
+            "weighted avg": {
+              "precision": 0.8798107782293166,
+              "recall": 0.8803009575923393,
+              "f1-score": 0.8791588888068116,
+              "support": 1462.0
+            }
+          },
+          "high_recall": 0.8714859437751004,
+          "severe_recall": 0.5217391304347826,
+          "roc_auc_ovr_macro": 0.9666435565600292,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.8744186046511628,
+          "precision_macro": 0.8135800792964235,
+          "recall_macro": 0.7987310143273487,
+          "f1_macro": 0.8013265099341016,
+          "f1_weighted": 0.8752083971849756,
+          "cohen_kappa": 0.8002365319693885,
+          "confusion_matrix": [
+            [
+              705,
+              75,
+              7,
+              2
+            ],
+            [
+              28,
+              359,
+              35,
+              1
+            ],
+            [
+              0,
+              13,
+              228,
+              7
+            ],
+            [
+              0,
+              0,
+              21,
+              24
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9618008185538881,
+              "recall": 0.8935361216730038,
+              "f1-score": 0.926412614980289,
+              "support": 789.0
+            },
+            "MODERATE": {
+              "precision": 0.8031319910514542,
+              "recall": 0.8486997635933806,
+              "f1-score": 0.825287356321839,
+              "support": 423.0
+            },
+            "HIGH": {
+              "precision": 0.7835051546391752,
+              "recall": 0.9193548387096774,
+              "f1-score": 0.8460111317254174,
+              "support": 248.0
+            },
+            "SEVERE": {
+              "precision": 0.7058823529411765,
+              "recall": 0.5333333333333333,
+              "f1-score": 0.6075949367088608,
+              "support": 45.0
+            },
+            "accuracy": 0.8744186046511628,
+            "macro avg": {
+              "precision": 0.8135800792964235,
+              "recall": 0.7987310143273487,
+              "f1-score": 0.8013265099341016,
+              "support": 1505.0
+            },
+            "weighted avg": {
+              "precision": 0.8801725330808313,
+              "recall": 0.8744186046511628,
+              "f1-score": 0.8752083971849756,
+              "support": 1505.0
+            }
+          },
+          "high_recall": 0.9193548387096774,
+          "severe_recall": 0.5333333333333333,
+          "roc_auc_ovr_macro": null,
+          "roc_auc_note": "Not available: a probability score for every risk class and all four classes in the evaluation partition are required."
+        },
+        "fit_seconds": 6.176,
+        "validation_rank": 2
+      },
+      {
+        "key": "svm",
+        "name": "Svm",
+        "validation": {
+          "accuracy": 0.8207934336525308,
+          "precision_macro": 0.7584043175369086,
+          "recall_macro": 0.798457067136167,
+          "f1_macro": 0.7745173936688622,
+          "f1_weighted": 0.8190614775694945,
+          "cohen_kappa": 0.7159761032096945,
+          "confusion_matrix": [
+            [
+              671,
+              63,
+              6,
+              0
+            ],
+            [
+              83,
+              284,
+              58,
+              2
+            ],
+            [
+              2,
+              19,
+              209,
+              19
+            ],
+            [
+              0,
+              0,
+              10,
+              36
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.8875661375661376,
+              "recall": 0.9067567567567567,
+              "f1-score": 0.8970588235294118,
+              "support": 740.0
+            },
+            "MODERATE": {
+              "precision": 0.7759562841530054,
+              "recall": 0.6651053864168618,
+              "f1-score": 0.7162673392181589,
+              "support": 427.0
+            },
+            "HIGH": {
+              "precision": 0.7385159010600707,
+              "recall": 0.8393574297188755,
+              "f1-score": 0.7857142857142857,
+              "support": 249.0
+            },
+            "SEVERE": {
+              "precision": 0.631578947368421,
+              "recall": 0.782608695652174,
+              "f1-score": 0.6990291262135923,
+              "support": 46.0
+            },
+            "accuracy": 0.8207934336525308,
+            "macro avg": {
+              "precision": 0.7584043175369086,
+              "recall": 0.798457067136167,
+              "f1-score": 0.7745173936688622,
+              "support": 1462.0
+            },
+            "weighted avg": {
+              "precision": 0.8215289781635978,
+              "recall": 0.8207934336525308,
+              "f1-score": 0.8190614775694945,
+              "support": 1462.0
+            }
+          },
+          "high_recall": 0.8393574297188755,
+          "severe_recall": 0.782608695652174,
+          "roc_auc_ovr_macro": null,
+          "roc_auc_note": "Not available: a probability score for every risk class and all four classes in the evaluation partition are required."
+        },
+        "test": {
+          "accuracy": 0.8013289036544851,
+          "precision_macro": 0.7363102220615758,
+          "recall_macro": 0.7516181950457547,
+          "f1_macro": 0.7395351220974092,
+          "f1_weighted": 0.7962122401250299,
+          "cohen_kappa": 0.6772396945075627,
+          "confusion_matrix": [
+            [
+              712,
+              66,
+              9,
+              2
+            ],
+            [
+              117,
+              249,
+              55,
+              2
+            ],
+            [
+              2,
+              15,
+              216,
+              15
+            ],
+            [
+              0,
+              0,
+              16,
+              29
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.8567990373044525,
+              "recall": 0.9024081115335868,
+              "f1-score": 0.8790123456790123,
+              "support": 789.0
+            },
+            "MODERATE": {
+              "precision": 0.7545454545454545,
+              "recall": 0.5886524822695035,
+              "f1-score": 0.6613545816733067,
+              "support": 423.0
+            },
+            "HIGH": {
+              "precision": 0.7297297297297297,
+              "recall": 0.8709677419354839,
+              "f1-score": 0.7941176470588235,
+              "support": 248.0
+            },
+            "SEVERE": {
+              "precision": 0.6041666666666666,
+              "recall": 0.6444444444444445,
+              "f1-score": 0.6236559139784946,
+              "support": 45.0
+            },
+            "accuracy": 0.8013289036544851,
+            "macro avg": {
+              "precision": 0.7363102220615758,
+              "recall": 0.7516181950457547,
+              "f1-score": 0.7395351220974092,
+              "support": 1505.0
+            },
+            "weighted avg": {
+              "precision": 0.7995665386570852,
+              "recall": 0.8013289036544851,
+              "f1-score": 0.7962122401250299,
+              "support": 1505.0
+            }
+          },
+          "high_recall": 0.8709677419354839,
+          "severe_recall": 0.6444444444444445,
+          "roc_auc_ovr_macro": null,
+          "roc_auc_note": "Not available: a probability score for every risk class and all four classes in the evaluation partition are required."
+        },
+        "fit_seconds": 0.109,
+        "validation_rank": 4
+      },
+      {
+        "key": "xgboost",
+        "name": "Xgboost",
+        "validation": {
+          "accuracy": 0.8905608755129959,
+          "precision_macro": 0.8450075060203086,
+          "recall_macro": 0.8201941298687514,
+          "f1_macro": 0.8303567067403728,
+          "f1_weighted": 0.890360500479607,
+          "cohen_kappa": 0.8263253163222426,
+          "confusion_matrix": [
+            [
+              688,
+              48,
+              4,
+              0
+            ],
+            [
+              39,
+              365,
+              22,
+              1
+            ],
+            [
+              0,
+              20,
+              221,
+              8
+            ],
+            [
+              0,
+              0,
+              18,
+              28
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9463548830811555,
+              "recall": 0.9297297297297298,
+              "f1-score": 0.9379686434901159,
+              "support": 740.0
+            },
+            "MODERATE": {
+              "precision": 0.8429561200923787,
+              "recall": 0.8548009367681498,
+              "f1-score": 0.8488372093023255,
+              "support": 427.0
+            },
+            "HIGH": {
+              "precision": 0.8339622641509434,
+              "recall": 0.8875502008032129,
+              "f1-score": 0.8599221789883269,
+              "support": 249.0
+            },
+            "SEVERE": {
+              "precision": 0.7567567567567568,
+              "recall": 0.6086956521739131,
+              "f1-score": 0.6746987951807228,
+              "support": 46.0
+            },
+            "accuracy": 0.8905608755129959,
+            "macro avg": {
+              "precision": 0.8450075060203086,
+              "recall": 0.8201941298687514,
+              "f1-score": 0.8303567067403728,
+              "support": 1462.0
+            },
+            "weighted avg": {
+              "precision": 0.8910480788945941,
+              "recall": 0.8905608755129959,
+              "f1-score": 0.890360500479607,
+              "support": 1462.0
+            }
+          },
+          "high_recall": 0.8875502008032129,
+          "severe_recall": 0.6086956521739131,
+          "roc_auc_ovr_macro": 0.9717020877901894,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.881063122923588,
+          "precision_macro": 0.8311389536291871,
+          "recall_macro": 0.8566111195925212,
+          "f1_macro": 0.8421784187544046,
+          "f1_weighted": 0.8830002865499642,
+          "cohen_kappa": 0.8118805174708563,
+          "confusion_matrix": [
+            [
+              695,
+              85,
+              7,
+              2
+            ],
+            [
+              21,
+              370,
+              31,
+              1
+            ],
+            [
+              0,
+              12,
+              227,
+              9
+            ],
+            [
+              0,
+              0,
+              11,
+              34
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9706703910614525,
+              "recall": 0.8808618504435995,
+              "f1-score": 0.9235880398671097,
+              "support": 789.0
+            },
+            "MODERATE": {
+              "precision": 0.7922912205567452,
+              "recall": 0.8747044917257684,
+              "f1-score": 0.8314606741573034,
+              "support": 423.0
+            },
+            "HIGH": {
+              "precision": 0.822463768115942,
+              "recall": 0.9153225806451613,
+              "f1-score": 0.8664122137404581,
+              "support": 248.0
+            },
+            "SEVERE": {
+              "precision": 0.7391304347826086,
+              "recall": 0.7555555555555555,
+              "f1-score": 0.7472527472527473,
+              "support": 45.0
+            },
+            "accuracy": 0.881063122923588,
+            "macro avg": {
+              "precision": 0.8311389536291871,
+              "recall": 0.8566111195925212,
+              "f1-score": 0.8421784187544046,
+              "support": 1505.0
+            },
+            "weighted avg": {
+              "precision": 0.8891893746850236,
+              "recall": 0.881063122923588,
+              "f1-score": 0.8830002865499642,
+              "support": 1505.0
+            }
+          },
+          "high_recall": 0.9153225806451613,
+          "severe_recall": 0.7555555555555555,
+          "roc_auc_ovr_macro": null,
+          "roc_auc_note": "Not available: a probability score for every risk class and all four classes in the evaluation partition are required."
+        },
+        "fit_seconds": 1.272,
+        "validation_rank": 1
+      }
+    ]
+  },
+  "demand_risk": {
+    "method": "Historical-relative q50/q80/q95, fit on the chronological training targets only: entity when adequately sampled, then its city/mode/operator system, then global.",
+    "definitions": {
+      "LOW": "demand <= q50",
+      "MODERATE": "q50 < demand <= q80",
+      "HIGH": "q80 < demand <= q95",
+      "SEVERE": "demand > q95"
+    },
+    "minimum_entity_training_targets": 500,
+    "minimum_system_training_targets": 500,
+    "global": {
+      "q50": 5614.5,
+      "q80": 9425.400000000001,
+      "q95": 16106.699999999999,
+      "sample_count": 6794
+    },
+    "systems": {
+      "chennai-cmrl-metro": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_distribution"
+      }
+    },
+    "entities": {
+      "line-01-sal": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-sap": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-scc": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-scr": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-sge": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-sgm": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-sgu": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-shc": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-skp": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-sli": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-slm": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-sma": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-sme": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-snw": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-sot": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-ssa": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-stc": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-ste": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-stg": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-stl": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-str": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-stt": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-stv": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-swa": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-swd": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-01-swn": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-sae": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-sal": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-san": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-sar": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-sat": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-scc": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-scm": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-seg": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-skm": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-sko": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-smm": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-snp": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-spc": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-ssi": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-ssn": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-sti": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      },
+      "line-02-sva": {
+        "q50": 5614.5,
+        "q80": 9425.400000000001,
+        "q95": 16106.699999999999,
+        "sample_count": 6794,
+        "source": "system_training_fallback",
+        "entity_sample_count": 158
+      }
+    },
+    "fitted_on": "training partition only; frozen before validation/test/production inference"
+  },
+  "explainability": {
+    "global_method": "Permutation importance on chronological validation observations (increase in MAE); associational, not causal.",
+    "global_feature_importance": [
+      {
+        "feature": "same_weekday_mean_4wk",
+        "mae_increase": 1568.1038422695424
+      },
+      {
+        "feature": "lag_1",
+        "mae_increase": 354.0694894020926
+      },
+      {
+        "feature": "rolling_mean_7",
+        "mae_increase": 258.7623025082694
+      },
+      {
+        "feature": "day_of_week",
+        "mae_increase": 163.8517197218868
+      },
+      {
+        "feature": "lag_7",
+        "mae_increase": 154.53722205207714
+      },
+      {
+        "feature": "rolling_std_7",
+        "mae_increase": 36.84993391128313
+      },
+      {
+        "feature": "lag_28",
+        "mae_increase": 18.99139317670374
+      },
+      {
+        "feature": "lag_14",
+        "mae_increase": 16.88171303223325
+      },
+      {
+        "feature": "rolling_std_28",
+        "mae_increase": 11.604235517342715
+      },
+      {
+        "feature": "day_of_month",
+        "mae_increase": 11.374388703895534
+      },
+      {
+        "feature": "rolling_mean_28",
+        "mae_increase": 3.6739141461624456
+      },
+      {
+        "feature": "entity_id",
+        "mae_increase": 3.619108500134942
+      },
+      {
+        "feature": "month",
+        "mae_increase": 0.0
+      },
+      {
+        "feature": "week_of_year",
+        "mae_increase": 0.0
+      },
+      {
+        "feature": "is_month_start",
+        "mae_increase": -0.3171090309988074
+      },
+      {
+        "feature": "is_weekend",
+        "mae_increase": -1.3511068550245113
+      },
+      {
+        "feature": "trend_ratio_7_28",
+        "mae_increase": -1.957788334336371
+      }
+    ],
+    "uncertainty": "No calibrated prediction interval or confidence percentage is produced."
+  },
+  "station_analytics": {
+    "method": "StandardScaler \u2192 PCA (2 components) \u2192 DBSCAN over day-granularity behaviour features",
+    "entity_count": 43,
+    "features_used": [
+      "mean_daily_demand",
+      "median_daily_demand",
+      "weekday_mean",
+      "weekend_mean",
+      "weekend_to_weekday_ratio",
+      "q95_daily_demand",
+      "lag7_autocorrelation"
+    ],
+    "pca": {
+      "components": 2,
+      "explained_variance_ratio": [
+        0.6960807793152844,
+        0.25566029937054136
+      ],
+      "total_explained_variance_ratio": 0.9517410786858258
+    },
+    "dbscan": {
+      "eps": 1.1,
+      "min_samples": 4,
+      "metric": "euclidean",
+      "cluster_count_excluding_noise": 1,
+      "outlier_count": 9,
+      "clusters": [
+        {
+          "cluster_id": 0,
+          "entity_count": 34
+        }
+      ]
+    },
+    "entities": [
+      {
+        "entity_id": "line-01-sal",
+        "entity_name": "Alandur (Blue Line)",
+        "pc1": -1.5287723819226908,
+        "pc2": -0.3021518027487169,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 4253.704301075269,
+          "median_daily_demand": 4580.0,
+          "weekday_mean": 4747.090909090909,
+          "weekend_mean": 3047.6481481481483,
+          "weekend_to_weekday_ratio": 0.6420033250915322,
+          "q95_daily_demand": 6380.75,
+          "lag7_autocorrelation": 0.6088605143073682
+        }
+      },
+      {
+        "entity_id": "line-01-sap",
+        "entity_name": "Chennai Airport (Blue Line)",
+        "pc1": 6.154103079249047,
+        "pc2": 0.7432522117472123,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_daily_demand": 16711.354838709678,
+          "median_daily_demand": 17748.5,
+          "weekday_mean": 17321.742424242424,
+          "weekend_mean": 15219.296296296296,
+          "weekend_to_weekday_ratio": 0.8786238660953833,
+          "q95_daily_demand": 22223.0,
+          "lag7_autocorrelation": 0.6644340899557624
+        }
+      },
+      {
+        "entity_id": "line-01-scc",
+        "entity_name": "Chennai Central (Blue Line)",
+        "pc1": 5.459274699638165,
+        "pc2": 0.8207034360405892,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_daily_demand": 16074.462365591398,
+          "median_daily_demand": 16310.0,
+          "weekday_mean": 17342.53787878788,
+          "weekend_mean": 12974.722222222223,
+          "weekend_to_weekday_ratio": 0.7481443784587002,
+          "q95_daily_demand": 21454.5,
+          "lag7_autocorrelation": 0.5490654279612344
+        }
+      },
+      {
+        "entity_id": "line-01-scr",
+        "entity_name": "Nandanam (Blue Line)",
+        "pc1": -0.4815350421275691,
+        "pc2": -1.651426630070959,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 6125.118279569892,
+          "median_daily_demand": 6916.5,
+          "weekday_mean": 7244.121212121212,
+          "weekend_mean": 3389.777777777778,
+          "weekend_to_weekday_ratio": 0.46793498873346273,
+          "q95_daily_demand": 8836.25,
+          "lag7_autocorrelation": 0.6567233191817314
+        }
+      },
+      {
+        "entity_id": "line-01-sge",
+        "entity_name": "Government Estate (Blue Line)",
+        "pc1": 1.1504402761873191,
+        "pc2": 0.09796967422349931,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 8764.741935483871,
+          "median_daily_demand": 9413.0,
+          "weekday_mean": 9541.280303030304,
+          "weekend_mean": 6866.537037037037,
+          "weekend_to_weekday_ratio": 0.7196662102942547,
+          "q95_daily_demand": 11578.75,
+          "lag7_autocorrelation": 0.6155622890659005
+        }
+      },
+      {
+        "entity_id": "line-01-sgm",
+        "entity_name": "AG-DMS (Blue Line)",
+        "pc1": -0.1820105160654159,
+        "pc2": -2.5850244887951828,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 6500.870967741936,
+          "median_daily_demand": 7478.0,
+          "weekday_mean": 7734.477272727273,
+          "weekend_mean": 3485.3888888888887,
+          "weekend_to_weekday_ratio": 0.45063018042328506,
+          "q95_daily_demand": 9668.25,
+          "lag7_autocorrelation": 0.7646096503199443
+        }
+      },
+      {
+        "entity_id": "line-01-sgu",
+        "entity_name": "Guindy (Blue Line)",
+        "pc1": 3.9695303161016495,
+        "pc2": -1.1461158469089696,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_daily_demand": 13548.478494623656,
+          "median_daily_demand": 13901.5,
+          "weekday_mean": 15134.378787878788,
+          "weekend_mean": 9671.833333333334,
+          "weekend_to_weekday_ratio": 0.6390637811364653,
+          "q95_daily_demand": 18770.75,
+          "lag7_autocorrelation": 0.716433145368803
+        }
+      },
+      {
+        "entity_id": "line-01-shc",
+        "entity_name": "High Court (Blue Line)",
+        "pc1": 1.9154968002756687,
+        "pc2": -1.3828383516221683,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_daily_demand": 10112.693548387097,
+          "median_daily_demand": 10639.0,
+          "weekday_mean": 11672.371212121212,
+          "weekend_mean": 6300.148148148148,
+          "weekend_to_weekday_ratio": 0.5397487822873333,
+          "q95_daily_demand": 14867.5,
+          "lag7_autocorrelation": 0.6697811813330526
+        }
+      },
+      {
+        "entity_id": "line-01-skp",
+        "entity_name": "Kaladipet (Blue Line)",
+        "pc1": -1.6551104908802026,
+        "pc2": 0.8216977267348872,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 4169.967741935484,
+          "median_daily_demand": 4411.0,
+          "weekday_mean": 4507.05303030303,
+          "weekend_mean": 3345.9814814814813,
+          "weekend_to_weekday_ratio": 0.742387866081202,
+          "q95_daily_demand": 5330.75,
+          "lag7_autocorrelation": 0.535016772243707
+        }
+      },
+      {
+        "entity_id": "line-01-sli",
+        "entity_name": "LIC (Blue Line)",
+        "pc1": 0.8579791313894909,
+        "pc2": -2.0397332315108354,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 8311.946236559139,
+          "median_daily_demand": 9482.0,
+          "weekday_mean": 9782.325757575758,
+          "weekend_mean": 4717.685185185185,
+          "weekend_to_weekday_ratio": 0.4822662117474112,
+          "q95_daily_demand": 11834.0,
+          "lag7_autocorrelation": 0.7139867348767446
+        }
+      },
+      {
+        "entity_id": "line-01-slm",
+        "entity_name": "Little Mount (Blue Line)",
+        "pc1": -0.5491390956554228,
+        "pc2": -1.2367107202958398,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 6069.424731182796,
+          "median_daily_demand": 6106.0,
+          "weekday_mean": 6904.901515151515,
+          "weekend_mean": 4027.1481481481483,
+          "weekend_to_weekday_ratio": 0.5832303530052275,
+          "q95_daily_demand": 8289.75,
+          "lag7_autocorrelation": 0.6893491117883112
+        }
+      },
+      {
+        "entity_id": "line-01-sma",
+        "entity_name": "Mannadi (Blue Line)",
+        "pc1": -0.7960885616012103,
+        "pc2": -0.04510587413920496,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 5480.467741935484,
+          "median_daily_demand": 5697.0,
+          "weekday_mean": 5941.484848484848,
+          "weekend_mean": 4353.537037037037,
+          "weekend_to_weekday_ratio": 0.7327355279122261,
+          "q95_daily_demand": 7544.75,
+          "lag7_autocorrelation": 0.6418511153715156
+        }
+      },
+      {
+        "entity_id": "line-01-sme",
+        "entity_name": "Meenambakkam (Blue Line)",
+        "pc1": -0.4404207182592836,
+        "pc2": -0.1682281439191175,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 6032.462365591397,
+          "median_daily_demand": 6286.5,
+          "weekday_mean": 6572.310606060606,
+          "weekend_mean": 4712.833333333333,
+          "weekend_to_weekday_ratio": 0.7170740422687008,
+          "q95_daily_demand": 8625.5,
+          "lag7_autocorrelation": 0.6463426732194415
+        }
+      },
+      {
+        "entity_id": "line-01-snw",
+        "entity_name": "New Washermanpet (Blue Line)",
+        "pc1": -1.8089590341609167,
+        "pc2": 0.5017778488806085,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 3879.8333333333335,
+          "median_daily_demand": 4065.0,
+          "weekday_mean": 4204.030303030303,
+          "weekend_mean": 3087.3518518518517,
+          "weekend_to_weekday_ratio": 0.7343790670648735,
+          "q95_daily_demand": 5092.25,
+          "lag7_autocorrelation": 0.5708259469636452
+        }
+      },
+      {
+        "entity_id": "line-01-sot",
+        "entity_name": "Ota - Nanganallur Road (Blue Line)",
+        "pc1": -2.6669549739380267,
+        "pc2": -0.8412072856744489,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 2440.8655913978496,
+          "median_daily_demand": 2747.5,
+          "weekday_mean": 2790.2954545454545,
+          "weekend_mean": 1586.7037037037037,
+          "weekend_to_weekday_ratio": 0.5686507861090221,
+          "q95_daily_demand": 3379.25,
+          "lag7_autocorrelation": 0.6291940350123536
+        }
+      },
+      {
+        "entity_id": "line-01-ssa",
+        "entity_name": "Saidapet (Blue Line)",
+        "pc1": -0.7060624986286602,
+        "pc2": -1.350088374786917,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 5719.118279569892,
+          "median_daily_demand": 5793.0,
+          "weekday_mean": 6575.492424242424,
+          "weekend_mean": 3625.759259259259,
+          "weekend_to_weekday_ratio": 0.5514049785673641,
+          "q95_daily_demand": 8561.0,
+          "lag7_autocorrelation": 0.6798745588330265
+        }
+      },
+      {
+        "entity_id": "line-01-stc",
+        "entity_name": "Thiagaraya College (Blue Line)",
+        "pc1": -0.7688434683605576,
+        "pc2": 0.6454814974927517,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 5594.274193548387,
+          "median_daily_demand": 5877.0,
+          "weekday_mean": 6002.015151515152,
+          "weekend_mean": 4597.574074074074,
+          "weekend_to_weekday_ratio": 0.7660050762973265,
+          "q95_daily_demand": 7262.0,
+          "lag7_autocorrelation": 0.5762144701260522
+        }
+      },
+      {
+        "entity_id": "line-01-ste",
+        "entity_name": "Teynampet (Blue Line)",
+        "pc1": 0.565681989375092,
+        "pc2": -2.540790509187147,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 7766.618279569892,
+          "median_daily_demand": 8847.0,
+          "weekday_mean": 9149.174242424242,
+          "weekend_mean": 4387.037037037037,
+          "weekend_to_weekday_ratio": 0.47950087306180883,
+          "q95_daily_demand": 11167.0,
+          "lag7_autocorrelation": 0.7783913874383709
+        }
+      },
+      {
+        "entity_id": "line-01-stg",
+        "entity_name": "Tollgate (Blue Line)",
+        "pc1": -2.8424127752598345,
+        "pc2": 1.1976573675573898,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 2179.5806451612902,
+          "median_daily_demand": 2241.0,
+          "weekday_mean": 2321.9848484848485,
+          "weekend_mean": 1831.4814814814815,
+          "weekend_to_weekday_ratio": 0.7887568614741683,
+          "q95_daily_demand": 2778.25,
+          "lag7_autocorrelation": 0.5165520360692272
+        }
+      },
+      {
+        "entity_id": "line-01-stl",
+        "entity_name": "Thousand Lights (Blue Line)",
+        "pc1": 3.9829630174792703,
+        "pc2": -2.3408156532321236,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_daily_demand": 13531.053763440861,
+          "median_daily_demand": 16075.5,
+          "weekday_mean": 15951.90909090909,
+          "weekend_mean": 7613.407407407408,
+          "weekend_to_weekday_ratio": 0.47727249221513235,
+          "q95_daily_demand": 18472.75,
+          "lag7_autocorrelation": 0.7395191774881481
+        }
+      },
+      {
+        "entity_id": "line-01-str",
+        "entity_name": "Tondiarpet (Blue Line)",
+        "pc1": -0.9176055318566676,
+        "pc2": 0.26333144643014234,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 5345.381720430108,
+          "median_daily_demand": 5661.0,
+          "weekday_mean": 5802.643939393939,
+          "weekend_mean": 4227.62962962963,
+          "weekend_to_weekday_ratio": 0.7285695406758298,
+          "q95_daily_demand": 7015.5,
+          "lag7_autocorrelation": 0.5987739786948115
+        }
+      },
+      {
+        "entity_id": "line-01-stt",
+        "entity_name": "Thiruvotriyur Theradi (Blue Line)",
+        "pc1": -1.0261986745583491,
+        "pc2": 1.5999359632179033,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 5166.139784946236,
+          "median_daily_demand": 5461.5,
+          "weekday_mean": 5411.719696969697,
+          "weekend_mean": 4565.833333333333,
+          "weekend_to_weekday_ratio": 0.8436936110881685,
+          "q95_daily_demand": 6509.5,
+          "lag7_autocorrelation": 0.5069623763423395
+        }
+      },
+      {
+        "entity_id": "line-01-stv",
+        "entity_name": "Thiruvotriyur (Blue Line)",
+        "pc1": -1.8565788655672297,
+        "pc2": 1.3314482710884001,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 3860.7634408602153,
+          "median_daily_demand": 4043.0,
+          "weekday_mean": 4134.212121212121,
+          "weekend_mean": 3192.3333333333335,
+          "weekend_to_weekday_ratio": 0.7721745376716095,
+          "q95_daily_demand": 4863.0,
+          "lag7_autocorrelation": 0.48934809788107003
+        }
+      },
+      {
+        "entity_id": "line-01-swa",
+        "entity_name": "Washermanpet (Blue Line)",
+        "pc1": -0.37728860798435554,
+        "pc2": -0.3829577014782136,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 6283.069892473119,
+          "median_daily_demand": 6386.0,
+          "weekday_mean": 6941.772727272727,
+          "weekend_mean": 4672.907407407408,
+          "weekend_to_weekday_ratio": 0.6731576487729947,
+          "q95_daily_demand": 8550.75,
+          "lag7_autocorrelation": 0.6433866499645425
+        }
+      },
+      {
+        "entity_id": "line-01-swd",
+        "entity_name": "Wimco Nagar Depot (Blue Line)",
+        "pc1": -1.6032258585150638,
+        "pc2": 0.6469668065803272,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 4260.198924731183,
+          "median_daily_demand": 4411.0,
+          "weekday_mean": 4601.674242424242,
+          "weekend_mean": 3425.4814814814813,
+          "weekend_to_weekday_ratio": 0.7443989515600474,
+          "q95_daily_demand": 5420.5,
+          "lag7_autocorrelation": 0.5595930862699743
+        }
+      },
+      {
+        "entity_id": "line-01-swn",
+        "entity_name": "Wimco Nagar (Blue Line)",
+        "pc1": -1.417805046873381,
+        "pc2": 0.01275720625089013,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 4500.440860215053,
+          "median_daily_demand": 4814.5,
+          "weekday_mean": 4908.348484848485,
+          "weekend_mean": 3503.3333333333335,
+          "weekend_to_weekday_ratio": 0.7137499189692268,
+          "q95_daily_demand": 5888.0,
+          "lag7_autocorrelation": 0.6203909333390153
+        }
+      },
+      {
+        "entity_id": "line-02-sae",
+        "entity_name": "Anna Nagar East (Green Line)",
+        "pc1": -0.8270068972425326,
+        "pc2": 0.4375893428134166,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 5534.123655913979,
+          "median_daily_demand": 5798.5,
+          "weekday_mean": 5989.030303030303,
+          "weekend_mean": 4422.12962962963,
+          "weekend_to_weekday_ratio": 0.7383715569767847,
+          "q95_daily_demand": 7105.5,
+          "lag7_autocorrelation": 0.5835340974853204
+        }
+      },
+      {
+        "entity_id": "line-02-sal",
+        "entity_name": "Alandur (Green Line)",
+        "pc1": -0.06609595920805182,
+        "pc2": 0.4750674434249159,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 6629.801075268817,
+          "median_daily_demand": 7221.5,
+          "weekday_mean": 7027.886363636364,
+          "weekend_mean": 5656.7037037037035,
+          "weekend_to_weekday_ratio": 0.8048940194839485,
+          "q95_daily_demand": 8661.25,
+          "lag7_autocorrelation": 0.627479473642274
+        }
+      },
+      {
+        "entity_id": "line-02-san",
+        "entity_name": "Ashok Nagar (Green Line)",
+        "pc1": 0.23676757923111696,
+        "pc2": 0.04049387215232,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 7201.3279569892475,
+          "median_daily_demand": 7695.5,
+          "weekday_mean": 7821.69696969697,
+          "weekend_mean": 5684.87037037037,
+          "weekend_to_weekday_ratio": 0.7268078004549203,
+          "q95_daily_demand": 9722.0,
+          "lag7_autocorrelation": 0.6272689504421614
+        }
+      },
+      {
+        "entity_id": "line-02-sar",
+        "entity_name": "Arumbakkam (Green Line)",
+        "pc1": -1.499709810888512,
+        "pc2": 0.32211912992926034,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 4247.39247311828,
+          "median_daily_demand": 4533.0,
+          "weekday_mean": 4489.401515151515,
+          "weekend_mean": 3655.814814814815,
+          "weekend_to_weekday_ratio": 0.8143211968180202,
+          "q95_daily_demand": 5646.0,
+          "lag7_autocorrelation": 0.6512868672350606
+        }
+      },
+      {
+        "entity_id": "line-02-sat",
+        "entity_name": "Anna Nagar Tower (Green Line)",
+        "pc1": -1.0359130401547894,
+        "pc2": 0.9369652585093675,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 5154.220430107527,
+          "median_daily_demand": 5333.5,
+          "weekday_mean": 5475.318181818182,
+          "weekend_mean": 4369.314814814815,
+          "weekend_to_weekday_ratio": 0.798001991797288,
+          "q95_daily_demand": 6633.5,
+          "lag7_autocorrelation": 0.5608666782618834
+        }
+      },
+      {
+        "entity_id": "line-02-scc",
+        "entity_name": "Chennai Central (Green Line)",
+        "pc1": 2.62356735852786,
+        "pc2": 4.29904365589178,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_daily_demand": 11384.28494623656,
+          "median_daily_demand": 11371.5,
+          "weekday_mean": 11564.621212121212,
+          "weekend_mean": 10943.462962962964,
+          "weekend_to_weekday_ratio": 0.9462880592658587,
+          "q95_daily_demand": 14322.0,
+          "lag7_autocorrelation": 0.24343146133070426
+        }
+      },
+      {
+        "entity_id": "line-02-scm",
+        "entity_name": "CMBT (Green Line)",
+        "pc1": -0.16435228683697659,
+        "pc2": 1.1093382070689881,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 6409.9838709677415,
+          "median_daily_demand": 6842.5,
+          "weekday_mean": 6673.825757575758,
+          "weekend_mean": 5765.037037037037,
+          "weekend_to_weekday_ratio": 0.8638279221618703,
+          "q95_daily_demand": 8718.5,
+          "lag7_autocorrelation": 0.5867456565895951
+        }
+      },
+      {
+        "entity_id": "line-02-seg",
+        "entity_name": "Egmore (Green Line)",
+        "pc1": -0.872693299462695,
+        "pc2": 0.6067160569006769,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 5210.387096774193,
+          "median_daily_demand": 5470.5,
+          "weekday_mean": 5396.136363636364,
+          "weekend_mean": 4756.333333333333,
+          "weekend_to_weekday_ratio": 0.8814331241488719,
+          "q95_daily_demand": 7046.0,
+          "lag7_autocorrelation": 0.6634284809600517
+        }
+      },
+      {
+        "entity_id": "line-02-skm",
+        "entity_name": "Kilpauk (Green Line)",
+        "pc1": -2.599522390975398,
+        "pc2": -0.6229808512779769,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 2484.8709677419356,
+          "median_daily_demand": 2642.0,
+          "weekday_mean": 2741.310606060606,
+          "weekend_mean": 1858.0185185185185,
+          "weekend_to_weekday_ratio": 0.6777847480729591,
+          "q95_daily_demand": 3412.0,
+          "lag7_autocorrelation": 0.6772477586817658
+        }
+      },
+      {
+        "entity_id": "line-02-sko",
+        "entity_name": "Koyambedu (Green Line)",
+        "pc1": 2.565045024811496,
+        "pc2": 0.47900620179920445,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_daily_demand": 10965.274193548386,
+          "median_daily_demand": 11742.0,
+          "weekday_mean": 11667.651515151516,
+          "weekend_mean": 9248.351851851852,
+          "weekend_to_weekday_ratio": 0.7926489610905861,
+          "q95_daily_demand": 14724.0,
+          "lag7_autocorrelation": 0.6225643832153056
+        }
+      },
+      {
+        "entity_id": "line-02-smm",
+        "entity_name": "St. Thomas Mount (Green Line)",
+        "pc1": -0.10282821182943065,
+        "pc2": 0.41747064523471294,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 6646.209677419355,
+          "median_daily_demand": 7123.0,
+          "weekday_mean": 7142.939393939394,
+          "weekend_mean": 5431.981481481482,
+          "weekend_to_weekday_ratio": 0.7604686504956745,
+          "q95_daily_demand": 8758.75,
+          "lag7_autocorrelation": 0.6026027342046218
+        }
+      },
+      {
+        "entity_id": "line-02-snp",
+        "entity_name": "Nehru Park (Green Line)",
+        "pc1": -2.632332421520948,
+        "pc2": 0.7547829298629166,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 2463.483870967742,
+          "median_daily_demand": 2662.5,
+          "weekday_mean": 2626.007575757576,
+          "weekend_mean": 2066.203703703704,
+          "weekend_to_weekday_ratio": 0.7868232075102165,
+          "q95_daily_demand": 3165.25,
+          "lag7_autocorrelation": 0.5732842444366213
+        }
+      },
+      {
+        "entity_id": "line-02-spc",
+        "entity_name": "Pachaiappa's College (Green Line)",
+        "pc1": -2.5514860339694287,
+        "pc2": -0.11356520172468867,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 2588.8709677419356,
+          "median_daily_demand": 2642.5,
+          "weekday_mean": 2825.439393939394,
+          "weekend_mean": 2010.5925925925926,
+          "weekend_to_weekday_ratio": 0.7116035109106715,
+          "q95_daily_demand": 3598.5,
+          "lag7_autocorrelation": 0.6343370495693593
+        }
+      },
+      {
+        "entity_id": "line-02-ssi",
+        "entity_name": "Ekkattuthangal (Green Line)",
+        "pc1": 0.07922608298786514,
+        "pc2": -2.671203141010749,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 7066.548387096775,
+          "median_daily_demand": 7905.0,
+          "weekday_mean": 8436.14393939394,
+          "weekend_mean": 3718.6481481481483,
+          "weekend_to_weekday_ratio": 0.44079951395605266,
+          "q95_daily_demand": 9999.5,
+          "lag7_autocorrelation": 0.7683766763798642
+        }
+      },
+      {
+        "entity_id": "line-02-ssn",
+        "entity_name": "Shenoy Nagar (Green Line)",
+        "pc1": -2.4219728435576724,
+        "pc2": 0.4080524476074759,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_daily_demand": 2862.8924731182797,
+          "median_daily_demand": 2980.0,
+          "weekday_mean": 3105.189393939394,
+          "weekend_mean": 2270.6111111111113,
+          "weekend_to_weekday_ratio": 0.7312311176712167,
+          "q95_daily_demand": 3693.5,
+          "lag7_autocorrelation": 0.5803111401776037
+        }
+      },
+      {
+        "entity_id": "line-02-sti",
+        "entity_name": "Thirumangalam (Green Line)",
+        "pc1": 3.807917543319532,
+        "pc2": 0.251293005239446,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_daily_demand": 13379.78494623656,
+          "median_daily_demand": 13739.5,
+          "weekday_mean": 14605.89393939394,
+          "weekend_mean": 10382.62962962963,
+          "weekend_to_weekday_ratio": 0.7108520486805924,
+          "q95_daily_demand": 17465.5,
+          "lag7_autocorrelation": 0.5922715783358152
+        }
+      },
+      {
+        "entity_id": "line-02-sva",
+        "entity_name": "Vadapalani (Green Line)",
+        "pc1": 3.0309324392877026,
+        "pc2": 2.2000261557041703,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_daily_demand": 11605.317204301075,
+          "median_daily_demand": 12029.5,
+          "weekday_mean": 11533.333333333334,
+          "weekend_mean": 11781.277777777777,
+          "weekend_to_weekday_ratio": 1.0214980732177263,
+          "q95_daily_demand": 14726.5,
+          "lag7_autocorrelation": 0.5751220912298459
+        }
+      }
+    ],
+    "interpretation_note": "Cluster IDs are algorithm outputs from the training window, not operator-defined station types."
+  },
+  "artifacts": {
+    "bundle": "transitcrowd.joblib",
+    "report": "model_report.json",
+    "station_analytics": "station_analytics.json"
+  },
+  "limitations": [
+    "Target is CMRL station entries per day; it is not onboard load, occupancy, capacity utilisation or a safety level.",
+    "The archive begins at the collector's first capture date, so annual seasonality and festival/holiday effects outside the window are unmodelled.",
+    "No weather, disruption, fare-change, event or service-frequency variable is joined to the model.",
+    "Trees cannot extrapolate beyond the observed feature range; forecasts far beyond the data frontier regress toward recent levels.",
+    "Forecasts past the last observation are one-day-ahead model calls applied recursively and are labelled as model forecasts, never as live counts.",
+    "CMRL data are copyrighted by the operator; this project documents the download path and does not redistribute the raw archive."
+  ],
+  "forecast_horizon": {
+    "policy": {
+      "max_recursive_horizon_days": 60,
+      "measured_horizon_days": 34,
+      "usable_horizon_days": 34,
+      "horizon_limit_days": 60,
+      "serviceable_horizon_days": 34,
+      "limit_basis": "no horizon inside the measured window lost to the mean-predictor baseline",
+      "beyond_measured_range": "the widest measured band is reused and the answer is labelled beyond_validated_range"
+    },
+    "method": "recursive multi-day-ahead projection re-feeding its own forecasts, evaluated on the validation partition only; the same code path the API uses (ml.training.forecast.project_future)",
+    "evaluation_window": {
+      "start": "2026-07-29",
+      "end": "2026-08-31",
+      "days": 34
+    },
+    "evaluated_pairs": 1462,
+    "entities": 43,
+    "entities_unprojectable": 0,
+    "reference_dispersion": {
+      "validation_target_standard_deviation": 3873.5931,
+      "history_standard_deviation": 4275.9822,
+      "rule": "a horizon is serviceable while its MAE stays at or below 3873.59 (the spread of the values being predicted)"
+    },
+    "usable_horizon_days": 34,
+    "max_measured_horizon_days": 34,
+    "error_by_horizon_days": {
+      "1": {
+        "samples": 43,
+        "mae": 555.088,
+        "rmse": 794.8647,
+        "median_absolute_error": 281.7681,
+        "p90_absolute_error": 1523.1553,
+        "p95_absolute_error": 1715.3842,
+        "p90_relative_error": 0.1271,
+        "p95_relative_error": 0.1439
+      },
+      "2": {
+        "samples": 43,
+        "mae": 922.3128,
+        "rmse": 1296.676,
+        "median_absolute_error": 541.1318,
+        "p90_absolute_error": 2563.5926,
+        "p95_absolute_error": 2799.7212,
+        "p90_relative_error": 0.2011,
+        "p95_relative_error": 0.2205
+      },
+      "3": {
+        "samples": 43,
+        "mae": 702.2208,
+        "rmse": 1054.4701,
+        "median_absolute_error": 456.4883,
+        "p90_absolute_error": 1740.4402,
+        "p95_absolute_error": 2435.4838,
+        "p90_relative_error": 0.1851,
+        "p95_relative_error": 0.2006
+      },
+      "4": {
+        "samples": 43,
+        "mae": 1018.1012,
+        "rmse": 1244.7882,
+        "median_absolute_error": 816.5291,
+        "p90_absolute_error": 1788.5159,
+        "p95_absolute_error": 2828.0881,
+        "p90_relative_error": 0.2584,
+        "p95_relative_error": 0.2697
+      },
+      "5": {
+        "samples": 43,
+        "mae": 772.7208,
+        "rmse": 995.4942,
+        "median_absolute_error": 595.3337,
+        "p90_absolute_error": 1586.1986,
+        "p95_absolute_error": 1986.0125,
+        "p90_relative_error": 0.3141,
+        "p95_relative_error": 0.3605
+      },
+      "6": {
+        "samples": 43,
+        "mae": 806.7406,
+        "rmse": 1030.5688,
+        "median_absolute_error": 609.9629,
+        "p90_absolute_error": 1860.5592,
+        "p95_absolute_error": 2005.6091,
+        "p90_relative_error": 0.1671,
+        "p95_relative_error": 0.1828
+      },
+      "7": {
+        "samples": 43,
+        "mae": 821.158,
+        "rmse": 1053.7976,
+        "median_absolute_error": 614.2515,
+        "p90_absolute_error": 1790.7225,
+        "p95_absolute_error": 2064.0081,
+        "p90_relative_error": 0.17,
+        "p95_relative_error": 0.209
+      },
+      "8": {
+        "samples": 43,
+        "mae": 671.8513,
+        "rmse": 880.6767,
+        "median_absolute_error": 487.5112,
+        "p90_absolute_error": 1469.6816,
+        "p95_absolute_error": 1972.2199,
+        "p90_relative_error": 0.1535,
+        "p95_relative_error": 0.1667
+      },
+      "9": {
+        "samples": 43,
+        "mae": 1881.3265,
+        "rmse": 2351.9328,
+        "median_absolute_error": 1706.1963,
+        "p90_absolute_error": 3909.4354,
+        "p95_absolute_error": 5369.3273,
+        "p90_relative_error": 0.3192,
+        "p95_relative_error": 0.3435
+      },
+      "10": {
+        "samples": 43,
+        "mae": 640.5696,
+        "rmse": 879.3139,
+        "median_absolute_error": 416.2446,
+        "p90_absolute_error": 1443.5379,
+        "p95_absolute_error": 1704.3034,
+        "p90_relative_error": 0.1457,
+        "p95_relative_error": 0.1653
+      },
+      "11": {
+        "samples": 43,
+        "mae": 580.0283,
+        "rmse": 821.3816,
+        "median_absolute_error": 327.3203,
+        "p90_absolute_error": 1366.8031,
+        "p95_absolute_error": 1797.6793,
+        "p90_relative_error": 0.195,
+        "p95_relative_error": 0.2333
+      },
+      "12": {
+        "samples": 43,
+        "mae": 708.0011,
+        "rmse": 888.3548,
+        "median_absolute_error": 577.5134,
+        "p90_absolute_error": 1670.8643,
+        "p95_absolute_error": 1832.6204,
+        "p90_relative_error": 0.2872,
+        "p95_relative_error": 0.3002
+      },
+      "13": {
+        "samples": 43,
+        "mae": 752.8947,
+        "rmse": 1081.6991,
+        "median_absolute_error": 538.4951,
+        "p90_absolute_error": 1512.6707,
+        "p95_absolute_error": 1706.9155,
+        "p90_relative_error": 0.1497,
+        "p95_relative_error": 0.2123
+      },
+      "14": {
+        "samples": 43,
+        "mae": 2923.659,
+        "rmse": 3357.285,
+        "median_absolute_error": 2516.386,
+        "p90_absolute_error": 5388.9365,
+        "p95_absolute_error": 6135.6396,
+        "p90_relative_error": 1.6455,
+        "p95_relative_error": 1.8332
+      },
+      "15": {
+        "samples": 43,
+        "mae": 581.0223,
+        "rmse": 748.4645,
+        "median_absolute_error": 439.6567,
+        "p90_absolute_error": 1256.6145,
+        "p95_absolute_error": 1350.6155,
+        "p90_relative_error": 0.1528,
+        "p95_relative_error": 0.1731
+      },
+      "16": {
+        "samples": 43,
+        "mae": 678.2267,
+        "rmse": 858.077,
+        "median_absolute_error": 534.2383,
+        "p90_absolute_error": 1476.6301,
+        "p95_absolute_error": 1793.5683,
+        "p90_relative_error": 0.1282,
+        "p95_relative_error": 0.1812
+      },
+      "17": {
+        "samples": 43,
+        "mae": 1153.3047,
+        "rmse": 1618.4269,
+        "median_absolute_error": 853.043,
+        "p90_absolute_error": 2570.7875,
+        "p95_absolute_error": 3444.5817,
+        "p90_relative_error": 0.2237,
+        "p95_relative_error": 0.2571
+      },
+      "18": {
+        "samples": 43,
+        "mae": 873.6206,
+        "rmse": 1200.6898,
+        "median_absolute_error": 758.6411,
+        "p90_absolute_error": 1736.907,
+        "p95_absolute_error": 2102.4165,
+        "p90_relative_error": 0.6053,
+        "p95_relative_error": 0.6668
+      },
+      "19": {
+        "samples": 43,
+        "mae": 607.6405,
+        "rmse": 793.52,
+        "median_absolute_error": 459.6117,
+        "p90_absolute_error": 1211.3684,
+        "p95_absolute_error": 1721.4337,
+        "p90_relative_error": 0.278,
+        "p95_relative_error": 0.3021
+      },
+      "20": {
+        "samples": 43,
+        "mae": 496.4261,
+        "rmse": 674.2701,
+        "median_absolute_error": 403.938,
+        "p90_absolute_error": 1122.3129,
+        "p95_absolute_error": 1422.4698,
+        "p90_relative_error": 0.1241,
+        "p95_relative_error": 0.1417
+      },
+      "21": {
+        "samples": 43,
+        "mae": 669.5836,
+        "rmse": 885.9805,
+        "median_absolute_error": 476.9307,
+        "p90_absolute_error": 1482.7469,
+        "p95_absolute_error": 1840.5993,
+        "p90_relative_error": 0.1372,
+        "p95_relative_error": 0.1452
+      },
+      "22": {
+        "samples": 43,
+        "mae": 688.719,
+        "rmse": 861.2288,
+        "median_absolute_error": 590.3882,
+        "p90_absolute_error": 1551.5195,
+        "p95_absolute_error": 1844.4202,
+        "p90_relative_error": 0.1453,
+        "p95_relative_error": 0.1902
+      },
+      "23": {
+        "samples": 43,
+        "mae": 773.2156,
+        "rmse": 993.311,
+        "median_absolute_error": 605.2227,
+        "p90_absolute_error": 1640.1242,
+        "p95_absolute_error": 2136.6401,
+        "p90_relative_error": 0.175,
+        "p95_relative_error": 0.2182
+      },
+      "24": {
+        "samples": 43,
+        "mae": 717.8784,
+        "rmse": 1024.1995,
+        "median_absolute_error": 385.4009,
+        "p90_absolute_error": 1684.4199,
+        "p95_absolute_error": 1933.889,
+        "p90_relative_error": 0.1772,
+        "p95_relative_error": 0.2234
+      },
+      "25": {
+        "samples": 43,
+        "mae": 788.3073,
+        "rmse": 1026.8529,
+        "median_absolute_error": 512.1333,
+        "p90_absolute_error": 1735.6238,
+        "p95_absolute_error": 2065.3615,
+        "p90_relative_error": 0.2215,
+        "p95_relative_error": 0.265
+      },
+      "26": {
+        "samples": 43,
+        "mae": 860.3117,
+        "rmse": 1109.6362,
+        "median_absolute_error": 842.2263,
+        "p90_absolute_error": 1718.9788,
+        "p95_absolute_error": 2384.2833,
+        "p90_relative_error": 0.3425,
+        "p95_relative_error": 0.3672
+      },
+      "27": {
+        "samples": 43,
+        "mae": 495.4824,
+        "rmse": 654.9399,
+        "median_absolute_error": 368.0264,
+        "p90_absolute_error": 1290.5305,
+        "p95_absolute_error": 1387.4975,
+        "p90_relative_error": 0.1137,
+        "p95_relative_error": 0.1681
+      },
+      "28": {
+        "samples": 43,
+        "mae": 554.1225,
+        "rmse": 779.7156,
+        "median_absolute_error": 406.8418,
+        "p90_absolute_error": 1317.6111,
+        "p95_absolute_error": 1531.1144,
+        "p90_relative_error": 0.1093,
+        "p95_relative_error": 0.1466
+      },
+      "29": {
+        "samples": 43,
+        "mae": 1246.6262,
+        "rmse": 1608.1011,
+        "median_absolute_error": 893.6167,
+        "p90_absolute_error": 2521.5602,
+        "p95_absolute_error": 3242.2277,
+        "p90_relative_error": 0.4304,
+        "p95_relative_error": 0.5221
+      },
+      "30": {
+        "samples": 43,
+        "mae": 2155.1997,
+        "rmse": 2667.6659,
+        "median_absolute_error": 1865.5488,
+        "p90_absolute_error": 4865.44,
+        "p95_absolute_error": 5032.3808,
+        "p90_relative_error": 0.3598,
+        "p95_relative_error": 0.3654
+      },
+      "31": {
+        "samples": 43,
+        "mae": 2058.2143,
+        "rmse": 2635.5877,
+        "median_absolute_error": 1595.834,
+        "p90_absolute_error": 4766.2645,
+        "p95_absolute_error": 5261.9067,
+        "p90_relative_error": 0.3404,
+        "p95_relative_error": 0.3582
+      },
+      "32": {
+        "samples": 43,
+        "mae": 881.9862,
+        "rmse": 1130.562,
+        "median_absolute_error": 672.342,
+        "p90_absolute_error": 1686.6932,
+        "p95_absolute_error": 2333.0703,
+        "p90_relative_error": 0.2472,
+        "p95_relative_error": 0.2688
+      },
+      "33": {
+        "samples": 43,
+        "mae": 804.5656,
+        "rmse": 1094.805,
+        "median_absolute_error": 606.7888,
+        "p90_absolute_error": 2059.7647,
+        "p95_absolute_error": 2378.6206,
+        "p90_relative_error": 0.3375,
+        "p95_relative_error": 0.4233
+      },
+      "34": {
+        "samples": 43,
+        "mae": 584.2911,
+        "rmse": 817.0044,
+        "median_absolute_error": 392.6809,
+        "p90_absolute_error": 1378.5854,
+        "p95_absolute_error": 1518.9627,
+        "p90_relative_error": 0.1623,
+        "p95_relative_error": 0.1665
+      }
+    },
+    "note": "Quantiles are empirical absolute-error bands at each horizon, not a calibrated prediction interval. Beyond max_measured_horizon_days the product reuses the widest measured band and labels the answer beyond_validated_range; it never claims an accuracy it has not measured."
+  }
+}

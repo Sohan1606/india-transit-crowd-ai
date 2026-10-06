@@ -1,0 +1,92 @@
+{
+  "source_id": "cmrl-passenger-flow-daily",
+  "source_title": "Chennai Metro (CMRL) official passenger-flow station data, archived daily",
+  "publisher": "Chennai Metro Rail Limited (CMRL); archived daily by the upstream collector",
+  "provenance": "Values are the counts CMRL publishes on its public passenger-flow dashboard. The dashboard serves only the previous day, so the pinned upstream GitHub Actions archive is the historical record; each day it appends one row set from the live official API.",
+  "source_url": "https://github.com/PratyushBalaji/chennai-metro-ridership-tracker",
+  "upstream_commit": "72ee5eadb6ca890bfd9900d6464a1a371566c86b",
+  "official_dashboard_url": "https://commuters-data.chennaimetrorail.org/passengerflow",
+  "official_api_base": "https://commuters-dataapi.chennaimetrorail.org/api/PassengerFlow",
+  "source_file": "ChennaiMetro_Station_Ridership.csv",
+  "source_sha256": "2630ea1b083e491c225ec49760156b01302e8bfbd4383784045576306a709190",
+  "expected_source_sha256": "2630ea1b083e491c225ec49760156b01302e8bfbd4383784045576306a709190",
+  "license": "Upstream data notice: CMRL copyright; not redistributed by this project",
+  "license_note": "The upstream repository is MIT-licensed for its CODE only and states explicitly that the licence grants no rights in the CMRL-published data, which remains copyrighted by Chennai Metro Rail Limited, and that the project is for research/educational use. This project therefore does not bundle or redistribute CMRL data: it is downloaded at preparation time from the pinned upstream revision and verified against a recorded SHA-256.",
+  "system": {
+    "system_id": "chennai-cmrl-metro",
+    "city": "Chennai",
+    "mode": "METRO",
+    "operator": "CMRL"
+  },
+  "granularity": "one calendar day per station-line entity",
+  "measure": "daily_station_entries",
+  "measure_definition": "passengers recorded by CMRL as using the station that day on that corridor; empirically one boarding event per journey, not entries plus exits, and not onboard load or occupancy",
+  "timezone": "Asia/Kolkata",
+  "rows": 10965,
+  "entity_count": 43,
+  "station_count": 41,
+  "line_ids": [
+    "01",
+    "02"
+  ],
+  "date_min": "2026-01-24",
+  "date_max": "2026-10-05",
+  "unique_dates": 255,
+  "expected_contiguous_dates": 255,
+  "entities_per_date_min": 43,
+  "entities_per_date_max": 43,
+  "duplicate_station_dates": 0,
+  "missing_station_days_filled": 0,
+  "explicit_zero_observations": 0,
+  "measure_semantics_check": {
+    "method": "per-date sum(station Total) divided by the CMRL daily system total (allTicketCount)",
+    "daily_total_rows_available": 255,
+    "ratio_mean": 1.0061,
+    "ratio_min": 0.9502,
+    "ratio_max": 1.2106,
+    "interpretation": "A ratio near 1.0 means each journey is counted once at a station, so the field is entries/boardings; a ratio near 2.0 would have indicated entries plus exits."
+  },
+  "retrieved_at_utc": "2026-10-06T12:10:48.871194+00:00",
+  "notes": [
+    "Chennai Central (SCC) and Alandur (SAL) are interchange stations reported once per corridor; the adapter keeps them as two distinct line entities instead of summing them.",
+    "No station-day row is created for a date the source does not report; absent observations stay absent.",
+    "Payment-mode breakdown columns are retained upstream but are not needed for the demand target and are not silently merged into it."
+  ],
+  "normalized_output": "data/processed/chennai_metro_demand_timeseries.csv",
+  "normalized_sha256": "db4d20442233946306400deb310b611a505f29d33d3d2aa49a53bc647ade1a44",
+  "validation": {
+    "rows_in": 10965,
+    "rows_out": 10965,
+    "system_id": "chennai-cmrl-metro",
+    "entity_count": 43,
+    "timestamp_min": "2026-01-24T00:00:00+05:30",
+    "timestamp_max": "2026-10-05T00:00:00+05:30",
+    "explicit_zero_observations": 0,
+    "missing_observations_filled": 0,
+    "timezone": "Asia/Kolkata"
+  },
+  "source_periods": [
+    {
+      "start": "2026-01-24",
+      "end": "2026-10-05",
+      "granularity": "day",
+      "basis": "observed",
+      "note": "Contiguous daily observations published by CMRL's passenger-flow portal and archived by the upstream collector; every day in the window is present, so the period is exact rather than approximate."
+    }
+  ],
+  "redistribution": "Not bundled: CMRL holds copyright over the source data, so the pinned public archive is downloaded on demand and SHA-256 verified at prepare time.",
+  "how_to_fetch": "python3 scripts/download_cmrl_data.py",
+  "normalized_schema": [
+    "system_id",
+    "city",
+    "mode",
+    "operator",
+    "entity_id",
+    "entity_name",
+    "entity_type",
+    "timestamp",
+    "demand_count",
+    "measure",
+    "source_id"
+  ]
+}

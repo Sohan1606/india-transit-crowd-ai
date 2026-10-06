@@ -1,0 +1,768 @@
+{
+  "method": "StandardScaler \u2192 PCA (2 components) \u2192 DBSCAN over day-granularity behaviour features",
+  "entity_count": 43,
+  "features_used": [
+    "mean_daily_demand",
+    "median_daily_demand",
+    "weekday_mean",
+    "weekend_mean",
+    "weekend_to_weekday_ratio",
+    "q95_daily_demand",
+    "lag7_autocorrelation"
+  ],
+  "pca": {
+    "components": 2,
+    "explained_variance_ratio": [
+      0.6960807793152844,
+      0.25566029937054136
+    ],
+    "total_explained_variance_ratio": 0.9517410786858258
+  },
+  "dbscan": {
+    "eps": 1.1,
+    "min_samples": 4,
+    "metric": "euclidean",
+    "cluster_count_excluding_noise": 1,
+    "outlier_count": 9,
+    "clusters": [
+      {
+        "cluster_id": 0,
+        "entity_count": 34
+      }
+    ]
+  },
+  "entities": [
+    {
+      "entity_id": "line-01-sal",
+      "entity_name": "Alandur (Blue Line)",
+      "pc1": -1.5287723819226908,
+      "pc2": -0.3021518027487169,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 4253.704301075269,
+        "median_daily_demand": 4580.0,
+        "weekday_mean": 4747.090909090909,
+        "weekend_mean": 3047.6481481481483,
+        "weekend_to_weekday_ratio": 0.6420033250915322,
+        "q95_daily_demand": 6380.75,
+        "lag7_autocorrelation": 0.6088605143073682
+      }
+    },
+    {
+      "entity_id": "line-01-sap",
+      "entity_name": "Chennai Airport (Blue Line)",
+      "pc1": 6.154103079249047,
+      "pc2": 0.7432522117472123,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_daily_demand": 16711.354838709678,
+        "median_daily_demand": 17748.5,
+        "weekday_mean": 17321.742424242424,
+        "weekend_mean": 15219.296296296296,
+        "weekend_to_weekday_ratio": 0.8786238660953833,
+        "q95_daily_demand": 22223.0,
+        "lag7_autocorrelation": 0.6644340899557624
+      }
+    },
+    {
+      "entity_id": "line-01-scc",
+      "entity_name": "Chennai Central (Blue Line)",
+      "pc1": 5.459274699638165,
+      "pc2": 0.8207034360405892,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_daily_demand": 16074.462365591398,
+        "median_daily_demand": 16310.0,
+        "weekday_mean": 17342.53787878788,
+        "weekend_mean": 12974.722222222223,
+        "weekend_to_weekday_ratio": 0.7481443784587002,
+        "q95_daily_demand": 21454.5,
+        "lag7_autocorrelation": 0.5490654279612344
+      }
+    },
+    {
+      "entity_id": "line-01-scr",
+      "entity_name": "Nandanam (Blue Line)",
+      "pc1": -0.4815350421275691,
+      "pc2": -1.651426630070959,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 6125.118279569892,
+        "median_daily_demand": 6916.5,
+        "weekday_mean": 7244.121212121212,
+        "weekend_mean": 3389.777777777778,
+        "weekend_to_weekday_ratio": 0.46793498873346273,
+        "q95_daily_demand": 8836.25,
+        "lag7_autocorrelation": 0.6567233191817314
+      }
+    },
+    {
+      "entity_id": "line-01-sge",
+      "entity_name": "Government Estate (Blue Line)",
+      "pc1": 1.1504402761873191,
+      "pc2": 0.09796967422349931,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 8764.741935483871,
+        "median_daily_demand": 9413.0,
+        "weekday_mean": 9541.280303030304,
+        "weekend_mean": 6866.537037037037,
+        "weekend_to_weekday_ratio": 0.7196662102942547,
+        "q95_daily_demand": 11578.75,
+        "lag7_autocorrelation": 0.6155622890659005
+      }
+    },
+    {
+      "entity_id": "line-01-sgm",
+      "entity_name": "AG-DMS (Blue Line)",
+      "pc1": -0.1820105160654159,
+      "pc2": -2.5850244887951828,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 6500.870967741936,
+        "median_daily_demand": 7478.0,
+        "weekday_mean": 7734.477272727273,
+        "weekend_mean": 3485.3888888888887,
+        "weekend_to_weekday_ratio": 0.45063018042328506,
+        "q95_daily_demand": 9668.25,
+        "lag7_autocorrelation": 0.7646096503199443
+      }
+    },
+    {
+      "entity_id": "line-01-sgu",
+      "entity_name": "Guindy (Blue Line)",
+      "pc1": 3.9695303161016495,
+      "pc2": -1.1461158469089696,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_daily_demand": 13548.478494623656,
+        "median_daily_demand": 13901.5,
+        "weekday_mean": 15134.378787878788,
+        "weekend_mean": 9671.833333333334,
+        "weekend_to_weekday_ratio": 0.6390637811364653,
+        "q95_daily_demand": 18770.75,
+        "lag7_autocorrelation": 0.716433145368803
+      }
+    },
+    {
+      "entity_id": "line-01-shc",
+      "entity_name": "High Court (Blue Line)",
+      "pc1": 1.9154968002756687,
+      "pc2": -1.3828383516221683,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_daily_demand": 10112.693548387097,
+        "median_daily_demand": 10639.0,
+        "weekday_mean": 11672.371212121212,
+        "weekend_mean": 6300.148148148148,
+        "weekend_to_weekday_ratio": 0.5397487822873333,
+        "q95_daily_demand": 14867.5,
+        "lag7_autocorrelation": 0.6697811813330526
+      }
+    },
+    {
+      "entity_id": "line-01-skp",
+      "entity_name": "Kaladipet (Blue Line)",
+      "pc1": -1.6551104908802026,
+      "pc2": 0.8216977267348872,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 4169.967741935484,
+        "median_daily_demand": 4411.0,
+        "weekday_mean": 4507.05303030303,
+        "weekend_mean": 3345.9814814814813,
+        "weekend_to_weekday_ratio": 0.742387866081202,
+        "q95_daily_demand": 5330.75,
+        "lag7_autocorrelation": 0.535016772243707
+      }
+    },
+    {
+      "entity_id": "line-01-sli",
+      "entity_name": "LIC (Blue Line)",
+      "pc1": 0.8579791313894909,
+      "pc2": -2.0397332315108354,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 8311.946236559139,
+        "median_daily_demand": 9482.0,
+        "weekday_mean": 9782.325757575758,
+        "weekend_mean": 4717.685185185185,
+        "weekend_to_weekday_ratio": 0.4822662117474112,
+        "q95_daily_demand": 11834.0,
+        "lag7_autocorrelation": 0.7139867348767446
+      }
+    },
+    {
+      "entity_id": "line-01-slm",
+      "entity_name": "Little Mount (Blue Line)",
+      "pc1": -0.5491390956554228,
+      "pc2": -1.2367107202958398,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 6069.424731182796,
+        "median_daily_demand": 6106.0,
+        "weekday_mean": 6904.901515151515,
+        "weekend_mean": 4027.1481481481483,
+        "weekend_to_weekday_ratio": 0.5832303530052275,
+        "q95_daily_demand": 8289.75,
+        "lag7_autocorrelation": 0.6893491117883112
+      }
+    },
+    {
+      "entity_id": "line-01-sma",
+      "entity_name": "Mannadi (Blue Line)",
+      "pc1": -0.7960885616012103,
+      "pc2": -0.04510587413920496,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 5480.467741935484,
+        "median_daily_demand": 5697.0,
+        "weekday_mean": 5941.484848484848,
+        "weekend_mean": 4353.537037037037,
+        "weekend_to_weekday_ratio": 0.7327355279122261,
+        "q95_daily_demand": 7544.75,
+        "lag7_autocorrelation": 0.6418511153715156
+      }
+    },
+    {
+      "entity_id": "line-01-sme",
+      "entity_name": "Meenambakkam (Blue Line)",
+      "pc1": -0.4404207182592836,
+      "pc2": -0.1682281439191175,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 6032.462365591397,
+        "median_daily_demand": 6286.5,
+        "weekday_mean": 6572.310606060606,
+        "weekend_mean": 4712.833333333333,
+        "weekend_to_weekday_ratio": 0.7170740422687008,
+        "q95_daily_demand": 8625.5,
+        "lag7_autocorrelation": 0.6463426732194415
+      }
+    },
+    {
+      "entity_id": "line-01-snw",
+      "entity_name": "New Washermanpet (Blue Line)",
+      "pc1": -1.8089590341609167,
+      "pc2": 0.5017778488806085,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 3879.8333333333335,
+        "median_daily_demand": 4065.0,
+        "weekday_mean": 4204.030303030303,
+        "weekend_mean": 3087.3518518518517,
+        "weekend_to_weekday_ratio": 0.7343790670648735,
+        "q95_daily_demand": 5092.25,
+        "lag7_autocorrelation": 0.5708259469636452
+      }
+    },
+    {
+      "entity_id": "line-01-sot",
+      "entity_name": "Ota - Nanganallur Road (Blue Line)",
+      "pc1": -2.6669549739380267,
+      "pc2": -0.8412072856744489,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 2440.8655913978496,
+        "median_daily_demand": 2747.5,
+        "weekday_mean": 2790.2954545454545,
+        "weekend_mean": 1586.7037037037037,
+        "weekend_to_weekday_ratio": 0.5686507861090221,
+        "q95_daily_demand": 3379.25,
+        "lag7_autocorrelation": 0.6291940350123536
+      }
+    },
+    {
+      "entity_id": "line-01-ssa",
+      "entity_name": "Saidapet (Blue Line)",
+      "pc1": -0.7060624986286602,
+      "pc2": -1.350088374786917,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 5719.118279569892,
+        "median_daily_demand": 5793.0,
+        "weekday_mean": 6575.492424242424,
+        "weekend_mean": 3625.759259259259,
+        "weekend_to_weekday_ratio": 0.5514049785673641,
+        "q95_daily_demand": 8561.0,
+        "lag7_autocorrelation": 0.6798745588330265
+      }
+    },
+    {
+      "entity_id": "line-01-stc",
+      "entity_name": "Thiagaraya College (Blue Line)",
+      "pc1": -0.7688434683605576,
+      "pc2": 0.6454814974927517,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 5594.274193548387,
+        "median_daily_demand": 5877.0,
+        "weekday_mean": 6002.015151515152,
+        "weekend_mean": 4597.574074074074,
+        "weekend_to_weekday_ratio": 0.7660050762973265,
+        "q95_daily_demand": 7262.0,
+        "lag7_autocorrelation": 0.5762144701260522
+      }
+    },
+    {
+      "entity_id": "line-01-ste",
+      "entity_name": "Teynampet (Blue Line)",
+      "pc1": 0.565681989375092,
+      "pc2": -2.540790509187147,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 7766.618279569892,
+        "median_daily_demand": 8847.0,
+        "weekday_mean": 9149.174242424242,
+        "weekend_mean": 4387.037037037037,
+        "weekend_to_weekday_ratio": 0.47950087306180883,
+        "q95_daily_demand": 11167.0,
+        "lag7_autocorrelation": 0.7783913874383709
+      }
+    },
+    {
+      "entity_id": "line-01-stg",
+      "entity_name": "Tollgate (Blue Line)",
+      "pc1": -2.8424127752598345,
+      "pc2": 1.1976573675573898,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 2179.5806451612902,
+        "median_daily_demand": 2241.0,
+        "weekday_mean": 2321.9848484848485,
+        "weekend_mean": 1831.4814814814815,
+        "weekend_to_weekday_ratio": 0.7887568614741683,
+        "q95_daily_demand": 2778.25,
+        "lag7_autocorrelation": 0.5165520360692272
+      }
+    },
+    {
+      "entity_id": "line-01-stl",
+      "entity_name": "Thousand Lights (Blue Line)",
+      "pc1": 3.9829630174792703,
+      "pc2": -2.3408156532321236,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_daily_demand": 13531.053763440861,
+        "median_daily_demand": 16075.5,
+        "weekday_mean": 15951.90909090909,
+        "weekend_mean": 7613.407407407408,
+        "weekend_to_weekday_ratio": 0.47727249221513235,
+        "q95_daily_demand": 18472.75,
+        "lag7_autocorrelation": 0.7395191774881481
+      }
+    },
+    {
+      "entity_id": "line-01-str",
+      "entity_name": "Tondiarpet (Blue Line)",
+      "pc1": -0.9176055318566676,
+      "pc2": 0.26333144643014234,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 5345.381720430108,
+        "median_daily_demand": 5661.0,
+        "weekday_mean": 5802.643939393939,
+        "weekend_mean": 4227.62962962963,
+        "weekend_to_weekday_ratio": 0.7285695406758298,
+        "q95_daily_demand": 7015.5,
+        "lag7_autocorrelation": 0.5987739786948115
+      }
+    },
+    {
+      "entity_id": "line-01-stt",
+      "entity_name": "Thiruvotriyur Theradi (Blue Line)",
+      "pc1": -1.0261986745583491,
+      "pc2": 1.5999359632179033,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 5166.139784946236,
+        "median_daily_demand": 5461.5,
+        "weekday_mean": 5411.719696969697,
+        "weekend_mean": 4565.833333333333,
+        "weekend_to_weekday_ratio": 0.8436936110881685,
+        "q95_daily_demand": 6509.5,
+        "lag7_autocorrelation": 0.5069623763423395
+      }
+    },
+    {
+      "entity_id": "line-01-stv",
+      "entity_name": "Thiruvotriyur (Blue Line)",
+      "pc1": -1.8565788655672297,
+      "pc2": 1.3314482710884001,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 3860.7634408602153,
+        "median_daily_demand": 4043.0,
+        "weekday_mean": 4134.212121212121,
+        "weekend_mean": 3192.3333333333335,
+        "weekend_to_weekday_ratio": 0.7721745376716095,
+        "q95_daily_demand": 4863.0,
+        "lag7_autocorrelation": 0.48934809788107003
+      }
+    },
+    {
+      "entity_id": "line-01-swa",
+      "entity_name": "Washermanpet (Blue Line)",
+      "pc1": -0.37728860798435554,
+      "pc2": -0.3829577014782136,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 6283.069892473119,
+        "median_daily_demand": 6386.0,
+        "weekday_mean": 6941.772727272727,
+        "weekend_mean": 4672.907407407408,
+        "weekend_to_weekday_ratio": 0.6731576487729947,
+        "q95_daily_demand": 8550.75,
+        "lag7_autocorrelation": 0.6433866499645425
+      }
+    },
+    {
+      "entity_id": "line-01-swd",
+      "entity_name": "Wimco Nagar Depot (Blue Line)",
+      "pc1": -1.6032258585150638,
+      "pc2": 0.6469668065803272,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 4260.198924731183,
+        "median_daily_demand": 4411.0,
+        "weekday_mean": 4601.674242424242,
+        "weekend_mean": 3425.4814814814813,
+        "weekend_to_weekday_ratio": 0.7443989515600474,
+        "q95_daily_demand": 5420.5,
+        "lag7_autocorrelation": 0.5595930862699743
+      }
+    },
+    {
+      "entity_id": "line-01-swn",
+      "entity_name": "Wimco Nagar (Blue Line)",
+      "pc1": -1.417805046873381,
+      "pc2": 0.01275720625089013,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 4500.440860215053,
+        "median_daily_demand": 4814.5,
+        "weekday_mean": 4908.348484848485,
+        "weekend_mean": 3503.3333333333335,
+        "weekend_to_weekday_ratio": 0.7137499189692268,
+        "q95_daily_demand": 5888.0,
+        "lag7_autocorrelation": 0.6203909333390153
+      }
+    },
+    {
+      "entity_id": "line-02-sae",
+      "entity_name": "Anna Nagar East (Green Line)",
+      "pc1": -0.8270068972425326,
+      "pc2": 0.4375893428134166,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 5534.123655913979,
+        "median_daily_demand": 5798.5,
+        "weekday_mean": 5989.030303030303,
+        "weekend_mean": 4422.12962962963,
+        "weekend_to_weekday_ratio": 0.7383715569767847,
+        "q95_daily_demand": 7105.5,
+        "lag7_autocorrelation": 0.5835340974853204
+      }
+    },
+    {
+      "entity_id": "line-02-sal",
+      "entity_name": "Alandur (Green Line)",
+      "pc1": -0.06609595920805182,
+      "pc2": 0.4750674434249159,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 6629.801075268817,
+        "median_daily_demand": 7221.5,
+        "weekday_mean": 7027.886363636364,
+        "weekend_mean": 5656.7037037037035,
+        "weekend_to_weekday_ratio": 0.8048940194839485,
+        "q95_daily_demand": 8661.25,
+        "lag7_autocorrelation": 0.627479473642274
+      }
+    },
+    {
+      "entity_id": "line-02-san",
+      "entity_name": "Ashok Nagar (Green Line)",
+      "pc1": 0.23676757923111696,
+      "pc2": 0.04049387215232,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 7201.3279569892475,
+        "median_daily_demand": 7695.5,
+        "weekday_mean": 7821.69696969697,
+        "weekend_mean": 5684.87037037037,
+        "weekend_to_weekday_ratio": 0.7268078004549203,
+        "q95_daily_demand": 9722.0,
+        "lag7_autocorrelation": 0.6272689504421614
+      }
+    },
+    {
+      "entity_id": "line-02-sar",
+      "entity_name": "Arumbakkam (Green Line)",
+      "pc1": -1.499709810888512,
+      "pc2": 0.32211912992926034,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 4247.39247311828,
+        "median_daily_demand": 4533.0,
+        "weekday_mean": 4489.401515151515,
+        "weekend_mean": 3655.814814814815,
+        "weekend_to_weekday_ratio": 0.8143211968180202,
+        "q95_daily_demand": 5646.0,
+        "lag7_autocorrelation": 0.6512868672350606
+      }
+    },
+    {
+      "entity_id": "line-02-sat",
+      "entity_name": "Anna Nagar Tower (Green Line)",
+      "pc1": -1.0359130401547894,
+      "pc2": 0.9369652585093675,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 5154.220430107527,
+        "median_daily_demand": 5333.5,
+        "weekday_mean": 5475.318181818182,
+        "weekend_mean": 4369.314814814815,
+        "weekend_to_weekday_ratio": 0.798001991797288,
+        "q95_daily_demand": 6633.5,
+        "lag7_autocorrelation": 0.5608666782618834
+      }
+    },
+    {
+      "entity_id": "line-02-scc",
+      "entity_name": "Chennai Central (Green Line)",
+      "pc1": 2.62356735852786,
+      "pc2": 4.29904365589178,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_daily_demand": 11384.28494623656,
+        "median_daily_demand": 11371.5,
+        "weekday_mean": 11564.621212121212,
+        "weekend_mean": 10943.462962962964,
+        "weekend_to_weekday_ratio": 0.9462880592658587,
+        "q95_daily_demand": 14322.0,
+        "lag7_autocorrelation": 0.24343146133070426
+      }
+    },
+    {
+      "entity_id": "line-02-scm",
+      "entity_name": "CMBT (Green Line)",
+      "pc1": -0.16435228683697659,
+      "pc2": 1.1093382070689881,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 6409.9838709677415,
+        "median_daily_demand": 6842.5,
+        "weekday_mean": 6673.825757575758,
+        "weekend_mean": 5765.037037037037,
+        "weekend_to_weekday_ratio": 0.8638279221618703,
+        "q95_daily_demand": 8718.5,
+        "lag7_autocorrelation": 0.5867456565895951
+      }
+    },
+    {
+      "entity_id": "line-02-seg",
+      "entity_name": "Egmore (Green Line)",
+      "pc1": -0.872693299462695,
+      "pc2": 0.6067160569006769,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 5210.387096774193,
+        "median_daily_demand": 5470.5,
+        "weekday_mean": 5396.136363636364,
+        "weekend_mean": 4756.333333333333,
+        "weekend_to_weekday_ratio": 0.8814331241488719,
+        "q95_daily_demand": 7046.0,
+        "lag7_autocorrelation": 0.6634284809600517
+      }
+    },
+    {
+      "entity_id": "line-02-skm",
+      "entity_name": "Kilpauk (Green Line)",
+      "pc1": -2.599522390975398,
+      "pc2": -0.6229808512779769,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 2484.8709677419356,
+        "median_daily_demand": 2642.0,
+        "weekday_mean": 2741.310606060606,
+        "weekend_mean": 1858.0185185185185,
+        "weekend_to_weekday_ratio": 0.6777847480729591,
+        "q95_daily_demand": 3412.0,
+        "lag7_autocorrelation": 0.6772477586817658
+      }
+    },
+    {
+      "entity_id": "line-02-sko",
+      "entity_name": "Koyambedu (Green Line)",
+      "pc1": 2.565045024811496,
+      "pc2": 0.47900620179920445,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_daily_demand": 10965.274193548386,
+        "median_daily_demand": 11742.0,
+        "weekday_mean": 11667.651515151516,
+        "weekend_mean": 9248.351851851852,
+        "weekend_to_weekday_ratio": 0.7926489610905861,
+        "q95_daily_demand": 14724.0,
+        "lag7_autocorrelation": 0.6225643832153056
+      }
+    },
+    {
+      "entity_id": "line-02-smm",
+      "entity_name": "St. Thomas Mount (Green Line)",
+      "pc1": -0.10282821182943065,
+      "pc2": 0.41747064523471294,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 6646.209677419355,
+        "median_daily_demand": 7123.0,
+        "weekday_mean": 7142.939393939394,
+        "weekend_mean": 5431.981481481482,
+        "weekend_to_weekday_ratio": 0.7604686504956745,
+        "q95_daily_demand": 8758.75,
+        "lag7_autocorrelation": 0.6026027342046218
+      }
+    },
+    {
+      "entity_id": "line-02-snp",
+      "entity_name": "Nehru Park (Green Line)",
+      "pc1": -2.632332421520948,
+      "pc2": 0.7547829298629166,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 2463.483870967742,
+        "median_daily_demand": 2662.5,
+        "weekday_mean": 2626.007575757576,
+        "weekend_mean": 2066.203703703704,
+        "weekend_to_weekday_ratio": 0.7868232075102165,
+        "q95_daily_demand": 3165.25,
+        "lag7_autocorrelation": 0.5732842444366213
+      }
+    },
+    {
+      "entity_id": "line-02-spc",
+      "entity_name": "Pachaiappa's College (Green Line)",
+      "pc1": -2.5514860339694287,
+      "pc2": -0.11356520172468867,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 2588.8709677419356,
+        "median_daily_demand": 2642.5,
+        "weekday_mean": 2825.439393939394,
+        "weekend_mean": 2010.5925925925926,
+        "weekend_to_weekday_ratio": 0.7116035109106715,
+        "q95_daily_demand": 3598.5,
+        "lag7_autocorrelation": 0.6343370495693593
+      }
+    },
+    {
+      "entity_id": "line-02-ssi",
+      "entity_name": "Ekkattuthangal (Green Line)",
+      "pc1": 0.07922608298786514,
+      "pc2": -2.671203141010749,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 7066.548387096775,
+        "median_daily_demand": 7905.0,
+        "weekday_mean": 8436.14393939394,
+        "weekend_mean": 3718.6481481481483,
+        "weekend_to_weekday_ratio": 0.44079951395605266,
+        "q95_daily_demand": 9999.5,
+        "lag7_autocorrelation": 0.7683766763798642
+      }
+    },
+    {
+      "entity_id": "line-02-ssn",
+      "entity_name": "Shenoy Nagar (Green Line)",
+      "pc1": -2.4219728435576724,
+      "pc2": 0.4080524476074759,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_daily_demand": 2862.8924731182797,
+        "median_daily_demand": 2980.0,
+        "weekday_mean": 3105.189393939394,
+        "weekend_mean": 2270.6111111111113,
+        "weekend_to_weekday_ratio": 0.7312311176712167,
+        "q95_daily_demand": 3693.5,
+        "lag7_autocorrelation": 0.5803111401776037
+      }
+    },
+    {
+      "entity_id": "line-02-sti",
+      "entity_name": "Thirumangalam (Green Line)",
+      "pc1": 3.807917543319532,
+      "pc2": 0.251293005239446,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_daily_demand": 13379.78494623656,
+        "median_daily_demand": 13739.5,
+        "weekday_mean": 14605.89393939394,
+        "weekend_mean": 10382.62962962963,
+        "weekend_to_weekday_ratio": 0.7108520486805924,
+        "q95_daily_demand": 17465.5,
+        "lag7_autocorrelation": 0.5922715783358152
+      }
+    },
+    {
+      "entity_id": "line-02-sva",
+      "entity_name": "Vadapalani (Green Line)",
+      "pc1": 3.0309324392877026,
+      "pc2": 2.2000261557041703,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_daily_demand": 11605.317204301075,
+        "median_daily_demand": 12029.5,
+        "weekday_mean": 11533.333333333334,
+        "weekend_mean": 11781.277777777777,
+        "weekend_to_weekday_ratio": 1.0214980732177263,
+        "q95_daily_demand": 14726.5,
+        "lag7_autocorrelation": 0.5751220912298459
+      }
+    }
+  ],
+  "interpretation_note": "Cluster IDs are algorithm outputs from the training window, not operator-defined station types."
+}

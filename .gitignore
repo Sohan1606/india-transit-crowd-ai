@@ -29,5 +29,27 @@ coverage/
 .DS_Store
 Thumbs.db
 
+# Source data that this project may not redistribute (operator-copyrighted).
+# Fetched on demand and checksum-verified; see scripts/download_cmrl_data.py.
+data/raw/
+# Normalized Chennai observations are a direct transformation of operator-published
+# counts, so they are regenerated locally (prepare_chennai_data.py) instead of shipped.
+# The provenance sidecar (*.metadata.json) IS committed: it holds no observations.
+data/processed/chennai_metro_demand_timeseries.csv
+# Development-only normalized fixtures produced by scripts/register_demand_dataset.py when a file is
+# declared synthetic/simulated. They must never be redistributed or mistaken for observed data.
+data/development/
+# Families registered locally against a refetched dataset. The file is machine-generated from the
+# gate; a fresh clone rebuilds it with scripts/register_demand_dataset.py --install-registry.
+data/registry/
+
+# Append-only collector log: grows locally over time, never committed by CI.
+data/collected/
+
 # TypeScript build info
 *.tsbuildinfo
+
+# Mumbai synthetic datasets are versioned for reproducible forecasting demos
+!data/development/
+!data/development/synthetic/
+!data/development/synthetic/*.csv

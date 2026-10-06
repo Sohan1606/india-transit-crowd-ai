@@ -13,8 +13,9 @@ import { SignalTransition } from './sections/SignalTransition'
 import { SystemsSection } from './sections/SystemsSection'
 import { ApiError, api } from './services/api'
 import type {
-  AppMetadata, DemandSourceCandidate, HeatmapResponse, HistoryResponse,
-  ModelReport, PredictionResult, StationAnalytics, StationComparison, StationSummary, TransitSystem,
+  AppMetadata, DemandSourceCandidate, FuturePreviewResponse, HeatmapResponse, HistoryResponse,
+  ModelReport, PredictionResult, SourceGapResponse, StationAnalytics, StationComparison, StationSummary, TransitSystem,
+  WeeklyPatternResponse,
 } from './types/api'
 
 function SectionFallback({ label }: { label: string }) {
@@ -30,6 +31,9 @@ function App() {
   const [analytics, setAnalytics] = useState<StationAnalytics | null>(null)
   const [history, setHistory] = useState<HistoryResponse | null>(null)
   const [heatmap, setHeatmap] = useState<HeatmapResponse | null>(null)
+  const [weekly, setWeekly] = useState<WeeklyPatternResponse | null>(null)
+  const [gap, setGap] = useState<SourceGapResponse | null>(null)
+  const [preview, setPreview] = useState<FuturePreviewResponse | null>(null)
   const [comparison, setComparison] = useState<StationComparison | null>(null)
   const [city, setCity] = useState('')
   const [mode, setMode] = useState('')
@@ -49,9 +53,30 @@ function App() {
   const [dataError, setDataError] = useState<string | null>(null)
   const [healthDetail, setHealthDetail] = useState<string | null>(null)
   const stationRequestId = useRef(0)
+  const familyRequestId = useRef(0)
 
   const selectedSystem = useMemo(() => systems.find((item) => item.system_id === systemId) ?? null, [systems, systemId])
   const predictionAvailable = Boolean(selectedSystem?.prediction_available && metadata && selectedSystem.system_id === metadata.system_id)
+  /** The observation resolution drives every label, window and input in the UI. */
+  const granularity: 'hour' | 'day' = (selectedSystem?.granularity ?? metadata?.granularity ?? 'hour') === 'day' ? 'day' : 'hour'
+
+  /** Load the per-family views. Hour and day families expose different endpoints. */
+  const loadFamily = useCallback(async (system: TransitSystem) => {
+    const requestId = ++familyRequestId.current
+    const [meta, modelReport] = await Promise.all([api.metadata(system.system_id), api.modelPerformance(system.system_id)])
+    const profiles = await api.stationAnalytics(system.system_id).catch(() => null)
+    if (requestId !== familyRequestId.current) return null
+    setMetadata(meta)
+    setReport(modelReport)
+    if (profiles) setAnalytics(profiles)
+    setGap(await api.sourceGap(system.system_id).catch(() => null))
+    if (meta.granularity === 'day' || system.granularity === 'day') {
+      setPreview(await api.futurePreview(system.system_id, 3).catch(() => null))
+    } else {
+      setPreview(null)
+    }
+    return meta
+  }, [])
 
   const loadApplication = useCallback(async () => {
     setBooting(true)
@@ -65,36 +90,36 @@ function App() {
       if (!health.model_ready || !health.data_ready) {
         throw new ApiError(health.detail ?? 'The backend has no verified model artifact or normalized observed-demand dataset loaded.', 503)
       }
-      const [meta, modelReport, stationProfiles] = await Promise.all([
-        api.metadata(), api.modelPerformance(), api.stationAnalytics(),
-      ])
-      const activeSystem = catalog.find((item) => item.system_id === meta.system_id && item.prediction_available)
-      if (!activeSystem) throw new ApiError('The loaded model family is not marked as an available verified system in the catalog.', 503)
+      const activeSystem = catalog.find((item) => item.system_id === (health.system_id ?? metadata?.system_id) && item.prediction_available)
+        ?? catalog.find((item) => item.prediction_available)
+      if (!activeSystem) throw new ApiError('No catalogued system is marked as an available verified prediction family.', 503)
+      const meta = await loadFamily(activeSystem)
+      if (!meta) throw new ApiError('The loaded model family returned no metadata.', 503)
       const stationRows = await api.stations(activeSystem.system_id)
-      setMetadata(meta)
+      if (stationRows.length === 0) throw new ApiError('The verified station list for this family is empty.', 503)
       setStations(stationRows)
-      setReport(modelReport)
-      setAnalytics(stationProfiles)
       setCity(activeSystem.city)
       setMode(activeSystem.mode)
       setOperator(activeSystem.operator)
       setSystemId(activeSystem.system_id)
-      setStationId(meta.default_station_id)
+      setStationId(meta.default_station_id || stationRows[0].station_id)
       setTargetDate(meta.default_target_date)
-      setTargetHour(meta.default_target_hour)
+      if (meta.default_target_hour !== undefined) setTargetHour(meta.default_target_hour)
     } catch (error) {
       setBootstrapError(error instanceof Error ? error.message : 'Could not connect to the India transit model service.')
     } finally {
       setBooting(false)
     }
-  }, [])
+  }, [loadFamily])
 
   useEffect(() => { void loadApplication() }, [loadApplication])
 
+  // Observed history and the pattern view follow the family's granularity.
   useEffect(() => {
     if (!metadata || !predictionAvailable || !stationId) {
       setHistory(null)
       setHeatmap(null)
+      setWeekly(null)
       setHistoryLoading(false)
       setHeatmapLoading(false)
       return
@@ -103,24 +128,28 @@ function App() {
     setHistoryLoading(true)
     setHeatmapLoading(true)
     setDataError(null)
-    Promise.allSettled([
-      api.history(systemId, stationId, 168),
-      api.heatmap(systemId, stationId),
-    ]).then(([historyResult, heatmapResult]) => {
+    const series = granularity === 'day' ? api.history(systemId, stationId, { days: 90 }) : api.history(systemId, stationId, { hours: 168 })
+    const pattern = granularity === 'day' ? api.weeklyPattern(systemId, stationId) : api.heatmap(systemId, stationId)
+    Promise.allSettled([series, pattern]).then(([historyResult, patternResult]) => {
       if (!alive) return
       if (historyResult.status === 'fulfilled') setHistory(historyResult.value)
       else setDataError(historyResult.reason instanceof Error ? historyResult.reason.message : 'Observed station history is unavailable.')
-      if (heatmapResult.status === 'fulfilled') setHeatmap(heatmapResult.value)
-      else setDataError((current) => current ?? (heatmapResult.reason instanceof Error ? heatmapResult.reason.message : 'Observed weekly profile is unavailable.'))
+      if (patternResult.status === 'fulfilled') {
+        if (granularity === 'day') setWeekly(patternResult.value as WeeklyPatternResponse)
+        else setHeatmap(patternResult.value as HeatmapResponse)
+      } else {
+        setDataError((current) => current ?? (patternResult.reason instanceof Error ? patternResult.reason.message : 'Observed weekly profile is unavailable.'))
+      }
     }).finally(() => {
       if (alive) { setHistoryLoading(false); setHeatmapLoading(false) }
     })
     return () => { alive = false }
-  }, [metadata, predictionAvailable, stationId, systemId])
+  }, [granularity, metadata, predictionAvailable, stationId, systemId])
 
   const selectSystem = (system: TransitSystem) => {
     stationRequestId.current += 1
     const requestId = stationRequestId.current
+    familyRequestId.current += 1
     setCity(system.city)
     setMode(system.mode)
     setOperator(system.operator)
@@ -130,14 +159,22 @@ function App() {
     setResult(null)
     setComparison(null)
     setPredictionError(null)
-    if (!system.prediction_available) return
-    void api.stations(system.system_id).then((rows) => {
-      if (requestId !== stationRequestId.current) return
-      setStations(rows)
-      setStationId((current) => rows.some((row) => row.station_id === current) ? current : rows[0]?.station_id ?? '')
-    }).catch((error) => {
-      if (requestId === stationRequestId.current) setDataError(error instanceof Error ? error.message : 'Verified station records are unavailable.')
-    })
+    setPreview(null)
+    if (!system.prediction_available) { setGap(null); return }
+    void (async () => {
+      try {
+        const meta = metadata?.system_id === system.system_id ? metadata : await loadFamily(system)
+        if (!meta) return
+        const rows = await api.stations(system.system_id)
+        if (requestId !== stationRequestId.current) return
+        setStations(rows)
+        setStationId((current) => rows.some((row) => row.station_id === current) ? current : meta?.default_station_id || rows[0]?.station_id || '')
+        setTargetDate(meta.default_target_date)
+        if (meta.default_target_hour !== undefined) setTargetHour(meta.default_target_hour)
+      } catch (error) {
+        if (requestId === stationRequestId.current) setDataError(error instanceof Error ? error.message : 'Verified station records are unavailable.')
+      }
+    })()
   }
 
   const handleCityChange = (nextCity: string) => {
@@ -168,12 +205,15 @@ function App() {
     setResult(null)
     setComparison(null)
     try {
-      const prediction = await api.predict({ system_id: systemId, station_id: stationId, target_date: targetDate, target_hour: targetHour })
+      const prediction = await api.predict({
+        system_id: systemId, station_id: stationId, target_date: targetDate,
+        target_hour: granularity === 'hour' ? targetHour : undefined,
+      })
       setResult(prediction)
       setPredicting(false)
       setComparing(true)
       try {
-        const stationRows = await api.stationComparison(systemId, targetDate, targetHour, stationId)
+        const stationRows = await api.stationComparison(systemId, targetDate, granularity === 'hour' ? targetHour : null, stationId)
         setComparison(stationRows)
       } catch (comparisonError) {
         setDataError(comparisonError instanceof Error ? comparisonError.message : 'Station comparison is unavailable for this target.')
@@ -205,7 +245,7 @@ function App() {
         <Navigation />
         <main id="home" className="connection-failure section-anchor">
           <span className="failure-icon">!</span><p className="eyebrow">VERIFIED MODEL SERVICE NOT READY</p><h1>The signal is<br /><em>unavailable.</em></h1>
-          <p>{bootstrapError ?? healthDetail ?? 'The application could not load its observed source data and trained BMRCL artifact.'}</p>
+          <p>{bootstrapError ?? healthDetail ?? 'The application could not load its observed source data and a trained model artifact.'}</p>
           <button type="button" className="arrow-link" onClick={() => void loadApplication()}>Retry connection <RefreshCw size={15} /></button>
           <div className="failure-foot">NO SAMPLE RESULTS · NO PLACEHOLDER FORECASTS · NETWORK REFERENCES ARE NOT DEMAND</div>
         </main>
@@ -225,17 +265,17 @@ function App() {
         <SystemsSection systems={systems} candidates={candidates} selectedSystemId={systemId} onSelectSystem={selectSystem} />
         <PredictSection
           metadata={metadata} systems={systems} selectedSystem={selectedSystem} systemId={systemId}
-          city={city} mode={mode} operator={operator}
+          city={city} mode={mode} operator={operator} granularity={granularity} gap={gap}
           onCityChange={handleCityChange} onModeChange={handleModeChange} onOperatorChange={handleOperatorChange}
           stations={stations} stationId={stationId} setStationId={changeStation}
           date={targetDate} setDate={setTargetDate} hour={targetHour} setHour={setTargetHour}
           onSubmit={handlePredict} loading={predicting} result={result} error={predictionError} comparison={comparison}
         />
-        <Suspense fallback={<SectionFallback label="observed BMRCL boardings" />}><StationDemandSection history={historyLoading ? null : history} heatmap={heatmapLoading ? null : heatmap} stations={stations} stationId={stationId} onPickHour={setTargetHour} available={predictionAvailable} /></Suspense>
-        <StationSection comparison={comparison} loading={comparing} selectedStationId={stationId} onSelectStation={chooseStationFromComparison} available={predictionAvailable} />
-        <ModelLabSection report={report} activeSystemId={systemId} />
+        <Suspense fallback={<SectionFallback label="observed station demand" />}><StationDemandSection history={historyLoading ? null : history} heatmap={heatmapLoading ? null : heatmap} weekly={weekly} granularity={granularity} preview={preview} stations={stations} stationId={stationId} onPickHour={setTargetHour} available={predictionAvailable} /></Suspense>
+        <StationSection comparison={comparison} loading={comparing} selectedStationId={stationId} onSelectStation={chooseStationFromComparison} available={predictionAvailable} granularity={granularity} />
+        <ModelLabSection report={report} activeSystemId={systemId} granularity={granularity} />
         <Suspense fallback={<SectionFallback label="station behaviour profiles" />}><StationAnalyticsSection analytics={analytics} available={predictionAvailable} /></Suspense>
-        <MethodologySection metadata={metadata} report={report} activeSystemId={systemId} />
+        <MethodologySection metadata={metadata} report={report} activeSystemId={systemId} granularity={granularity} />
         <FinalCallToAction />
       </main>
       <Footer />

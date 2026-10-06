@@ -342,14 +342,45 @@ class TransitInferenceService:
             note = "Historical one-step replay using only observations strictly before the target; the target itself is not used as a feature."
         else:
             note = "Estimate for an hour with no published target observation, using only earlier observed features; missing target data is not treated as zero."
+        aligned = station_data.loc[station_data["timestamp"].eq(target)]
+        if aligned.empty:
+            scoring = {
+                "actual_observed_demand": None, "observation_status": "OBSERVED VALUE UNAVAILABLE",
+                "evaluation_status": ("not_scored_future_period" if target > latest else "not_scorable_no_observation_for_target"),
+                "absolute_error": None, "signed_error": None, "absolute_percentage_error": None,
+                "error_note": ("The BMRCL archive holds no observation for this station-hour, so there is nothing to "
+                               "compare against. It has not been estimated, interpolated or replaced with zero."),
+            }
+        else:
+            observed = float(pd.to_numeric(aligned["demand_count"], errors="coerce").iloc[-1])
+            absolute_error = abs(demand - observed)
+            scoring = {
+                "actual_observed_demand": observed, "observation_status": "OBSERVED",
+                "observation_rows": int(len(aligned)), "evaluation_status": "scored_against_observation",
+                "absolute_error": float(absolute_error), "signed_error": float(demand - observed),
+                "absolute_percentage_error": float(absolute_error / observed * 100.0) if observed else None,
+                "error_note": ("Actual value is the observation stored in the archive for this station-hour; it was not a "
+                               "model input. A historical replay is scored for transparency, not as out-of-sample accuracy."),
+            }
+        scoring["horizon_status"] = "unmeasured"
+        scoring["horizon_validation"] = {
+            "status": "not_available_for_this_artifact",
+            "detail": ("The hour-granularity artifact predates horizon banding, so no per-horizon accuracy claim is "
+                       "attached; error growth for recursive projections is documented in the model report instead."),
+            "max_recursive_horizon_hours": int(self.bundle.get("max_recursive_horizon_hours", 336)),
+        }
+        scoring["forecast_interval"] = None
         return {
             "system_id": selected_system,
             "station_id": station_id,
             "station_name": str(station_data["entity_name"].iloc[0]),
             "target_timestamp": target.isoformat(),
-            "origin_timestamp": (target - pd.Timedelta(hours=1)).isoformat(),
+            "origin_timestamp": (latest if (recursive and horizon > 1) else target - pd.Timedelta(hours=1)).isoformat(),
+            "origin_basis": ("data_frontier_recursive_seed" if (recursive and horizon > 1) else "previous_observed_period"),
+            "data_frontier": latest.isoformat(),
             "predicted_boardings": float(demand),
-            "measure": "hourly_station_boardings",
+            "measure": str(self._family_label("measure") or "hourly_station_boardings"),
+            "unit": str(self._family_label("unit") or "passengers boarding the station in that clock hour"),
             "relative_demand_band": risk,
             "risk": risk,
             "risk_method": threshold_source,
@@ -364,8 +395,19 @@ class TransitInferenceService:
             "is_recursive_forecast": recursive,
             "forecast_kind": forecast_kind,
             "forecast_note": note,
+            **scoring,
             "_features": final_features,
         }
+
+    def _family_label(self, key: str) -> str | None:
+        """Registry/bundle metadata for this family, or None when it carries none."""
+        value = dict(self.bundle.get("model_family") or {}).get(key)
+        if value:
+            return str(value)
+        try:
+            return str(get_model_family(str(self.system_id)).get(key) or "") or None
+        except ValueError:
+            return None
 
     def _local_explanation(self, result: dict[str, Any]) -> list[dict[str, Any]]:
         model = self.bundle["regression_model"]

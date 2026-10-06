@@ -1,0 +1,98 @@
+{
+  "dataset": "data/processed/namma_metro_station_hourly.csv",
+  "evaluated_at_utc": "2026-10-06T15:24:29+00:00",
+  "granularity": "hour",
+  "timezone": "Asia/Kolkata",
+  "rows": 92280,
+  "entities": 83,
+  "periods": {
+    "count": 1152,
+    "start": "2025-08-01",
+    "end": "2025-09-30",
+    "expected_contiguous_within_span": 1464
+  },
+  "data_quality": {
+    "zero_count": 18200,
+    "negative_count": 0,
+    "gap_cells": 26280,
+    "coverage_ratio": 0.77834,
+    "thin_entities": {},
+    "partitions": {
+      "train": {
+        "rows": 42288,
+        "days": 23,
+        "start": "2025-08-08",
+        "end": "2025-09-19"
+      },
+      "validation": {
+        "rows": 9960,
+        "days": 5,
+        "start": "2025-09-20",
+        "end": "2025-09-24"
+      },
+      "test": {
+        "rows": 11952,
+        "days": 6,
+        "start": "2025-09-25",
+        "end": "2025-09-30"
+      }
+    },
+    "cleaning_report": {
+      "rows_in": 92280,
+      "rows_out": 92280,
+      "system_id": "bengaluru-namma-metro",
+      "entity_count": 83,
+      "timestamp_min": "2025-08-01T00:00:00+05:30",
+      "timestamp_max": "2025-09-30T23:00:00+05:30",
+      "explicit_zero_observations": 18200,
+      "missing_observations_filled": 0,
+      "timezone": "Asia/Kolkata"
+    }
+  },
+  "criteria": {
+    "target_values_are_actual_observations": {
+      "pass": true,
+      "evidence": "92280 rows from ['bmrcl-ridership-hourly']; measures ['hourly_station_boardings']; 0 negative and 0 fractional counts; 18200 operator-reported zeros kept as real observations (source-reported, not filled); provenance class: verified_project_source"
+    },
+    "temporal_granularity_is_known": {
+      "pass": true,
+      "evidence": "one row per entity per hour (3600s); 1152 distinct periods from 2025-08-01 00:00:00+05:30 to 2025-09-30 23:00:00+05:30; modal spacing is the declared period, so the grid is not an assumption"
+    },
+    "time_ordering_is_known": {
+      "pass": true,
+      "evidence": "timestamps parse to Asia/Kolkata and increase without duplicates for all 83 entities; lag/rolling features rely on that ordering"
+    },
+    "entity_identity_stable_enough": {
+      "pass": true,
+      "evidence": "83 entities, each with exactly one published name; per-period entity counts range 68-83 over 1464 periods inside each entity's own span; 0 entity(ies) below 50% coverage"
+    },
+    "sufficient_observations_for_time_series_split": {
+      "pass": true,
+      "evidence": "92280 rows -> 816 supervised targets; train 42,288 rows / 23 days, validation 9,960 rows / 5 days, test 11,952 rows / 6 days (needs >= 3,000/500/500 rows and >= 3 days each)"
+    },
+    "missingness_quantified": {
+      "pass": true,
+      "evidence": "26280 missing entity-period cells within the entities' own spans of 118560 expected (77.8% coverage); 0 cells were filled or interpolated - a gap deletes the supervised rows whose window would have to bridge it"
+    },
+    "no_future_values_used_for_past_features": {
+      "pass": true,
+      "evidence": "altering the 83 observation(s) at target period 2025-09-30 23:00:00+05:30 left all 64200 supervised rows at or before it byte-identical across 17 history/calendar columns; only strictly later rows may see that observation"
+    },
+    "genuine_future_test_period_exists": {
+      "pass": true,
+      "evidence": "source ends 2025-09-30, which is 370 day(s) before today, so a request for a date after the frontier is a real future forecast; 6 held-out days (11,952 rows) also audit the recursive projection path"
+    },
+    "license_usage_rights_understood": {
+      "pass": true,
+      "evidence": "license field: ODbL-1.0; redistribution stance: see data/licenses note; licence text shipped: data/licenses/BMRCL-ATTRIBUTION.md, data/licenses/CMRL-DATA-NOTICE.md, data/licenses/ODbL-1.0.txt"
+    },
+    "provenance_is_reproducible": {
+      "pass": true,
+      "evidence": "source_url=https://github.com/Vonter/bmrcl-ridership-hourly commit=6c44579b5ff3 sha256=a0469f3365c5; normalized file sha256=9cbc3981092d"
+    }
+  },
+  "failed_criteria": [],
+  "critical_failures": [],
+  "eligible_for_primary_future_prediction_model": true,
+  "policy": "All ten criteria must pass to train the primary future-demand model. A failure of a non-critical criterion still blocks promotion: the gate is a conjunction, not a score."
+}

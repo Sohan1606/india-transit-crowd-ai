@@ -1,0 +1,336 @@
+{
+  "dataset_id": "mumbai-suburban-rail-pdf-observed-2011-2013",
+  "generated_at_utc": "2026-10-06T12:24:54.580242+00:00",
+  "source_document": {
+    "title": "Mumbai Sub-urban Rail Passenger Surveys and Analysis — Executive Summary",
+    "prepared_for": "Mumbai Railway Vikas Corporation Ltd. (MRVC)",
+    "prepared_by": "Wilbur Smith Associates",
+    "file_name": "ExecutiveSummarywilber FINAL.pdf",
+    "file_sha256": "26f7d4ea4fb5ba27d283d9a1701815fcb39094782a370cedfc1427375993f646",
+    "pdf_pages": 38,
+    "pdf_creation_date": "2013-08-16",
+    "pdf_modification_date": "2013-09-04",
+    "licence_or_reuse_statement": "None printed in the executive summary; treat as reference-only unless MRVC grants reuse."
+  },
+  "granularity": {
+    "hourly_tables": "one named 1-hour interval within 08:00-22:00 (station profile) or the sampled peak period 07:00-11:30 / 16:00-20:30 (train travel)",
+    "station_tables": "one 14-hour typical-weekday total per station",
+    "is_continuous_time_series": false,
+    "observations_per_entity": "exactly one survey day per line/station"
+  },
+  "time_depth": {
+    "records": 249,
+    "records_by_measure": {
+      "passengers_travelling_in_peak_direction": 50,
+      "passengers_travelling_peak_period_total": 10,
+      "station_entries_plus_exits_14h": 47,
+      "station_entries_plus_exits_hourly_share": 56,
+      "peak_hour_section_load": 18,
+      "peak_hour_passengers_per_train": 10,
+      "peak_hour_passengers_travelling": 12,
+      "queue_length_at_ticket_counters": 46
+    },
+    "distinct_survey_periods": 5,
+    "distinct_lines": [
+      "Central Line",
+      "Entire suburban system",
+      "Entire suburban system (3 lines)",
+      "Harbour Line",
+      "Harbour Line (Main Harbour + Trans Harbour)",
+      "Trans-Harbour Line",
+      "Virar-Dhanu Road Line",
+      "Western Line"
+    ],
+    "distinct_stations_named": 50,
+    "distinct_time_intervals": 42,
+    "distinct_dates": [
+      "2011-12-08",
+      "2012-02-11",
+      "2012-11-21",
+      "2013-06-17",
+      "2013-06-18"
+    ],
+    "measures_with_a_real_timestamp": [
+      "queue_length_at_ticket_counters (dated survey day only)"
+    ]
+  },
+  "survey_periods": {
+    "commuter_feedback": {
+      "survey": "Commuter Feedback Survey",
+      "start": "2011-11-22",
+      "end": "2011-12-06",
+      "daily_window": "08:00-22:00 (14 hrs)",
+      "sample": "25,000 samples interviewed at stations and inside trains",
+      "exclusions": "Started after Diwali vacation (after 13/11/2011); no surveys during Christmas vacation 23/12/2011-02/01/2012."
+    },
+    "entry_exit_count": {
+      "survey": "Passenger Entry/Exit count",
+      "start": "2011-12-08",
+      "end": "2012-02-10",
+      "daily_window": "08:00-22:00 (14 hrs)",
+      "sample": "All authorised and un-authorised entry points of 37 selected stations",
+      "exclusions": "Report prints the end date as '10/2/2012' in Table E-1 (day/month/year)."
+    },
+    "alighting_distribution": {
+      "survey": "Alighting Distribution Survey (37 stations)",
+      "start": null,
+      "end": null,
+      "daily_window": "morning/evening peak period",
+      "sample": "Selected platforms, Up and Down directions, slow and fast services; SCG/SCL/FCG/FCL/Vendor/PH coaches",
+      "exclusions": "Table E-1 leaves the start-end date cell blank for this survey row."
+    },
+    "in_train_boarding_alighting": {
+      "survey": "In-Train Rail Passenger Boarding/Alighting Surveys",
+      "start": "2012-02-11",
+      "end": "2012-03-15",
+      "daily_window": "07:00-11:30 or 16:00-20:30",
+      "sample": "310 services (124 Western, 94 Central, 92 Harbour); count of passengers boarding/alighting at every station",
+      "exclusions": "Table E-1 heading says 300 services in Section III and 310 in Table E-1/narrative; the narrative figure 310 is used."
+    },
+    "virar_dahanu_road": {
+      "survey": "Virar-Dhanu Road line surveys (secondary data + limited surveys)",
+      "start": "2013-06-17",
+      "end": "2013-06-18",
+      "daily_window": "08:00-22:00 (14 hrs) for entry/exit",
+      "sample": "Inspection/mapping, entry-exit counts, FoB counts at 8 stations",
+      "exclusions": "Section added on the basis of secondary data provided by MRVC and limited surveys."
+    }
+  },
+  "station_scope": {
+    "Western Line": [
+      "Churchgate",
+      "Mumbai Central",
+      "Dadar (Western)",
+      "Mahim",
+      "Bandra",
+      "Andheri",
+      "Goregaon",
+      "Borivali",
+      "Mira Road",
+      "Bhayander",
+      "Vasai Road",
+      "Nalasopara",
+      "Virar"
+    ],
+    "Virar-Dhanu Road Line": [
+      "Vaitarna",
+      "Kelve Raod",
+      "Saphale",
+      "Palghar",
+      "Umroli",
+      "Boisar",
+      "Vangaon",
+      "Dhanu Road"
+    ],
+    "Central Line": [
+      "Mumbai CST",
+      "Masjid",
+      "Byculla",
+      "Dadar (Central)",
+      "Kurla",
+      "Ghatkopar",
+      "Bhandup",
+      "Mulund",
+      "Thane",
+      "Dombivilli",
+      "Kalyan",
+      "Kasara",
+      "Karjat",
+      "Khopoli"
+    ],
+    "Harbour Line": [
+      "Vadala Road",
+      "GTB Nagar",
+      "Chembur",
+      "Govandi",
+      "Vashi",
+      "Nerul",
+      "Belapur",
+      "Kharghar",
+      "Panvel",
+      "Airoli",
+      "Turbe"
+    ]
+  },
+  "network_context": {
+    "route_kms": 319,
+    "corridors": 3,
+    "stations": {
+      "Western Line": 36,
+      "Central Line": 51,
+      "Harbour Line": 28
+    },
+    "daily_services_total": 2813,
+    "daily_services": {
+      "Western Line": {
+        "total": 1201,
+        "rake_9_car": 6,
+        "rake_12_car": 1165,
+        "rake_15_car": 30
+      },
+      "Central Line": {
+        "total": 875,
+        "rake_9_car": 0,
+        "rake_12_car": 809,
+        "rake_15_car": 16
+      },
+      "Harbour Line": {
+        "total": 787,
+        "rake_9_car": 577,
+        "rake_12_car": 210,
+        "rake_15_car": null
+      }
+    },
+    "weekday_passengers_stated": "more than 80 lakhs on a weekday",
+    "rated_capacity_passengers": {
+      "9_car": 1800,
+      "12_car": 3522
+    },
+    "capacity_source": "MRVC (as cited in the report)"
+  },
+  "observed_vs_modelled": {
+    "observed_or_derived_tables_used": [
+      "Table E-4",
+      "Table E-5",
+      "Table E-6",
+      "Table E-7",
+      "Table E-8",
+      "Table E-9",
+      "Table E-10",
+      "Table E-11",
+      "Table E-12",
+      "Table E-14",
+      "Table E-15",
+      "Table E-16",
+      "Table E-17",
+      "Table E-18",
+      "Table E-19",
+      "Table E-20",
+      "Table E-21",
+      "Table E-22",
+      "Figures E-4..E-9 narrative peak hours",
+      "Narrative iv train crowding"
+    ],
+    "modelled_tables_quarantined": {
+      "Table E-13": "Passenger Trips OD forecast for 2012 / 2016 (interpolated) / 2021 / 2031 — HISTORICAL STUDY MODEL OUTPUT"
+    }
+  },
+  "modelled_forecast_quarantine": {
+    "classification": "HISTORICAL STUDY MODEL OUTPUT",
+    "eligible_as_supervised_label": false,
+    "source_table": "Table E-13",
+    "source_page": 25,
+    "source_document": "Mumbai Sub-urban Rail Passenger Surveys and Analysis (Executive Summary)",
+    "measure": "daily_passenger_trips_od_forecast",
+    "unit": "lakh daily trips",
+    "produced_by": "Updated strategic Urban Travel Demand model for Greater Mumbai (originally 2008), base year 2012; 2021 and 2031 peak-hour ODs modelled then expanded to daily",
+    "year_semantics": {
+      "2012": "model base year (modelled estimate of the surveyed weekday pattern, expanded to a day)",
+      "2016": "INTERPOLATED because the report states no model forecast was available for 2016",
+      "2021": "model forecast year",
+      "2031": "model forecast year"
+    },
+    "rejection_reason": "These are travel-demand model outputs and interpolations, not counted passengers. Training a forecast model on 2012->2016->2021->2031 would use model output as ground truth (circular pseudo-labels) and cannot support a genuine future prediction.",
+    "permitted_use": "Retained only as a clearly labelled historical-study benchmark for context and plausibility checks.",
+    "values": [
+      {
+        "year": 2012,
+        "western_line_lakhs": 38.15,
+        "central_line_lakhs": 26.34,
+        "harbour_line_lakhs": 18.76,
+        "total_lakhs": 83.25
+      },
+      {
+        "year": 2016,
+        "western_line_lakhs": 41.19,
+        "central_line_lakhs": 29.86,
+        "harbour_line_lakhs": 24.6,
+        "total_lakhs": 95.65
+      },
+      {
+        "year": 2021,
+        "western_line_lakhs": 44.65,
+        "central_line_lakhs": 33.85,
+        "harbour_line_lakhs": 30.82,
+        "total_lakhs": 109.32
+      },
+      {
+        "year": 2031,
+        "western_line_lakhs": 51.14,
+        "central_line_lakhs": 40.84,
+        "harbour_line_lakhs": 42.67,
+        "total_lakhs": 134.65
+      }
+    ]
+  },
+  "validation_gate": {
+    "eligible_for_primary_future_prediction_model": false,
+    "failed_criteria": [
+      "target_values_are_actual_observations",
+      "time_ordering_is_known",
+      "missingness_quantified",
+      "license_usage_rights_understood",
+      "sufficient_observations_for_time_series_split",
+      "genuine_future_test_period_exists"
+    ],
+    "criteria": {
+      "target_values_are_actual_observations": {
+        "pass": false,
+        "evidence": "Most values are sample-survey expansions (2-step: coach→train, sample services→all peak services), not raw counts. Only entry/exit counts and queue counts are directly counted, and even those are one-day aggregates."
+      },
+      "time_ordering_is_known": {
+        "pass": false,
+        "evidence": "Hourly order within 08:00-22:00 is known, but there is only one surveyed weekday per line; no ordering across days exists."
+      },
+      "temporal_granularity_is_known": {
+        "pass": true,
+        "evidence": "1 hour for the interval tables; 14-hour day totals for station rows."
+      },
+      "entity_identity_stable_enough": {
+        "pass": true,
+        "evidence": "Named stations and fixed line/section labels; 47 station rows over 4 line rosters."
+      },
+      "source_provenance_documented": {
+        "pass": true,
+        "evidence": "Single PDF; table and page recorded for every row; survey schedule in Table E-1."
+      },
+      "missingness_quantified": {
+        "pass": false,
+        "evidence": "The report does not state how many of the 154 network stations were excluded, nor per-station survey-day counts, so missingness cannot be quantified."
+      },
+      "no_future_values_used_for_past_features": {
+        "pass": true,
+        "evidence": "No lag/rolling features are constructed from this source at all."
+      },
+      "license_usage_rights_understood": {
+        "pass": false,
+        "evidence": "No licence or reuse statement is printed in the executive summary; MRVC/WSA ownership of the survey report is asserted by the cover page only."
+      },
+      "sufficient_observations_for_time_series_split": {
+        "pass": false,
+        "evidence": "249 extracted rows exist, but they form 5 survey-period snapshots rather than a series; no train/validation/test time split is possible."
+      },
+      "genuine_future_test_period_exists": {
+        "pass": false,
+        "evidence": "A 2013 study has no future observation after any candidate cut-off; a 'forecast' here would be pure extrapolation from one weekday, unverifiable."
+      }
+    },
+    "decision": "REJECT as the primary future-prediction dataset. ACCEPT as a labelled historical baseline: peak-hour shape, hourly profile, station entry/exit structure and crowding ratios."
+  },
+  "target_definition": {
+    "proposed_target": null,
+    "reason": "No future observation exists after any cut-off, and each entity has a single surveyed day, so no autoregressive target can be defined or evaluated."
+  },
+  "notes": [
+    "The number in brackets in Tables E-5..E-8 is the number of trains running in that hour; in Tables E-14..E-20 it is the number of trains stopping at the station between 08:00 and 22:00. Both are preserved as service features, never as demand.",
+    "Section III lists 37 selected stations; the scope lists name 13 + 8 + 14 + 11 = 46 station entries with Virar shared between two tables and Dadar split into West/Central. The report's own count of 37 is retained verbatim rather than reconciled.",
+    "The report states the survey was carried out on a typical weekday and that the evening pattern was assumed to mirror the morning in reverse order; that assumption is recorded as a methodology note, not corrected.",
+    "No per-day dates are invented anywhere in this dataset."
+  ],
+  "outputs": {
+    "observed_csv": "data/research/mumbai_suburban_rail_pdf_observed.csv",
+    "observed_csv_sha256": "ad7913f919e4c23cc3fd06c1a120b8592a0528ec92e8ce69bda8de8ec3f9edcb",
+    "modelled_csv": "data/research/mumbai_suburban_rail_MODELLED_od_forecast.csv",
+    "modelled_csv_sha256": "437d4844f9dfd5836d138bb57d7f5d09a5a743de54c4ab01f426b9848a1cf17a"
+  }
+}

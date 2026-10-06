@@ -2,7 +2,8 @@ import { ArrowRight, ExternalLink, MoveUpRight, TrainFront } from 'lucide-react'
 import type { StationComparison, Risk } from '../types/api'
 import { Reveal, RiskBadge, SectionHeading } from '../components/ui'
 
-export function StationSection({ comparison, loading, selectedStationId, onSelectStation, available }: {
+export function StationSection({ comparison, loading, selectedStationId, onSelectStation, available, granularity = 'hour' }: {
+  granularity?: 'hour' | 'day'
   comparison: StationComparison | null
   loading: boolean
   selectedStationId: string
@@ -25,17 +26,17 @@ export function StationSection({ comparison, loading, selectedStationId, onSelec
             <div className="comparison-empty"><span className="comparison-empty-icon"><MoveUpRight size={20} /></span><div><p className="eyebrow">STATION-LEVEL CONTEXT</p><h3>Start with a single station.</h3><p>Run a forecast above. This view will compare the same target hour across stations using each station's training-period percentile.</p><a href="#predict">Choose a station <ArrowRight size={14} /></a></div></div>
           ) : loading ? <div className="station-loading"><span className="chart-spinner" />Scoring station forecasts for this target hour…</div> : (
             <>
-              <div className="station-list-head"><span>STATION</span><span>DEMAND VS OWN HISTORY</span><span>MODELLED BOARDINGS</span><span>RELATIVE BAND</span></div>
+              <div className="station-list-head"><span>STATION</span><span>DEMAND VS OWN HISTORY</span><span>MODELLED {granularity === 'day' ? 'ENTRIES' : 'BOARDINGS'}</span><span>RELATIVE BAND</span></div>
               <div className="station-compare-list">
                 {comparison?.stations.map((item, index) => {
                   const percentile = item.historical_percentile ?? 0
                   const relativeWidth = Math.max(3, percentile / maxPercentile * 100)
                   return (
-                    <button type="button" className={`station-compare-row ${item.station_id === selectedStationId ? 'is-selected' : ''}`} key={item.station_id} onClick={() => onSelectStation(item.station_id)} aria-label={`Select ${item.station_name}, model estimate ${Math.round(item.predicted_boardings).toLocaleString()} boardings per hour, ${item.relative_demand_band} relative band`}>
+                    <button type="button" className={`station-compare-row ${item.station_id === selectedStationId ? 'is-selected' : ''}`} key={item.station_id} onClick={() => onSelectStation(item.station_id)} aria-label={`Select ${item.station_name}, model estimate ${Math.round(item.predicted_boardings ?? item.predicted_daily_entries ?? 0).toLocaleString()} ${granularity === 'day' ? 'entries per day' : 'boardings per hour'}, ${item.relative_demand_band} relative band`}>
                       <span className="station-rank">{String(index + 1).padStart(2, '0')}</span>
                       <strong className="station-name">{item.station_name}</strong>
                       <span className="station-relative"><span className="station-relative-track"><i style={{ width: `${relativeWidth}%` }} /></span><small>{item.historical_percentile === null ? '—' : `≈ ${item.historical_percentile}th percentile`}</small></span>
-                      <strong className="station-forecast-value">{Math.round(item.predicted_boardings).toLocaleString()} <small>/ h</small></strong>
+                      <strong className="station-forecast-value">{Math.round(item.predicted_boardings ?? item.predicted_daily_entries ?? 0).toLocaleString()} <small>{granularity === 'day' ? '/ day' : '/ h'}</small></strong>
                       <RiskBadge risk={item.relative_demand_band as Risk} />
                       <MoveUpRight className="station-row-arrow" size={14} aria-hidden="true" />
                     </button>
