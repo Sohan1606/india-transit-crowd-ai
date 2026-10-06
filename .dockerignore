@@ -1,0 +1,28 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+node_modules
+**/node_modules
+.venv
+venv
+__pycache__
+**/__pycache__
+.pytest_cache
+.mypy_cache
+.ruff_cache
+frontend/dist
+frontend/coverage
+frontend/tsconfig.tsbuildinfo
+
+# Do not send unverified/source download trees to the API image.
+data/raw
+# Keep only the normalized dataset and its provenance sidecar needed at runtime.
+data/processed/*
+!data/processed/namma_metro_station_hourly.csv
+!data/processed/namma_metro_station_hourly.metadata.json
+*.log
+*.png
+TransitCrowd-AI-FINAL.zip
+TransitCrowd-AI-INDIA-FINAL.zip

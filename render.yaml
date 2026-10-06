@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: india-transit-crowd-ai-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements-runtime.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.4
+      - key: TRANSITCROWD_MODEL
+        value: backend/models/bengaluru-namma-metro/transitcrowd.joblib
+      - key: TRANSITCROWD_DATA
+        value: data/processed/namma_metro_station_hourly.csv
+      - key: TRANSITCROWD_SOURCE_METADATA
+        value: data/processed/namma_metro_station_hourly.metadata.json
+      - key: CORS_ORIGINS
+        sync: false
