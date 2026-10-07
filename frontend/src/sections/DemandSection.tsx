@@ -55,9 +55,9 @@ export function StationDemandSection({
           <SectionHeading eyebrow="THE DEMAND STORY" title={<>Station demand<br /><em>has a rhythm.</em></>} copy={isDay
   ? 'Explore published station-day counts. Days the source never published stay missing; forecasts are never blended into the observed series.'
   : 'Explore the published station-hour observations. Missing source hours remain missing; forecasts are never blended into the observed series.'} />
-          <div className="demand-station-context"><span className="context-overline">SELECTED STATION</span><strong>{available ? summary?.station_name ?? '—' : 'Not available'}</strong><span>{available && summary ? `${(isDay ? summary.observed_days ?? summary.observed_hours : summary.observed_hours).toLocaleString()} observed station-${countWord}` : 'No verified history for this system'}</span><a href="#predict">Change station <ArrowUpRight size={13} /></a></div>
+          <div className="demand-station-context"><span className="context-overline">SELECTED STATION</span><strong>{available ? summary?.station_name ?? '—' : 'Not available'}</strong><span>{available && summary ? `${(isDay ? summary.observed_days ?? summary.observed_hours : summary.observed_hours).toLocaleString()} observed station-${countWord}` : 'No source history for this system'}</span><a href="#predict">Change station <ArrowUpRight size={13} /></a></div>
         </div>
-        {!available ? <div className="unsupported-panel analytics-unavailable" role="status"><p className="eyebrow">NO OBSERVED-DEMAND VIEW</p><h3>Network discovery does not include passenger counts.</h3><p>Only systems with verified observed station-level demand have a history view here. Select one of those systems to explore its series.</p></div> : (
+        {!available ? <div className="unsupported-panel analytics-unavailable" role="status"><p className="eyebrow">NO OBSERVED-DEMAND VIEW</p><h3>Network discovery does not include passenger counts.</h3><p>Only registered model families with source demand history have a history view here. Select one of those families to explore its series.</p></div> : (
           <>
             <Reveal>
               <div className="history-story-card">
@@ -109,8 +109,8 @@ export function StationDemandSection({
                     })}
                     {preview && (
                       <div className="weekday-bars-foot">
-                        <span>NEXT {preview.days.length} UNOBSERVED DAY{preview.days.length === 1 ? '' : 'S'} · MODEL FORECAST</span>
-                        {preview.days.map((day) => <b key={day.date}>{day.day_name.slice(0, 3)} {full.format(Math.round(day.system_total_predicted_entries))}</b>)}
+                        <span>NEXT {(preview.days ?? []).length} UNOBSERVED DAY{(preview.days ?? []).length === 1 ? '' : 'S'} · MODEL FORECAST</span>
+                        {(preview.days ?? []).map((day) => <b key={day.date}>{day.day_name.slice(0, 3)} {full.format(Math.round(day.system_total_predicted_entries))}</b>)}
                       </div>
                     )}
                   </div>
