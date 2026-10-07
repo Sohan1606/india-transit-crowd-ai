@@ -16,7 +16,7 @@ const processSteps = [
 const limitationItems = [
   ['Historical / modelled snapshot', 'Each family is answered from the data snapshot packaged for that family. Coverage and granularity vary by family.'],
   ['Not current service', 'There is no live passenger-demand feed in this product. Forecasts begin from each family’s data frontier and may lag the current date.'],
-  ['Not occupancy', 'The source records station boardings per hour. It contains no train capacity or onboard load, so the percentile bands are not physical crowding or safety thresholds.'],
+  ['Not occupancy', 'The source records passenger demand at its published resolution. It contains no train capacity or onboard load, so the percentile bands are not physical crowding or safety thresholds.'],
   ['Short holdout', 'The latest chronological test period is only a few days. It does not establish annual seasonality or performance on current service patterns.'],
   ['Unobserved context', 'Disruptions, headways, weather, holidays, events, transfers and service changes are not joined model features.'],
   ['Decision support', 'Recommendations compare estimates at the same station; a lower predicted count is not a service guarantee, occupancy guarantee or substitute for official advisories.'],
@@ -57,7 +57,7 @@ export function MethodologySection({ metadata, report, activeSystemId, granulari
               </article>
             ))}
           </div>
-          <div className="pipeline-note"><span>AT ORIGIN T−1</span><b>observed station history only</b><ArrowRight size={14} /><b>estimate boardings at target T</b><span>RISK CUTS: TRAIN ONLY</span></div>
+          <div className="pipeline-note"><span>AT ORIGIN T−1</span><b>source history only</b><ArrowRight size={14} /><b>{isDay ? 'estimate entries at target T' : 'estimate boardings at target T'}</b><span>RISK CUTS: TRAIN ONLY</span></div>
         </Reveal>
         <div className="method-explainer-grid">
           <Reveal className="risk-method-card">
@@ -77,7 +77,7 @@ export function MethodologySection({ metadata, report, activeSystemId, granulari
             <h3>One engine.<br /><em>A precise scope.</em></h3>
             <div className="source-info-row"><span>DATA SOURCE</span><b>{metadata.dataset.title}</b></div>
             <div className="source-info-row"><span>OBSERVED WINDOWS</span><b>{coverageText(metadata)}</b></div>
-            <div className="source-info-row"><span>VERIFIED RECORDS</span><b>{metadata.dataset.observed_rows.toLocaleString()} station-{countWord}s · {metadata.dataset.station_count} source stations{metadata.dataset.unique_days ? ` · ${metadata.dataset.unique_days} distinct days` : ''}</b></div>
+            <div className="source-info-row"><span>SOURCE RECORDS</span><b>{metadata.dataset.observed_rows.toLocaleString()} station-{countWord}s · {metadata.dataset.station_count} source stations{metadata.dataset.unique_days ? ` · ${metadata.dataset.unique_days} distinct days` : ''}</b></div>
             <div className="source-info-row"><span>PRIMARY SIGNAL</span><b>{isDay ? 'Station entries · one observed day' : 'Station boardings · one observed hour'}</b></div>
             <div className="source-info-row"><span>LICENSE</span><b>{metadata.dataset.license ?? 'ODbL-1.0'}</b></div>
             <div className="source-info-row"><span>FORECAST SCOPE</span><b>{metadata.city} · {metadata.mode} · {metadata.operator} only · {isDay ? 'next-day and future-day' : 'next-hour'} horizon</b></div>
@@ -88,7 +88,7 @@ export function MethodologySection({ metadata, report, activeSystemId, granulari
         <Reveal className="limitations-block">
           <div className="limitations-title"><ShieldAlert size={19} /><div><p className="eyebrow">WHAT THIS MODEL CANNOT KNOW</p><h3>Useful, because it is honest.</h3></div></div>
           <div className="limitations-grid">{limitationItems.map(([title, copy], index) => <div className="limitation-item" key={title}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{title}</strong><p>{copy}</p></div></div>)}</div>
-          <p className="future-note"><b>Future work:</b> an approved, reproducible observed-demand extract with suitable hourly station granularity, explicit reuse terms, longer evaluation history, service-context features, capacity data and calibrated prediction intervals would be prerequisites for expansion. What ships today is an
+          <p className="future-note"><b>Future work:</b> approved, reproducible observed-demand extracts with suitable station-level granularity, explicit reuse terms, longer evaluation history, service-context features, capacity data and calibrated prediction intervals would be prerequisites for expansion. What ships today is an
           empirical per-horizon error band measured on validation days, labelled uncalibrated in every response. GTFS can enrich network discovery, never supply the demand target.</p>
         </Reveal>
       </div>
