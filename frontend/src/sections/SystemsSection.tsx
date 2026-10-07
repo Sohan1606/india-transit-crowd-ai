@@ -32,7 +32,7 @@ export function SystemsSection({
                   {selectedSystemId === system.system_id ? 'SELECTED' : system.prediction_available ? 'OPEN PREDICTOR' : 'VIEW UNAVAILABLE STATUS'}
                   <ArrowUpRight size={13} />
                 </button>
-                {system.network_reference_url && <a href={system.network_reference_url} target="_blank" rel="noreferrer" aria-label={`Open ${system.system_name} network reference`}><ExternalLink size={14} /></a>}
+
               </div>
             </Reveal>
           ))}
