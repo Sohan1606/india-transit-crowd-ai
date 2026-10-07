@@ -390,8 +390,8 @@ export interface StationAnalytics {
     eps_selection: string
     cluster_count_excluding_noise: number
     outlier_count: number
-    outlier_entity_ids: string[]
-    clusters: Array<{ cluster_id: number; entity_count: number; entities: string[] }>
+    outlier_entity_ids?: string[]
+    clusters?: Array<{ cluster_id: number; entity_count: number; entities?: string[] }>
   }
   entities: StationAnalyticsPoint[]
   interpretation_note: string
