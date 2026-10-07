@@ -312,10 +312,6 @@ export function PredictSection({
   // loaded family, never from a system name, so any future demo family is labelled the same way.
   const demoFamily = metadata.served_as === 'demo'
   const hierarchyLevels = useMemo(() => metadata.entity_hierarchy ?? [], [metadata.entity_hierarchy])
-  const isDemonstration = metadata.data_class === 'synthetic_development' || metadata.served_as === 'demo'
-  // The series label has to say what the file is. Calling modelled synthetic data "observed" is the exact
-  // overclaim this project exists to avoid, so the wording switches on the family's own declared class.
-  const dataClassLabel = isDemonstration ? 'SYNTHETIC DEMONSTRATION DATA' : 'OBSERVED DATA'
   // TOWARDS is journey context for families whose source publishes no destination-specific counts: it is
   // derived from the corridor's own station ordering, shown so the choice reads like a real trip, and never
   // sent as if it were a measured direction.
@@ -336,8 +332,8 @@ export function PredictSection({
     <section id="predict" className="predict-section section-anchor section-pad">
       <div className="section-shell">
         <div className="predict-intro">
-          <SectionHeading eyebrow="THE PREDICTIVE ENGINE" title={<>The station-<span className="headline-unit">{granularity === 'day' ? 'day' : 'hour'}</span><br /><em>signal, made visible.</em></>} copy="Select a registered transit model family and forecast only within the demand history and horizon that its data and artifacts support. Synthetic demonstration families are labelled clearly." />
-          <div className="engine-status"><span className="status-ring" /><span>{isAvailable ? 'MODEL READY' : 'NO MODEL'}</span><small>{isAvailable ? `${metadata.operator} ${granularity === 'day' ? 'DAILY' : 'HOURLY'} SNAPSHOT · IST · NOT LIVE${demoFamily ? ' · SYNTHETIC DEMO' : ''}${gap?.days_behind_today !== null && gap?.days_behind_today !== undefined ? ` · ${gap.days_behind_today}D BEHIND TODAY` : ''}` : 'NETWORK DISCOVERY ONLY'}</small></div>
+          <SectionHeading eyebrow="THE PREDICTIVE ENGINE" title={<>The station-<span className="headline-unit">{granularity === 'day' ? 'day' : 'hour'}</span><br /><em>signal, made visible.</em></>} copy="Select a registered transit model family. Forecasts respect the family's published granularity, available history and bounded model horizon; data provenance is disclosed with the model output." />
+          <div className="engine-status"><span className="status-ring" /><span>{isAvailable ? 'MODEL READY' : 'NO MODEL'}</span><small>{isAvailable ? `${metadata.operator} ${granularity === 'day' ? 'DAILY' : 'HOURLY'} SNAPSHOT · IST · NOT LIVE${gap?.days_behind_today !== null && gap?.days_behind_today !== undefined ? ` · ${gap.days_behind_today}D BEHIND TODAY` : ''}` : 'NETWORK DISCOVERY ONLY'}</small></div>
         </div>
         {demoFamily ? (
           <p className="demo-note" role="status">
@@ -366,7 +362,7 @@ export function PredictSection({
               <>
                 {hierarchyLevels.length > 0 ? (
                   <>
-                    <label className="field-label">SERIES · {metadata.operator} {dataClassLabel}</label>
+                    <label className="field-label">SERIES · {metadata.operator}</label>
                     <EntityCascade key={metadata.system_id} stations={stations} levels={hierarchyLevels}
                       disabled={!isAvailable || stations.length === 0} onPick={setStationId} />
                     {towardsOptions.length > 0 && (
@@ -388,7 +384,7 @@ export function PredictSection({
                     )}
                   </>
                 ) : (<>
-                <label className="field-label" htmlFor="station-select">STATION · {metadata.operator} {dataClassLabel}</label>
+                <label className="field-label" htmlFor="station-select">STATION · {metadata.operator}</label>
                 <div className="control-wrap"><TrainFront size={16} aria-hidden="true" /><select id="station-select" name="station_id" value={stationId} onChange={(event) => setStationId(event.target.value)} required disabled={!isAvailable || stations.length === 0}>
                   {stations.map((item) => <option value={item.station_id} key={item.station_id}>
                     {item.station_name} · {(granularity === 'day' ? item.observed_days ?? item.observed_hours : item.observed_hours).toLocaleString()} observed {granularity === 'day' ? 'days' : 'hours'}
@@ -414,7 +410,7 @@ export function PredictSection({
                   <span>{loading ? 'ANALYSING STATION DEMAND' : 'PREDICT STATION DEMAND'}</span>
                   {loading ? <span className="button-spinner" aria-hidden="true" /> : <ArrowRight size={17} aria-hidden="true" />}
                 </button>
-                <p className="form-privacy">Observed station boardings only. No live train positions, occupancy, capacity or confidence score.</p>
+                <p className="form-privacy">Published passenger-demand data only. No live train positions, occupancy, capacity or confidence score.</p>
               </>
             )}
           </form>
