@@ -2,8 +2,8 @@ import { ArrowDown } from 'lucide-react'
 import { Reveal } from '../components/ui'
 
 const steps = [
-  ['01', 'OBSERVED', 'Station boardings by hour'],
-  ['02', 'ENGINEERED', 'History before target time'],
+  ['01', 'OBSERVED', 'Passenger demand at the source resolution'],
+  ['02', 'ENGINEERED', 'History strictly before the target'],
   ['03', 'FORECAST', 'A bounded model estimate'],
 ]
 
