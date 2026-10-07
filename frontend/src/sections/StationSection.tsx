@@ -19,12 +19,12 @@ export function StationSection({ comparison, loading, selectedStationId, onSelec
           <div className="station-context-stamp"><TrainFront size={16} /><span>STATION-RELATIVE<br />COMPARISON</span></div>
         </div>
         <div className="station-compare-frame">
-          <div className="station-compare-top"><span>01 / BMRCL STATION SNAPSHOT</span><span>{comparison ? comparison.target_timestamp.replace('T', ' ').slice(0, 16) : 'PREDICTION NEEDED'}</span></div>
+          <div className="station-compare-top"><span>01 / STATION DEMAND SNAPSHOT</span><span>{comparison ? comparison.target_timestamp.replace('T', ' ').slice(0, 16) : 'PREDICTION NEEDED'}</span></div>
           {!available ? (
-            <div className="comparison-empty"><span className="comparison-empty-icon"><TrainFront size={20} /></span><div><p className="eyebrow">SYSTEM DISCOVERY ONLY</p><h3>No station forecasts for this system.</h3><p>Only verified Bengaluru Namma Metro/BMRCL station-hour observations are enabled. Schedule references do not create passenger-demand predictions.</p><a href="#systems">Explore system data <ExternalLink size={14} /></a></div></div>
+            <div className="comparison-empty"><span className="comparison-empty-icon"><TrainFront size={20} /></span><div><p className="eyebrow">SYSTEM DISCOVERY ONLY</p><h3>No station forecasts for this system.</h3><p>Only registered model families with supported passenger-demand data can produce station-level estimates.</p><a href="#systems">Explore system data <ExternalLink size={14} /></a></div></div>
           ) : !comparison && !loading ? (
-            <div className="comparison-empty"><span className="comparison-empty-icon"><MoveUpRight size={20} /></span><div><p className="eyebrow">STATION-LEVEL CONTEXT</p><h3>Start with a single station.</h3><p>Run a forecast above. This view will compare the same target hour across stations using each station's training-period percentile.</p><a href="#predict">Choose a station <ArrowRight size={14} /></a></div></div>
-          ) : loading ? <div className="station-loading"><span className="chart-spinner" />Scoring station forecasts for this target hour…</div> : (
+            <div className="comparison-empty"><span className="comparison-empty-icon"><MoveUpRight size={20} /></span><div><p className="eyebrow">STATION-LEVEL CONTEXT</p><h3>Start with a single station.</h3><p>Run a forecast above. This view compares the same target period across stations using each station’s training-period percentile.</p><a href="#predict">Choose a station <ArrowRight size={14} /></a></div></div>
+          ) : loading ? <div className="station-loading"><span className="chart-spinner" />Scoring station forecasts for this target period…</div> : (
             <>
               <div className="station-list-head"><span>STATION</span><span>DEMAND VS OWN HISTORY</span><span>MODELLED {granularity === 'day' ? 'ENTRIES' : 'BOARDINGS'}</span><span>RELATIVE BAND</span></div>
               <div className="station-compare-list">
