@@ -1,4 +1,4 @@
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, ExternalLink } from 'lucide-react'
 
 export function Footer() {
   return (
@@ -13,10 +13,10 @@ export function Footer() {
           <a href="#systems">Data source <ArrowUpRight size={12} /></a>
           <a href="#methodology">Methodology <ArrowUpRight size={12} /></a>
           <a href="#methodology">Model notes <ArrowUpRight size={12} /></a>
-          <span aria-label="GitHub repository not published">GitHub · not published</span>
+          <a href="https://github.com/Sohan1606/india-transit-crowd-ai" target="_blank" rel="noreferrer">GitHub <ExternalLink size={12} /></a>
         </div>
       </div>
-      <div className="footer-bottom"><span>© 2026 INDIA TRANSIT CROWD AI / ACADEMIC PROJECT</span><span>BMRCL STATION BOARDINGS / NOT PHYSICAL OCCUPANCY</span><a href="#home">TOP ↑</a></div>
+      <div className="footer-bottom"><span>© 2026 INDIA TRANSIT CROWD AI / ACADEMIC PROJECT</span><span>PASSENGER DEMAND FORECASTS / NOT PHYSICAL OCCUPANCY</span><a href="#home">TOP ↑</a></div>
     </footer>
   )
 }
