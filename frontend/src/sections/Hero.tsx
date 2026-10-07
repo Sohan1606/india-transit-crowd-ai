@@ -65,7 +65,7 @@ export function Hero({ onExplore }: { onExplore: () => void }) {
             <motion.span initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ ...transition, delay: reduce ? 0 : 0.37 }}>ENTER IT<span className="hero-period">.</span></motion.span>
           </h1>
           <motion.div className="hero-under" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, delay: reduce ? 0 : 0.52 }}>
-            <p>Discover Indian city and transit systems. Forecasts are enabled only for the verified Bengaluru Namma Metro/BMRCL historical station-hour source.</p>
+            <p>Discover the three registered Indian transit demand families. Forecasts are served from saved model artifacts at the resolution each family actually supports.</p>
             <div className="hero-actions">
               <button className="arrow-link" type="button" onClick={onExplore}>Explore prediction <span className="button-arrow" aria-hidden="true">↗</span></button>
               <a className="text-link" href="#methodology"><span className="text-link-icon"><ArrowDown size={14} /></span> How it works</a>
@@ -74,7 +74,7 @@ export function Hero({ onExplore }: { onExplore: () => void }) {
         </div>
         <SignalMap />
       </div>
-      <div className="hero-bottom"><span>DEMAND HAS A RHYTHM.</span><span>SCROLL TO ENTER THE ENGINE <span aria-hidden="true">↓</span></span><span>BENGALURU / STATION-HOUR</span></div>
+      <div className="hero-bottom"><span>DEMAND HAS A RHYTHM.</span><span>SCROLL TO ENTER THE ENGINE <span aria-hidden="true">↓</span></span><span>3 REGISTERED FAMILIES / MULTI-GRANULARITY</span></div>
     </section>
   )
 }

@@ -3,19 +3,19 @@ import type { AppMetadata, ModelReport } from '../types/api'
 import { ArrowLink, Reveal, SectionHeading } from '../components/ui'
 
 const processSteps = [
-  ['01', 'ADAPT', 'Pinned observed BMRCL station-hour source.'],
-  ['02', 'NORMALIZE', 'One entity-hour record; absent hours remain absent.'],
+  ['01', 'ADAPT', 'Registered demand source for the selected model family.'],
+  ['02', 'NORMALIZE', 'One entity-period record; absent source periods remain absent.'],
   ['03', 'FEATURE', 'Calendar and station history strictly before target T.'],
   ['04', 'BENCHMARK', 'Regression and four-band classification candidates.'],
   ['05', 'VALIDATE', 'Chronological split; training-only thresholds frozen.'],
-  ['06', 'PREDICT', 'Next-hour station boardings from a saved artifact.'],
+  ['06', 'PREDICT', 'Future demand at the family’s supported forecast resolution from a saved artifact.'],
   ['07', 'EXPLAIN', 'Validation permutation and model sensitivity.'],
-  ['08', 'RECOMMEND', 'Same-station nearby windows from the fitted model.'],
+  ['08', 'RECOMMEND', 'Lower-demand alternatives where the selected family supports them.'],
 ]
 
 const limitationItems = [
-  ['Historical snapshot', 'The verified file covers 1–18 August and 1–30 September 2025, with an August 19–31 gap; its station roster varies during August.'],
-  ['Not current service', 'There is no live BMRCL feed. The default projection begins after the last observation in the published snapshot and may be in the past relative to today.'],
+  ['Historical / modelled snapshot', 'Each family is answered from the data snapshot packaged for that family. Coverage and granularity vary by family.'],
+  ['Not current service', 'There is no live passenger-demand feed in this product. Forecasts begin from each family’s data frontier and may lag the current date.'],
   ['Not occupancy', 'The source records station boardings per hour. It contains no train capacity or onboard load, so the percentile bands are not physical crowding or safety thresholds.'],
   ['Short holdout', 'The latest chronological test period is only a few days. It does not establish annual seasonality or performance on current service patterns.'],
   ['Unobserved context', 'Disruptions, headways, weather, holidays, events, transfers and service changes are not joined model features.'],
@@ -43,7 +43,7 @@ export function MethodologySection({ metadata, report, activeSystemId, granulari
     <section id="methodology" className="methodology-section section-anchor section-pad">
       <div className="section-shell">
         <div className="methodology-head">
-          <SectionHeading eyebrow="THE METHOD / THE BOUNDARIES" title={<>Clear inputs.<br /><em>Honest outputs.</em></>} copy="Every enabled estimate begins with an observed-demand source, a strict time boundary and an explicitly historical-relative measure." />
+          <SectionHeading eyebrow="THE METHOD / THE BOUNDARIES" title={<>Clear inputs.<br /><em>Honest outputs.</em></>} copy="Every enabled estimate begins with a registered demand source, a strict time boundary and an explicitly historical-relative measure." />
           <div className="method-index">METHODOLOGY<br />SERIES / 08</div>
         </div>
         <Reveal className="method-timeline">
@@ -63,7 +63,7 @@ export function MethodologySection({ metadata, report, activeSystemId, granulari
           <Reveal className="risk-method-card">
             <p className="eyebrow"><span className="eyebrow-dot" /> RISK IS A DISTRIBUTION</p>
             <h3>Percentiles, not capacity.</h3>
-            <p>Observed or predicted boardings are compared with frozen training-target percentiles: station/entity when support is sufficient, then its city/mode/operator system, then global. Validation and test values never set the production thresholds.</p>
+            <p>Observed or predicted demand is compared with frozen training-target percentiles: station/entity when support is sufficient, then its system, then global. Validation and test values never set the production thresholds.</p>
             <div className="risk-threshold-list">
               <div><span className="risk-step risk-low" /><span>LOW</span><b>≤ P50</b></div>
               <div><span className="risk-step risk-moderate" /><span>MODERATE</span><b>&gt; P50 · ≤ P80</b></div>
@@ -74,11 +74,11 @@ export function MethodologySection({ metadata, report, activeSystemId, granulari
           </Reveal>
           <Reveal className="data-transparency-card" delay={0.08} id="data-source">
             <p className="eyebrow"><span className="eyebrow-dot" /> DATA TRANSPARENCY</p>
-            <h3>One verified system.<br /><em>A precise scope.</em></h3>
+            <h3>One engine.<br /><em>A precise scope.</em></h3>
             <div className="source-info-row"><span>DATA SOURCE</span><b>{metadata.dataset.title}</b></div>
             <div className="source-info-row"><span>OBSERVED WINDOWS</span><b>{coverageText(metadata)}</b></div>
             <div className="source-info-row"><span>VERIFIED RECORDS</span><b>{metadata.dataset.observed_rows.toLocaleString()} station-{countWord}s · {metadata.dataset.station_count} source stations{metadata.dataset.unique_days ? ` · ${metadata.dataset.unique_days} distinct days` : ''}</b></div>
-            <div className="source-info-row"><span>PRIMARY SIGNAL</span><b>Station boardings · one observed hour</b></div>
+            <div className="source-info-row"><span>PRIMARY SIGNAL</span><b>{isDay ? 'Station entries · one observed day' : 'Station boardings · one observed hour'}</b></div>
             <div className="source-info-row"><span>LICENSE</span><b>{metadata.dataset.license ?? 'ODbL-1.0'}</b></div>
             <div className="source-info-row"><span>FORECAST SCOPE</span><b>{metadata.city} · {metadata.mode} · {metadata.operator} only · {isDay ? 'next-day and future-day' : 'next-hour'} horizon</b></div>
             <a className="source-link" href={metadata.dataset.source_url} target="_blank" rel="noreferrer">Open source repository <ExternalLink size={14} /></a>
@@ -101,7 +101,7 @@ export function FinalCallToAction() {
     <section className="final-cta">
       <div className="cta-topline"><span>INDIA TRANSIT · VERIFIED DATA FIRST</span><span>YOUR NEXT JOURNEY, BETTER INFORMED</span></div>
       <div className="cta-main"><p className="eyebrow"><span className="eyebrow-dot" /> PREDICT THE CROWD. PLAN THE JOURNEY.</p><h2>BEFORE THE<br /><em>CROWD</em> ARRIVES.</h2><ArrowLink href="#predict">Explore the forecast</ArrowLink></div>
-      <div className="cta-bottom"><span>INDIA TRANSIT CROWD AI / BMRCL HISTORICAL DEMAND</span><a href="#home">BACK TO TOP <span>↑</span></a></div>
+      <div className="cta-bottom"><span>INDIA TRANSIT CROWD AI / REGISTERED DEMAND FAMILIES</span><a href="#home">BACK TO TOP <span>↑</span></a></div>
     </section>
   )
 }

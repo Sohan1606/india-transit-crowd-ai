@@ -25,10 +25,10 @@ export function StationAnalyticsSection({ analytics, available }: { analytics: S
     <section id="insights" className="analytics-section section-anchor section-pad">
       <div className="section-shell">
         <div className="analytics-intro">
-          <SectionHeading eyebrow="UNSUPERVISED STATION PROFILES" title={<>Different stations.<br /><em>Different rhythms.</em></>} copy="Summarize historical BMRCL station behavior, project ten observed-demand features with PCA and group density patterns using DBSCAN." />
+          <SectionHeading eyebrow="UNSUPERVISED STATION PROFILES" title={<>Different stations.<br /><em>Different rhythms.</em></>} copy="Summarize the selected family’s station/entity behavior, project observed-demand features with PCA and group density patterns using DBSCAN." />
           <div className="pca-stamp"><Binary size={22} /><span>UNSUPERVISED<br />LEARNING / 02</span></div>
         </div>
-        {!available ? <div className="unsupported-panel analytics-unavailable" role="status"><p className="eyebrow">NO PROFILE FOR THIS SYSTEM</p><h3>Station profiles are not synthesized from schedules.</h3><p>Return to the verified BMRCL snapshot to inspect its observed-demand profiles.</p></div> : !analytics ? <div className="analytics-loading"><span className="chart-spinner" />Loading PCA / DBSCAN result…</div> : (
+        {!available ? <div className="unsupported-panel analytics-unavailable" role="status"><p className="eyebrow">NO PROFILE FOR THIS SYSTEM</p><h3>Station profiles are not synthesized from schedules.</h3><p>Return to the selected model family to inspect its available station/entity profiles.</p></div> : !analytics ? <div className="analytics-loading"><span className="chart-spinner" />Loading PCA / DBSCAN result…</div> : (
           <Reveal className="projection-frame">
             <div className="projection-topline"><span>STATION BEHAVIOUR / PCA PROJECTION</span><span>{analytics.entity_count} OBSERVED STATIONS · TRAINING-PERIOD FEATURES</span></div>
             <div className="projection-layout">

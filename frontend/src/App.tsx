@@ -13,10 +13,12 @@ import { SignalTransition } from './sections/SignalTransition'
 import { SystemsSection } from './sections/SystemsSection'
 import { ApiError, api } from './services/api'
 import type {
-  AppMetadata, DemandSourceCandidate, FuturePreviewResponse, HeatmapResponse, HistoryResponse,
+  AppMetadata, FuturePreviewResponse, HeatmapResponse, HistoryResponse,
   ModelReport, PredictionResult, SourceGapResponse, StationAnalytics, StationComparison, StationSummary, TransitSystem,
   WeeklyPatternResponse,
 } from './types/api'
+
+const ENABLED_SYSTEM_IDS = new Set(['bengaluru-namma-metro', 'mumbai-local-central', 'mumbai-metro'])
 
 function SectionFallback({ label }: { label: string }) {
   return <div className="analytics-loading section-fallback" role="status"><span className="chart-spinner" />Loading {label}…</div>
@@ -25,7 +27,6 @@ function SectionFallback({ label }: { label: string }) {
 function App() {
   const [metadata, setMetadata] = useState<AppMetadata | null>(null)
   const [systems, setSystems] = useState<TransitSystem[]>([])
-  const [candidates, setCandidates] = useState<DemandSourceCandidate[]>([])
   const [stations, setStations] = useState<StationSummary[]>([])
   const [report, setReport] = useState<ModelReport | null>(null)
   const [analytics, setAnalytics] = useState<StationAnalytics | null>(null)
@@ -84,14 +85,14 @@ function App() {
     try {
       const health = await api.health()
       setHealthDetail(health.detail ?? null)
-      const [catalog, sourceReview] = await Promise.all([api.systems(), api.demandSources()])
-      setSystems(catalog)
-      setCandidates(sourceReview.additional_observed_demand_candidates)
+      const catalog = await api.systems()
+      const enabledCatalog = catalog.filter((item) => ENABLED_SYSTEM_IDS.has(item.system_id))
+      setSystems(enabledCatalog)
       if (!health.model_ready || !health.data_ready) {
         throw new ApiError(health.detail ?? 'The backend has no verified model artifact or normalized observed-demand dataset loaded.', 503)
       }
-      const activeSystem = catalog.find((item) => item.system_id === (health.system_id ?? metadata?.system_id) && item.prediction_available)
-        ?? catalog.find((item) => item.prediction_available)
+      const activeSystem = enabledCatalog.find((item) => item.system_id === (health.system_id ?? metadata?.system_id) && item.prediction_available)
+        ?? enabledCatalog.find((item) => item.prediction_available)
       if (!activeSystem) throw new ApiError('No catalogued system is marked as an available verified prediction family.', 503)
       const meta = await loadFamily(activeSystem)
       if (!meta) throw new ApiError('The loaded model family returned no metadata.', 503)
@@ -262,7 +263,7 @@ function App() {
         <Hero onExplore={() => document.getElementById('systems')?.scrollIntoView({ behavior: 'smooth', block: 'start' })} />
         <SignalTransition />
         {dataError && <div className="data-warning" role="status"><span>DATA NOTICE</span><p>{dataError}</p><button type="button" onClick={() => setDataError(null)} aria-label="Dismiss data notice">×</button></div>}
-        <SystemsSection systems={systems} candidates={candidates} selectedSystemId={systemId} onSelectSystem={selectSystem} />
+        <SystemsSection systems={systems} selectedSystemId={systemId} onSelectSystem={selectSystem} />
         <PredictSection
           metadata={metadata} systems={systems} selectedSystem={selectedSystem} systemId={systemId}
           city={city} mode={mode} operator={operator} granularity={granularity} gap={gap}
