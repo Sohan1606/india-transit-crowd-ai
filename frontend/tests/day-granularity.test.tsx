@@ -280,3 +280,31 @@ describe('accuracy reporting for the requested period', () => {
     expect(within(card).getAllByText('—').length).toBeGreaterThan(0)
   })
 })
+
+describe('serving mode and supported clock times', () => {
+  it('labels a demonstration family and its answer without claiming live ridership', () => {
+    renderPredict({
+      metadata: {
+        ...metadata,
+        served_as: 'demo',
+        supported_time_note: 'Supported times: 08:00, 09:00, 18:00.',
+      },
+    })
+    expect(screen.getByRole('status').textContent).toContain('SYNTHETIC DEMONSTRATION DATA')
+    expect(screen.getByRole('status').textContent).toContain('NOT LIVE PASSENGER RIDERSHIP')
+  })
+
+  it('offers only the clock times the family actually observed', () => {
+    renderPredict({ granularity: 'hour', metadata: { ...metadata, supported_time_slots: [8, 9, 18] } as typeof metadata })
+    const hour = document.getElementById('target-hour') as HTMLSelectElement | null
+    expect(hour).not.toBeNull()
+    expect(Array.from(hour!.options).map((option) => option.value)).toEqual(['8', '9', '18'])
+  })
+
+  it('keeps a full hourly family unrestricted and shows no demo label for verified data', () => {
+    renderPredict({ granularity: 'hour', metadata: { ...metadata, served_as: 'production' } as typeof metadata })
+    const hour = document.getElementById('target-hour') as HTMLSelectElement
+    expect(hour.options.length).toBe(24)
+    expect(document.querySelectorAll('.demo-note').length).toBe(0)
+  })
+})

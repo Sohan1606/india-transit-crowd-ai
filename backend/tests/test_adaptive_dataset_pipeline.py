@@ -328,7 +328,11 @@ def test_synthetic_fixture_is_gated_and_never_registered(tmp_path: Path):
                             "--entity-name-column", "station_code", "--out-dir", str(out), "--write",
                             "--install-registry"])
     assert result.returncode == 0, result.stdout + result.stderr
-    assert "was disqualified by the profiler" in result.stdout
+    # The synthetic fixture's demand column is now accepted as the series to model (the file declares
+    # itself synthetic, so refusing to model its own numbers would only hide them), while the served-family
+    # registration is still refused below. What used to be asserted here was the profiler's prose about
+    # disqualifying that column, which the fixed policy no longer says.
+    assert "[profile]   demand      = synthetic_volume" in result.stdout
     assert "development/test data" in result.stdout
     gate = json.loads((out / "dev-synth_validation_gate.json").read_text(encoding="utf-8"))
     assert gate["eligible_for_primary_future_prediction_model"] is False
@@ -379,3 +383,44 @@ def test_observed_dataset_is_gated_and_registered_only_with_full_provenance(tmp_
         # family must not have been written into the registry in either case.
         assert not (out / "model_families.json").exists()
         assert "Not registered" in complete.stdout
+
+
+def test_the_registry_file_ships_with_the_project(tmp_path: Path):
+    """Packaging must not be able to lose the registry: it is committed, and it is loadable.
+
+    A clean checkout has to discover exactly the families the development tree does, so the registry
+    is project configuration rather than generated runtime state.
+    """
+    from ml.training.registry import REGISTRY_PATH
+
+    assert REGISTRY_PATH.is_file(), "data/registry/model_families.json must be committed, not git-ignored"
+    payload = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    assert isinstance(payload.get("families"), list) and payload["version"] == 1
+    assert "served_as" in payload["note"]
+    # The git-level checks only apply inside a repository: a packaged extraction has no .git, and the
+    # property that matters there - the file is present and loads - is asserted below regardless.
+    if (ROOT / ".git").exists():
+        committed = subprocess.run(["git", "ls-files", "--error-unmatch", str(REGISTRY_PATH.relative_to(ROOT))],
+                                   cwd=ROOT, capture_output=True, text=True)
+        assert committed.returncode == 0, "the registry file is not tracked by git"
+        scratch_parent_check = True
+    else:
+        scratch_parent_check = False
+    # A sibling scratch file must be ignored while the committed registry file is not: that is the
+    # exact shape of the rule, and it is checked by behaviour rather than by git's exit-code ambiguity
+    # around negated patterns.
+    scratch = REGISTRY_PATH.parent / "scratch-check.txt"
+    scratch.write_text("local", encoding="utf-8")
+    try:
+        if scratch_parent_check:
+            scratch_ignored = subprocess.run(["git", "check-ignore", "-q", "data/registry/scratch-check.txt"],
+                                             cwd=ROOT, capture_output=True, text=True)
+            assert scratch_ignored.returncode == 0, "scratch registry files should stay local"
+        if scratch_parent_check:
+            registry_shown = subprocess.run(["git", "status", "--porcelain", "--untracked-files=all",
+                                             "data/registry"], cwd=ROOT, capture_output=True, text=True).stdout
+            assert "scratch-check.txt" not in registry_shown
+    finally:
+        scratch.unlink(missing_ok=True)
+    # every family the app serves is discoverable without any local runtime state
+    assert {"bengaluru-namma-metro", "chennai-cmrl-metro"} <= set(serving_families())

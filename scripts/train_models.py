@@ -24,6 +24,9 @@ def main() -> None:
     parser.add_argument("--data", type=Path, default=default_data_path())
     parser.add_argument("--output-dir", type=Path, default=None,
                         help="Defaults to backend/models/<registered system_id>.")
+    parser.add_argument("--fit-window-days", type=int, default=0,
+                        help="fit models only on the most recent N days of the normalized file; the served "
+                             "history is not changed and the window is recorded in the model report")
     parser.add_argument("--metadata", type=Path, default=None,
                         help="Optional source metadata JSON; defaults to the normalized file's adjacent .metadata.json.")
     args = parser.parse_args()
@@ -42,7 +45,8 @@ def main() -> None:
     dataset_metadata["training_input"] = str(args.data.relative_to(ROOT)) if args.data.is_relative_to(ROOT) else args.data.name
     dataset_metadata["training_input_sha256"] = __import__("hashlib").sha256(args.data.read_bytes()).hexdigest()
     dataset_metadata["training_quality_check"] = quality
-    report = train_and_save(hourly, output_dir, dataset_metadata)
+    report = train_and_save(hourly, output_dir, dataset_metadata,
+                            fit_window_days=args.fit_window_days or None)
     human_report = ROOT / "docs/model_report.md"
     human_report.parent.mkdir(parents=True, exist_ok=True)
     human_report.write_text(render_report(report), encoding="utf-8")

@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 .venv/
 venv/
 __pycache__/
@@ -39,9 +39,12 @@ data/processed/chennai_metro_demand_timeseries.csv
 # Development-only normalized fixtures produced by scripts/register_demand_dataset.py when a file is
 # declared synthetic/simulated. They must never be redistributed or mistaken for observed data.
 data/development/
-# Families registered locally against a refetched dataset. The file is machine-generated from the
-# gate; a fresh clone rebuilds it with scripts/register_demand_dataset.py --install-registry.
-data/registry/
+# The registry is project configuration, not generated runtime state: model_families.json is committed so a
+# clean checkout or ZIP discovers exactly the same families. Other files the registration flow drops next to it
+# (scratch runs, --out-dir experiments) stay local.
+data/registry/*
+!data/registry/model_families.json
+
 
 # Append-only collector log: grows locally over time, never committed by CI.
 data/collected/
@@ -49,7 +52,4 @@ data/collected/
 # TypeScript build info
 *.tsbuildinfo
 
-# Mumbai synthetic datasets are versioned for reproducible forecasting demos
-!data/development/
-!data/development/synthetic/
-!data/development/synthetic/*.csv
+# Final persisted Mumbai demonstration model bundles are shipped with the application so the deployed inference service can answer predictions without retraining. They are tracked with Git LFS.

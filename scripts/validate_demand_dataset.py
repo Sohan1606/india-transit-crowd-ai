@@ -209,7 +209,10 @@ def evaluate(csv_path: Path, metadata: dict, granularity: str, timezone: str,
     periods_report = {"count": len(periods), "start": str(periods[0].date()), "end": str(periods[-1].date()),
                       "expected_contiguous_within_span": expected_span}
     frontier = pd.Timestamp(periods[-1])
-    horizon_days = int((today - frontier).days) if frontier.tzinfo else None
+    # A source that ends yesterday is one day before today whether its last row is stamped with a day or
+    # an hour: compare calendar dates, otherwise an hourly file's frontier reads as 'today' and a real
+    # held-out future disappears on a technicality.
+    horizon_days = int((today.normalize().date() - frontier.date()).days) if getattr(frontier, "tzinfo", None) else None
 
     source_blob = " ".join(sorted(source_ids)).lower()
     declared_class = str(metadata.get("observation_class") or metadata.get("dataset_class") or "observed").strip().lower()

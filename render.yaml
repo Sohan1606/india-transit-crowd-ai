@@ -1,3 +1,7 @@
+# Render deployment: one web service for the API. Which transit families it answers is read from
+# data/registry/model_families.json at startup, so adding a family needs a registry entry and its data,
+# not an edit to this file. Frontend is deployed separately (Vercel or Render static site); the browser
+# reaches this API through VITE_API_BASE at build time.
 services:
   - type: web
     name: india-transit-crowd-ai-api
@@ -9,11 +13,13 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.13.4
-      - key: TRANSITCROWD_MODEL
-        value: backend/models/bengaluru-namma-metro/transitcrowd.joblib
-      - key: TRANSITCROWD_DATA
-        value: data/processed/namma_metro_station_hourly.csv
-      - key: TRANSITCROWD_SOURCE_METADATA
-        value: data/processed/namma_metro_station_hourly.metadata.json
+      # No TRANSITCROWD_MODEL / TRANSITCROWD_DATA / TRANSITCROWD_SOURCE_METADATA pins here: setting one
+      # of them forces the single-family code path. Left unset, the app serves every registered family
+      # from its own artifact directory and its own normalized dataset (Bengaluru and Chennai read
+      # data/processed, freshly registered families read the committed gzip in data/inference).
+      # To serve Chennai on Render, add `python3 scripts/prepare_chennai_data.py &&` to buildCommand: its
+      # operator-copyrighted extract is fetched on demand and deliberately not committed (the registry entry
+      # records data_preparation_command). Everything else in the registry serves from committed data.
       - key: CORS_ORIGINS
+        # Comma-separated browser origins allowed to call the API - set this to the frontend URL(s).
         sync: false

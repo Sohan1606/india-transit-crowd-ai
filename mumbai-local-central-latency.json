@@ -1,0 +1,13 @@
+{
+  "system_id": "mumbai-local-central",
+  "granularity": "hour",
+  "served_as": "demo",
+  "cold_load_seconds": 3.661,
+  "requests": 24,
+  "p50_ms": 983.81,
+  "p95_ms": 1015.17,
+  "max_ms": 1104.35,
+  "artifact_bytes": 44738157,
+  "dataset_bytes": 2087564,
+  "artifact_mtime_unchanged": true
+}

@@ -11,6 +11,11 @@ from typing import Any
 import joblib
 import numpy as np
 import pandas as pd
+
+# XGBoost runs wherever the operator says, without editing this file: TRANSITCROWD_XGB_DEVICE=cuda on a
+# CUDA machine, left unset (cpu) everywhere else. Only the two XGBoost candidates take a device; every
+# other candidate is a scikit-learn estimator that has no such argument.
+_XGB_DEVICE = (os.environ.get("TRANSITCROWD_XGB_DEVICE") or "cpu").strip() or "cpu"
 from sklearn.base import BaseEstimator, RegressorMixin
 from sklearn.compose import ColumnTransformer
 from sklearn.dummy import DummyClassifier
@@ -28,6 +33,7 @@ from ml.clustering.entity_behaviour import fit_pca_dbscan
 from ml.data_pipeline.cleaning import clean_normalized_demand
 from ml.evaluation.metrics import classification_metrics, regression_metrics
 from ml.features.forecasting import FEATURE_COLUMNS, HISTORY_FEATURES, TARGET, TIME_FEATURES, build_supervised_frame
+from ml.training import limitations
 from ml.training.registry import get_model_family
 from ml.training.risk import RISK_ORDER, classify_demand, fit_risk_thresholds
 from ml.data_pipeline.source import BMRCL_TIMEZONE
@@ -74,6 +80,7 @@ def make_regression_model(name: str):
         ),
         "svr": LinearSVR(C=0.35, epsilon=0.1, max_iter=4000, random_state=42, dual="auto"),
         "xgboost": XGBRegressor(
+            device=_XGB_DEVICE,
             n_estimators=140, max_depth=6, learning_rate=0.05, min_child_weight=8,
             subsample=0.85, colsample_bytree=0.85, reg_lambda=5.0,
             objective="reg:squarederror", eval_metric="rmse", tree_method="hist",
@@ -99,6 +106,7 @@ def make_classification_model(name: str):
         ),
         "svm": LinearSVC(C=0.5, class_weight="balanced", max_iter=6000, random_state=42),
         "xgboost": XGBClassifier(
+            device=_XGB_DEVICE,
             n_estimators=140, max_depth=6, learning_rate=0.05, min_child_weight=8,
             subsample=0.85, colsample_bytree=0.85, reg_lambda=5.0,
             objective="multi:softprob", num_class=len(RISK_ORDER), eval_metric="mlogloss",
@@ -288,7 +296,8 @@ def _distribution_bundle(train: pd.DataFrame, system_id: str) -> dict[str, list[
 
 
 def train_and_save(hourly: pd.DataFrame, output_dir: Path,
-                   dataset_metadata: dict[str, Any] | None = None) -> dict[str, Any]:
+                   dataset_metadata: dict[str, Any] | None = None,
+                   fit_window_days: int | None = None) -> dict[str, Any]:
     """Train one verified city/mode/operator family; never mix systems or split times."""
     if "system_id" in hourly.columns and not hourly.empty:
         family_hint = get_model_family(str(hourly["system_id"].iloc[0]))
@@ -304,6 +313,22 @@ def train_and_save(hourly: pd.DataFrame, output_dir: Path,
     if hourly["entity_id"].nunique() < 3:
         raise ValueError("At least three observed entities are required for supervised models and PCA/DBSCAN.")
     output_dir.mkdir(parents=True, exist_ok=True)
+    fit_window: dict[str, Any] = {}
+    if fit_window_days:
+        # A wide family (a whole year of hourly rows for fifty stations) does not fit in the memory a
+        # modest runner has, and the oldest hours add little a recent-year forecast needs. The window is
+        # a *fitting* decision only: the served history stays complete, and the window is recorded in the
+        # model report so no metric is quoted without saying which rows produced it.
+        latest = pd.Timestamp(hourly["timestamp"].max())
+        earliest_allowed = latest - pd.Timedelta(days=int(fit_window_days))
+        before = len(hourly)
+        hourly = hourly.loc[hourly["timestamp"] > earliest_allowed].copy()
+        fit_window = {"requested_days": int(fit_window_days), "rows_used": int(len(hourly)),
+                      "rows_available": int(before),
+                      "first_fitted_timestamp": str(pd.Timestamp(hourly["timestamp"].min())),
+                      "last_fitted_timestamp": str(latest),
+                      "note": "models were fitted on this window only; the dataset's full history remains "
+                              "served as observations"}
     supervised = build_supervised_frame(hourly, timezone=system_timezone)
     timestamps = np.array(sorted(pd.to_datetime(supervised["timestamp"]).unique()))
     if len(timestamps) < 30:
@@ -419,6 +444,7 @@ def train_and_save(hourly: pd.DataFrame, output_dir: Path,
     data_metadata.setdefault("source", "verified observed station-hour demand")
 
     model_report = {
+        "fit_window": fit_window,
         "project": "INDIA TRANSIT CROWD AI",
         "tagline": "PREDICT THE CROWD. PLAN THE JOURNEY.",
         "model_version": MODEL_VERSION,
@@ -501,15 +527,16 @@ def train_and_save(hourly: pd.DataFrame, output_dir: Path,
             "bundle": "transitcrowd.joblib", "report": "model_report.json",
             "station_analytics": "station_analytics.json",
         },
-        "limitations": [
-            "Only the verified Bengaluru BMRCL/Namma Metro hourly station-boardings family has a trained model; no India-wide, bus, live or other-operator prediction is implied.",
-            "This source is a historical snapshot ending 2025-09-30, with a documented 2025-08-19 through 2025-08-31 gap and a changing station roster during August.",
-            "The holdout is a short late-period check; it does not establish yearly seasonality or generalization to current 2026 service conditions.",
-            "Counts are station boardings, not onboard vehicle load or physical occupancy; capacity data is unavailable.",
-            "No current timetable, disruption, weather, event, transfer, passenger-origin or service-frequency variables are joined to the model.",
-            "Forecasts beyond the most recent observation are recursive one-hour model calls, limited to 336 hours from the data frontier; uncertainty is not calibrated.",
-            "No confidence percentage is produced; missing target-period source observations must not be read as zero actual demand.",
-        ],
+        "limitations": limitations.build(
+            family, dataset_metadata or {},
+            first_observation=str(pd.Timestamp(hourly["timestamp"].min())),
+            last_observation=str(pd.Timestamp(hourly["timestamp"].max())),
+            fit_window=fit_window,
+            horizon_text=("Forecasts past the most recent observation are recursive one-hour model calls, "
+                          f"limited to {int(family.get('max_recursive_horizon_hours') or family.get('max_recursive_horizon_days') or 336)} "
+                          "hours from the data frontier; the uncertainty of those calls is not calibrated and is "
+                          "reported as historical-relative bands, never as a confidence percentage."),
+        )
     }
 
     bundle = {

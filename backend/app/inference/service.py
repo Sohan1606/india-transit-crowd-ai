@@ -14,6 +14,8 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from backend.app.inference import hierarchy as _hierarchy
+from backend.app.inference.hierarchy import attributes_for as _attributes_for
 from ml.data_pipeline.cleaning import clean_normalized_demand
 from ml.data_pipeline.source import BMRCL_TIMEZONE
 from ml.features.forecasting import FEATURE_COLUMNS, features_for_target
@@ -23,6 +25,48 @@ from ml.training.risk import RISK_ORDER, classify_demand, historical_percentile,
 
 class InferenceError(RuntimeError):
     pass
+
+
+OBSERVED_DATASET_CLASSES = ("observed", "verified_project_source", "documented_observed_source")
+
+
+class GranularityMismatch(InferenceError):
+    """The request asks for a resolution the loaded family's data cannot answer."""
+
+
+class UnsupportedTimeSlot(GranularityMismatch):
+    """The requested clock time is not one the family's data ever observed."""
+
+
+def provenance_for(bundle: dict | None, family: dict | None = None,
+                   source_metadata: dict | None = None) -> dict[str, object]:
+    """How a family's data should be described, derived from the artifact rather than assumed.
+
+    ``data_class`` separates verified observed demand from a demonstration built on modelled data, and
+    ``disclosure`` is the sentence the UI must show when it is the latter. A family whose bundle predates
+    these fields falls back to its registry entry, so no artifact has to be retrained to be labelled
+    honestly.
+    """
+    bundle, family = bundle or {}, family or {}
+    served = str(bundle.get("served_as") or family.get("served_as")
+                 or ("internal" if family.get("development_only") else "production"))
+    dataset_class = str(bundle.get("dataset_class") or family.get("dataset_class")
+                        or (source_metadata or {}).get("dataset_class") or "verified_project_source")
+    observed = dataset_class in OBSERVED_DATASET_CLASSES
+    disclosure = bundle.get("disclosure") or family.get("disclosure")
+    if served == "demo" and not disclosure:
+        from ml.training.registry import SYNTHETIC_DISCLOSURE
+        disclosure = SYNTHETIC_DISCLOSURE
+    if observed and served == "production":
+        data_class = "verified_observed"
+    elif served == "demo" or not observed:
+        data_class = "synthetic_development"
+    else:
+        data_class = "unverified"
+    return {"served_as": served, "dataset_class": dataset_class, "data_class": data_class,
+            "disclosure": str(disclosure) if served == "demo" else None,
+            "metrics_are_demonstration_only": served == "demo",
+            "supported_time_slots": bundle.get("supported_time_slots")}
 
 
 class ServiceUnavailable(InferenceError):
@@ -120,9 +164,11 @@ class TransitInferenceService:
                 self.unavailable_detail = "Model-family system/entity IDs do not match the normalized observed-demand dataset."
                 self.bundle = None
                 self.hourly = None
-            elif self.source_metadata.get("normalized_sha256"):
-                actual_hash = hashlib.sha256(data_path.read_bytes()).hexdigest()
-                if actual_hash != self.source_metadata["normalized_sha256"]:
+            else:
+                field = "normalized_gz_sha256" if str(data_path).endswith(".gz") else "normalized_sha256"
+                expected = self.source_metadata.get(field) or self.source_metadata.get("normalized_sha256")
+                actual_hash = hashlib.sha256(data_path.read_bytes()).hexdigest() if expected else None
+                if expected and actual_hash != expected:
                     self.unavailable_detail = "Normalized dataset checksum does not match the source metadata sidecar. Re-run data preparation and model validation."
                     self.bundle = None
                     self.hourly = None
@@ -171,6 +217,19 @@ class TransitInferenceService:
             raise UnknownEntity(f"Unknown or untrained station '{normalized}'. Choose an ID returned by GET /api/stations.")
         return normalized
 
+    def _registry_family(self) -> dict[str, Any]:
+        try:
+            return dict(get_model_family(str(self.system_id or "")))
+        except (ValueError, KeyError):
+            return {}
+
+    def _provenance(self) -> dict[str, object]:
+        # Must work with no bundle loaded: a missing artifact degrades the endpoints to 503, and a
+        # 500 raised while looking up labels would hide that reason.
+        bundle = self.bundle if isinstance(self.bundle, dict) else {}
+        return provenance_for(bundle, dict(bundle.get("model_family", {})) or self._registry_family(),
+                              self.source_metadata if isinstance(self.source_metadata, dict) else {})
+
     def health(self) -> dict[str, Any]:
         return {
             "status": "ok" if self.ready else "degraded",
@@ -190,9 +249,22 @@ class TransitInferenceService:
         default_station = self.entity_ids[0]
         station_latest = pd.Timestamp(data.loc[data["entity_id"].eq(default_station), "timestamp"].max())
         default_target = station_latest + pd.Timedelta(hours=1)
-        family = dict(self.bundle.get("model_family", {}))
+        family = dict(self.bundle.get("model_family", {})) or self._registry_family()
         source_meta = self.source_metadata or self.bundle.get("dataset_metadata", {})
+        provenance = provenance_for(self.bundle, family, source_meta if isinstance(source_meta, dict) else {})
+        slots = provenance["supported_time_slots"]
         return {
+            # Levels and per-entity values the dataset declared for itself, if any.
+            **_hierarchy.metadata_block(source_meta if isinstance(source_meta, dict) else {}),
+            "served_as": provenance["served_as"],
+            "dataset_class": provenance["dataset_class"],
+            "data_class": provenance["data_class"],
+            "disclosure": provenance["disclosure"],
+            "metrics_are_demonstration_only": provenance["metrics_are_demonstration_only"],
+            "supported_time_slots": slots,
+            "supported_time_note": (None if not slots or len(slots) >= 24 else
+                                    "This family's data only ever observed the hours listed above; other clock times "
+                                    "have no series to learn from or forecast into."),
             "project": "INDIA TRANSIT CROWD AI",
             "tagline": "PREDICT THE CROWD. PLAN THE JOURNEY.",
             "system_id": system_id,
@@ -253,10 +325,19 @@ class TransitInferenceService:
             "mean_hourly_boardings": float(row.mean_hourly_boardings),
             "latest_observation": pd.Timestamp(row.latest_observation).isoformat(),
             "observed_hours": int(row.observed_hours),
+            "attributes": _attributes_for(self.source_metadata, row.entity_id),
             "system_id": selected_system,
         } for row in summaries.itertuples()]
 
     def _target_timestamp(self, target_date: str, target_hour: int) -> pd.Timestamp:
+        slots = self._provenance().get("supported_time_slots")
+        if isinstance(slots, (list, tuple)) and 0 < len(slots) < 24 and int(target_hour) not in {int(s) for s in slots}:
+            supported = ", ".join(f"{int(slot):02d}:00" for slot in sorted(slots))
+            raise UnsupportedTimeSlot(
+                f"This family's data only observed {supported}; {int(target_hour):02d}:00 has no observed series to "
+                "learn from or forecast into. Choose one of the supported times, or forecast the same supported time "
+                "on another day."
+            )
         try:
             target = pd.Timestamp(f"{target_date} {int(target_hour):02d}:00:00")
         except (TypeError, ValueError) as exc:
@@ -370,10 +451,13 @@ class TransitInferenceService:
             "max_recursive_horizon_hours": int(self.bundle.get("max_recursive_horizon_hours", 336)),
         }
         scoring["forecast_interval"] = None
+        provenance = self._provenance()
         return {
             "system_id": selected_system,
             "station_id": station_id,
             "station_name": str(station_data["entity_name"].iloc[0]),
+            "data_class": provenance["data_class"],
+            "disclosure": provenance["disclosure"],
             "target_timestamp": target.isoformat(),
             "origin_timestamp": (latest if (recursive and horizon > 1) else target - pd.Timedelta(hours=1)).isoformat(),
             "origin_basis": ("data_frontier_recursive_seed" if (recursive and horizon > 1) else "previous_observed_period"),

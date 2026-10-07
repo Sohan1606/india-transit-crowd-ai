@@ -21,6 +21,16 @@ REGISTRY_PATH = ROOT / "data/registry/model_families.json"
 REQUIRED_KEYS = ("system_id", "city", "mode", "operator", "timezone", "entity_type", "measure",
                  "artifact_subdirectory", "source_id", "granularity", "target")
 TRAINING_GRANULARITIES = ("day", "hour")
+#: Where a registered family is allowed to appear.
+#:  ``production`` - verified observed data, full gate, normal labelling.
+#:  ``demo``       - a family whose data is not observed ground truth (synthetic / simulated /
+#:                   modelled / undeclared). It IS served, because a demonstration has to run to
+#:                   be useful, but every response carries its data class and a disclosure, and its
+#:                   metrics are demonstration results, not real-world accuracy claims.
+#:  ``internal``   - fixtures and development data; loaded by tooling, never served.
+SERVED_AS_VALUES = ("production", "demo", "internal")
+OBSERVED_CLASSES = ("observed", "verified_project_source", "documented_observed_source")
+OBSERVED_TARGET_CRITERION = "target_values_are_actual_observations"
 
 
 def _load_registered_families() -> dict[str, dict[str, Any]]:
@@ -43,6 +53,17 @@ def _load_registered_families() -> dict[str, dict[str, Any]]:
             )
         entry.setdefault("feature_period_seconds", PERIOD_SECONDS[str(entry["granularity"])])
         entry.setdefault("label_unit", "observed count")
+        # ``development_only`` is the older flag for "never served"; a registry file written before
+        # served_as existed must keep behaving exactly as it did.
+        declared = str(entry.get("served_as") or ("internal" if entry.get("development_only") else "production"))
+        if declared not in SERVED_AS_VALUES:
+            raise ValueError(
+                f"Registry entry '{system_id}' declares served_as '{declared}'; expected one of "
+                f"{', '.join(SERVED_AS_VALUES)}."
+            )
+        entry["served_as"] = declared
+        entry["development_only"] = declared == "internal"
+        entry.setdefault("dataset_class", "verified_project_source" if declared == "production" else "undeclared")
         families[system_id] = entry
     return families
 
@@ -57,6 +78,8 @@ MODEL_FAMILIES: dict[str, dict[str, Any]] = {
         "measure": "hourly_station_boardings",
         "artifact_subdirectory": BMRCL_SYSTEM_ID,
         "source_id": "bmrcl-ridership-hourly",
+        "served_as": "production",
+        "dataset_class": "verified_project_source",
         "granularity": "hour",
         "target": "target_next_hour_demand",
     },
@@ -70,6 +93,13 @@ MODEL_FAMILIES: dict[str, dict[str, Any]] = {
         "measure": "daily_station_entries",
         "artifact_subdirectory": CMRL_SYSTEM_ID,
         "source_id": "cmrl-passenger-flow-daily",
+        "served_as": "production",
+        # Its normalized extract is copyright CMRL and is deliberately not committed, so a checkout or image
+        # that has not fetched it must be told what produces the file rather than returning an unexplained 503.
+        "data_preparation_command": "python3 scripts/prepare_chennai_data.py",
+        "data_preparation_note": ("Operator-copyrighted ticket-count extract; fetched on demand and "
+                                  "checksum-verified, never redistributed by this project."),
+        "dataset_class": "verified_project_source",
         "granularity": "day",
         "target": "target_next_day_demand",
     },
@@ -100,6 +130,54 @@ def model_family_directory(models_root: Path, system_id: str) -> Path:
     return models_root / str(family["artifact_subdirectory"])
 
 
+def effective_served_as(entry: dict[str, Any]) -> str:
+    """The serving mode an entry means, including entries written before ``served_as`` existed.
+
+    ``development_only: true`` with no ``served_as`` still means "never served", so an in-memory or
+    hand-edited registry entry cannot become public by omitting the newer key.
+    """
+    declared = str(entry.get("served_as") or ("internal" if entry.get("development_only") else "production"))
+    return declared
+
+
+def normalize_served_as(family: dict[str, Any]) -> dict[str, Any]:
+    """Fill in / validate the ``served_as`` flag, keeping the older ``development_only`` flag coherent.
+
+    An entry written before ``served_as`` existed (or by hand) with ``development_only: true`` still
+    means "never served", so it normalizes to ``internal`` rather than silently becoming public.
+    """
+    entry = dict(family)
+    declared = effective_served_as(entry)
+    if declared not in SERVED_AS_VALUES:
+        raise ValueError(f"served_as must be one of {', '.join(SERVED_AS_VALUES)}; got '{declared}'.")
+    dataset_class = str(entry.get("dataset_class") or "")
+    if declared == "production" and dataset_class and dataset_class not in OBSERVED_CLASSES:
+        raise ValueError(
+            f"Refusing to serve '{entry.get('system_id')}' as production: its dataset class '{dataset_class}' does "
+            f"not claim observed ground truth (expected one of {', '.join(OBSERVED_CLASSES)})."
+        )
+    if declared == "demo" and dataset_class in OBSERVED_CLASSES:
+        raise ValueError(
+            f"'{entry.get('system_id')}' claims observed ground truth ('{dataset_class}'); register it as "
+            "production and pass every gate criterion instead of labelling it a demonstration."
+        )
+    if declared == "demo":
+        entry.setdefault("dataset_class", "synthetic")
+        entry.setdefault("disclosure", SYNTHETIC_DISCLOSURE)
+    elif declared == "production":
+        entry.setdefault("dataset_class", "verified_project_source")
+    entry["served_as"] = declared
+    entry["development_only"] = declared == "internal"
+    return entry
+
+
+SYNTHETIC_DISCLOSURE = (
+    "SYNTHETIC DEMONSTRATION FORECAST - modelled data supplied to exercise and demonstrate the "
+    "forecasting pipeline. NOT live passenger ridership, NOT an operator measurement, NOT a "
+    "real-world Mumbai crowd estimate."
+)
+
+
 def register_family(family: dict[str, Any], registry_path: Path = REGISTRY_PATH) -> Path:
     """Add or replace a gate-passed family in the JSON registry (never in code)."""
     missing = [key for key in REQUIRED_KEYS if not family.get(key)]
@@ -107,18 +185,47 @@ def register_family(family: dict[str, Any], registry_path: Path = REGISTRY_PATH)
         raise ValueError(f"Registry entry for {family.get('system_id') or '<blank>'} is missing required keys: {missing}")
     if family["granularity"] not in PERIOD_SECONDS:
         raise ValueError(f"granularity must be one of {sorted(PERIOD_SECONDS)}")
+    family = normalize_served_as(family)
     registry_path.parent.mkdir(parents=True, exist_ok=True)
     payload = json.loads(registry_path.read_text(encoding="utf-8")) if registry_path.is_file() else {"families": []}
     families = [item for item in payload.get("families", []) if item.get("system_id") != family["system_id"]]
     families.append(dict(family))
     payload["families"] = families
     payload["note"] = ("Families here passed scripts/validate_demand_dataset.py through "
-                       "scripts/register_demand_dataset.py. Development-only (synthetic) families are loaded by the "
-                       "tooling but never served: see backend/app/main.py._build_services.")
+                       "scripts/register_demand_dataset.py. served_as=production needs every criterion; "
+                       "served_as=demo is served with a synthetic disclosure and needs every criterion except "
+                       "target_values_are_actual_observations; served_as=internal is never served (see "
+                       "backend/app/main.py._build_services).")
     registry_path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    if registry_path == REGISTRY_PATH:
+        # The file is the source of truth, and this module's view of it is a cache. A registration that
+        # is followed by training in the same process must see the family it just wrote, so the cache is
+        # refreshed rather than left to the next interpreter.
+        MODEL_FAMILIES.clear()
+        MODEL_FAMILIES.update(_load_registered_families())
     return registry_path
 
 
 def serving_families() -> dict[str, dict[str, Any]]:
-    """Families the API may serve: registered, gate-passed and not development-only."""
-    return {system_id: family for system_id, family in MODEL_FAMILIES.items() if not family.get("development_only")}
+    """Families the API may serve: production families, plus demo families under their disclosure."""
+    return {system_id: family for system_id, family in MODEL_FAMILIES.items()
+            if effective_served_as(family) in {"production", "demo"}}
+
+
+def demo_families() -> dict[str, dict[str, Any]]:
+    """Families served under a synthetic/demonstration label."""
+    return {system_id: family for system_id, family in MODEL_FAMILIES.items()
+            if effective_served_as(family) == "demo"}
+
+
+def family_metadata() -> list[dict[str, Any]]:
+    """Public family descriptions: the system list, UI routing and training CLI metadata."""
+    rows: list[dict[str, Any]] = []
+    for entry in MODEL_FAMILIES.values():
+        row = {key: value for key, value in entry.items() if not str(key).startswith("_")}
+        row["training_supported"] = entry["granularity"] in TRAINING_GRANULARITIES
+        row["served_as"] = effective_served_as(entry)
+        row["dataset_class"] = entry.get("dataset_class")
+        row["observed_ground_truth"] = str(entry.get("dataset_class")) in OBSERVED_CLASSES
+        rows.append(row)
+    return rows

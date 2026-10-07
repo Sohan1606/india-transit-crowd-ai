@@ -4,9 +4,9 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     environment:
-      TRANSITCROWD_MODEL: /app/backend/models/bengaluru-namma-metro/transitcrowd.joblib
-      TRANSITCROWD_DATA: /app/data/processed/namma_metro_station_hourly.csv
-      TRANSITCROWD_SOURCE_METADATA: /app/data/processed/namma_metro_station_hourly.metadata.json
+      # The image carries the registry, data/processed and data/inference, so each family resolves its own
+      # dataset and artifact directory. TRANSITCROWD_MODEL/DATA/SOURCE_METADATA are intentionally unset:
+      # they select the single-family path. Set CORS_ORIGINS to the browser origin(s) that may call this.
       CORS_ORIGINS: http://localhost:8080
     expose:
       - "8000"

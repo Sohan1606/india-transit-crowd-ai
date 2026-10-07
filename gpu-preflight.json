@@ -1,0 +1,9 @@
+{
+  "python": "3.13.15",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "nvidia_smi": "NVIDIA GeForce RTX 4060 Laptop GPU, 592.82, 8188 MiB",
+  "probe_ok": true,
+  "probe_seconds": 0.306,
+  "xgboost_version": "2.1.4",
+  "probe_detail": ""
+}

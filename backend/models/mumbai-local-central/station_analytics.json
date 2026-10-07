@@ -1,0 +1,1174 @@
+{
+  "method": "StandardScaler \u2192 PCA (2 components) \u2192 DBSCAN in PCA space",
+  "entity_count": 53,
+  "features_used": [
+    "mean_demand",
+    "morning_mean",
+    "afternoon_mean",
+    "evening_mean",
+    "weekend_mean",
+    "peak_demand_q95",
+    "variance",
+    "coefficient_of_variation",
+    "demand_concentration_top6_hours",
+    "peak_to_average_ratio"
+  ],
+  "pca": {
+    "components": 2,
+    "explained_variance_ratio": [
+      0.7220928534794094,
+      0.2492529100101671
+    ],
+    "total_explained_variance_ratio": 0.9713457634895766
+  },
+  "dbscan": {
+    "eps": 0.8324549275463363,
+    "min_samples": 3,
+    "metric": "euclidean",
+    "eps_selection": "75th percentile of observed distance to the min_samples-th nearest entity in the two-dimensional PCA projection",
+    "cluster_count_excluding_noise": 3,
+    "outlier_count": 7,
+    "outlier_entity_ids": [
+      "central-karjat-khopoli-branch-kalyan",
+      "central-karjat-khopoli-branch-khopoli",
+      "central-kasara-branch-kalyan",
+      "central-kasara-branch-kasara",
+      "central-main-csmt",
+      "central-main-dombivli",
+      "central-main-ghatkopar"
+    ],
+    "clusters": [
+      {
+        "cluster_id": 0,
+        "entity_count": 23,
+        "entities": [
+          "central-karjat-khopoli-branch-ambernath",
+          "central-karjat-khopoli-branch-badlapur",
+          "central-karjat-khopoli-branch-karjat",
+          "central-karjat-khopoli-branch-ulhasnagar",
+          "central-main-bhandup",
+          "central-main-byculla",
+          "central-main-chinchpokli",
+          "central-main-currey-road",
+          "central-main-diva",
+          "central-main-kalwa",
+          "central-main-kanjurmarg",
+          "central-main-kopar",
+          "central-main-masjid",
+          "central-main-matunga",
+          "central-main-mulund",
+          "central-main-mumbra",
+          "central-main-nahur",
+          "central-main-parel",
+          "central-main-sandhurst-road",
+          "central-main-sion",
+          "central-main-thakurli",
+          "central-main-vidyavihar",
+          "central-main-vikhroli"
+        ]
+      },
+      {
+        "cluster_id": 1,
+        "entity_count": 19,
+        "entities": [
+          "central-karjat-khopoli-branch-bhivpuri-road",
+          "central-karjat-khopoli-branch-dolavli",
+          "central-karjat-khopoli-branch-kelavli",
+          "central-karjat-khopoli-branch-lowjee",
+          "central-karjat-khopoli-branch-neral",
+          "central-karjat-khopoli-branch-palasdari",
+          "central-karjat-khopoli-branch-shelu",
+          "central-karjat-khopoli-branch-vangani",
+          "central-karjat-khopoli-branch-vithalwadi",
+          "central-kasara-branch-ambivli",
+          "central-kasara-branch-asangaon",
+          "central-kasara-branch-atgaon",
+          "central-kasara-branch-khadavli",
+          "central-kasara-branch-khardi",
+          "central-kasara-branch-shahad",
+          "central-kasara-branch-thansit",
+          "central-kasara-branch-titwala",
+          "central-kasara-branch-umbermali",
+          "central-kasara-branch-vasind"
+        ]
+      },
+      {
+        "cluster_id": 2,
+        "entity_count": 4,
+        "entities": [
+          "central-main-dadar",
+          "central-main-kalyan",
+          "central-main-kurla",
+          "central-main-thane"
+        ]
+      }
+    ]
+  },
+  "entities": [
+    {
+      "entity_id": "central-karjat-khopoli-branch-ambernath",
+      "entity_name": "Ambernath",
+      "pc1": 0.09276439120669114,
+      "pc2": -1.3029989879048207,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5423.956437560503,
+        "morning_mean": 8524.459302325582,
+        "afternoon_mean": 5664.3093023255815,
+        "evening_mean": 8106.029069767442,
+        "weekend_mean": 3679.1493055555557,
+        "peak_demand_q95": 9942.5,
+        "variance": 10172160.25947695,
+        "coefficient_of_variation": 0.5880177067693619,
+        "demand_concentration_top6_hours": 0.3895906554711467,
+        "peak_to_average_ratio": 1.8330715068338144
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-badlapur",
+      "entity_name": "Badlapur",
+      "pc1": 0.21144392343669005,
+      "pc2": -1.387124582267505,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5455.681510164569,
+        "morning_mean": 8357.947674418605,
+        "afternoon_mean": 5693.53023255814,
+        "evening_mean": 8321.316860465116,
+        "weekend_mean": 3718.6354166666665,
+        "peak_demand_q95": 9951.75,
+        "variance": 10344972.396144088,
+        "coefficient_of_variation": 0.5895432330611184,
+        "demand_concentration_top6_hours": 0.383534671582445,
+        "peak_to_average_ratio": 1.8241075805944194
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-bhivpuri-road",
+      "entity_name": "Bhivpuri Road",
+      "pc1": -2.271801011520761,
+      "pc2": -0.5139864363843113,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4639.7836398838335,
+        "morning_mean": 6424.267441860465,
+        "afternoon_mean": 4786.932558139535,
+        "evening_mean": 7653.218023255814,
+        "weekend_mean": 3168.043402777778,
+        "peak_demand_q95": 8953.0,
+        "variance": 7973901.688425473,
+        "coefficient_of_variation": 0.6086080735203412,
+        "demand_concentration_top6_hours": 0.41259144291754135,
+        "peak_to_average_ratio": 1.9296158387730675
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-dolavli",
+      "entity_name": "Dolavli",
+      "pc1": -2.6366783909025715,
+      "pc2": 1.5618813277502173,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4731.79912875121,
+        "morning_mean": 5845.546511627907,
+        "afternoon_mean": 4800.162790697675,
+        "evening_mean": 8353.39534883721,
+        "weekend_mean": 3223.5173611111113,
+        "peak_demand_q95": 9727.0,
+        "variance": 9032624.566136703,
+        "coefficient_of_variation": 0.6351564018716689,
+        "demand_concentration_top6_hours": 0.44201580985561917,
+        "peak_to_average_ratio": 2.0556662984481116
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-kalyan",
+      "entity_name": "Kalyan",
+      "pc1": 3.451117675868295,
+      "pc2": 0.19316766898291476,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_demand": 6754.92545982575,
+        "morning_mean": 11118.40988372093,
+        "afternoon_mean": 7131.441860465116,
+        "evening_mean": 9562.438953488372,
+        "weekend_mean": 4675.920138888889,
+        "peak_demand_q95": 12500.0,
+        "variance": 15071255.417483453,
+        "coefficient_of_variation": 0.5747171460772502,
+        "demand_concentration_top6_hours": 0.4021316033923963,
+        "peak_to_average_ratio": 1.8505015450344362
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-karjat",
+      "entity_name": "Karjat",
+      "pc1": 0.39293521598453157,
+      "pc2": 1.046858702001424,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5749.202807357212,
+        "morning_mean": 7764.267441860465,
+        "afternoon_mean": 5870.160465116279,
+        "evening_mean": 9634.136627906977,
+        "weekend_mean": 3928.75,
+        "peak_demand_q95": 11150.25,
+        "variance": 12300698.788975662,
+        "coefficient_of_variation": 0.6100385259216177,
+        "demand_concentration_top6_hours": 0.4190842095362296,
+        "peak_to_average_ratio": 1.9394428016578418
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-kelavli",
+      "entity_name": "Kelavli",
+      "pc1": -2.536757755157076,
+      "pc2": 1.0537389037691212,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4705.159244917715,
+        "morning_mean": 6019.427325581395,
+        "afternoon_mean": 4804.513953488372,
+        "evening_mean": 8190.9941860465115,
+        "weekend_mean": 3223.3611111111113,
+        "peak_demand_q95": 9538.0,
+        "variance": 8748067.29651908,
+        "coefficient_of_variation": 0.6286106448339505,
+        "demand_concentration_top6_hours": 0.4345597953667426,
+        "peak_to_average_ratio": 2.027136490715481
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-khopoli",
+      "entity_name": "Khopoli",
+      "pc1": -0.7065324562375017,
+      "pc2": 3.6651133464853776,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_demand": 5594.637463697967,
+        "morning_mean": 6554.578488372093,
+        "afternoon_mean": 5628.823255813953,
+        "evening_mean": 10206.241279069767,
+        "weekend_mean": 3823.746527777778,
+        "peak_demand_q95": 11848.75,
+        "variance": 13266390.615421254,
+        "coefficient_of_variation": 0.6510351558280152,
+        "demand_concentration_top6_hours": 0.45557363154872527,
+        "peak_to_average_ratio": 2.1178762836525538
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-lowjee",
+      "entity_name": "Lowjee",
+      "pc1": -2.776876968836831,
+      "pc2": 2.1370853299499224,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4747.385285575992,
+        "morning_mean": 5709.183139534884,
+        "afternoon_mean": 4771.993023255814,
+        "evening_mean": 8513.311046511628,
+        "weekend_mean": 3217.0798611111113,
+        "peak_demand_q95": 9936.5,
+        "variance": 9332442.339454347,
+        "coefficient_of_variation": 0.6434920388707225,
+        "demand_concentration_top6_hours": 0.44980033006167186,
+        "peak_to_average_ratio": 2.0930468883977302
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-neral",
+      "entity_name": "Neral",
+      "pc1": -2.1314497642689005,
+      "pc2": -1.1219173556557809,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4626.185866408518,
+        "morning_mean": 6566.328488372093,
+        "afternoon_mean": 4779.920930232558,
+        "evening_mean": 7470.845930232558,
+        "weekend_mean": 3172.0451388888887,
+        "peak_demand_q95": 8747.5,
+        "variance": 7691284.013856389,
+        "coefficient_of_variation": 0.5994822752077853,
+        "demand_concentration_top6_hours": 0.40437168243106736,
+        "peak_to_average_ratio": 1.8908665264655724
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-palasdari",
+      "entity_name": "Palasdari",
+      "pc1": -2.4357816838419195,
+      "pc2": 0.48665737791584346,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4686.239593417231,
+        "morning_mean": 6136.976744186047,
+        "afternoon_mean": 4774.158139534884,
+        "evening_mean": 8034.171511627907,
+        "weekend_mean": 3202.6927083333335,
+        "peak_demand_q95": 9327.0,
+        "variance": 8416039.063117743,
+        "coefficient_of_variation": 0.6190552089998482,
+        "demand_concentration_top6_hours": 0.427958017655485,
+        "peak_to_average_ratio": 1.9902951639736162
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-shelu",
+      "entity_name": "Shelu",
+      "pc1": -2.0090580773797164,
+      "pc2": -1.7174650719213524,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4614.595837366893,
+        "morning_mean": 6705.3808139534885,
+        "afternoon_mean": 4784.818604651163,
+        "evening_mean": 7273.334302325581,
+        "weekend_mean": 3143.340277777778,
+        "peak_demand_q95": 8562.0,
+        "variance": 7455981.939750339,
+        "coefficient_of_variation": 0.5917234132135616,
+        "demand_concentration_top6_hours": 0.3952406988942846,
+        "peak_to_average_ratio": 1.8554170943138353
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-ulhasnagar",
+      "entity_name": "Ulhasnagar",
+      "pc1": 0.015495636466884793,
+      "pc2": -1.1084648875100362,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5409.26669893514,
+        "morning_mean": 8700.904069767443,
+        "afternoon_mean": 5656.048837209302,
+        "evening_mean": 7928.65988372093,
+        "weekend_mean": 3687.9392361111113,
+        "peak_demand_q95": 10040.0,
+        "variance": 10073417.522772936,
+        "coefficient_of_variation": 0.5867458452151343,
+        "demand_concentration_top6_hours": 0.39607704541307504,
+        "peak_to_average_ratio": 1.8560741332973023
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-vangani",
+      "entity_name": "Vangani",
+      "pc1": -2.073690121816661,
+      "pc2": -1.937390289230214,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4566.7715392061955,
+        "morning_mean": 6842.561046511628,
+        "afternoon_mean": 4735.276744186047,
+        "evening_mean": 7130.968023255814,
+        "weekend_mean": 3104.5260416666665,
+        "peak_demand_q95": 8392.5,
+        "variance": 7415759.128831803,
+        "coefficient_of_variation": 0.5963050972321448,
+        "demand_concentration_top6_hours": 0.3902054250143813,
+        "peak_to_average_ratio": 1.8377315195099073
+      }
+    },
+    {
+      "entity_id": "central-karjat-khopoli-branch-vithalwadi",
+      "entity_name": "Vithalwadi",
+      "pc1": -2.3458575363373333,
+      "pc2": -1.6549831238453028,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4481.857696030977,
+        "morning_mean": 7387.872093023256,
+        "afternoon_mean": 4718.988372093023,
+        "evening_mean": 6416.9011627906975,
+        "weekend_mean": 3077.284722222222,
+        "peak_demand_q95": 8526.5,
+        "variance": 6994156.129797984,
+        "coefficient_of_variation": 0.5900782381273236,
+        "demand_concentration_top6_hours": 0.40347449715597045,
+        "peak_to_average_ratio": 1.902447730000633
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-ambivli",
+      "entity_name": "Ambivli",
+      "pc1": -2.855483268276077,
+      "pc2": -2.350763628024338,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4230.613746369797,
+        "morning_mean": 6714.985465116279,
+        "afternoon_mean": 4432.881395348837,
+        "evening_mean": 6249.622093023256,
+        "weekend_mean": 2871.7829861111113,
+        "peak_demand_q95": 7832.0,
+        "variance": 6245577.427768443,
+        "coefficient_of_variation": 0.590721696389698,
+        "demand_concentration_top6_hours": 0.3929437893468767,
+        "peak_to_average_ratio": 1.8512680356887885
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-asangaon",
+      "entity_name": "Asangaon",
+      "pc1": -2.968058144352911,
+      "pc2": -1.0151599062963967,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4336.726040658277,
+        "morning_mean": 6059.709302325581,
+        "afternoon_mean": 4456.3744186046515,
+        "evening_mean": 7104.2238372093025,
+        "weekend_mean": 2957.6961805555557,
+        "peak_demand_q95": 8326.0,
+        "variance": 6911417.336369319,
+        "coefficient_of_variation": 0.6062078713830757,
+        "demand_concentration_top6_hours": 0.41010827111135123,
+        "peak_to_average_ratio": 1.9198814778570117
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-atgaon",
+      "entity_name": "Atgaon",
+      "pc1": -3.0863119861995543,
+      "pc2": -0.5069176761355753,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4350.031461761859,
+        "morning_mean": 5880.662790697675,
+        "afternoon_mean": 4447.325581395349,
+        "evening_mean": 7265.555232558139,
+        "weekend_mean": 2973.7795138888887,
+        "peak_demand_q95": 8488.0,
+        "variance": 7065703.893976276,
+        "coefficient_of_variation": 0.611062058328906,
+        "demand_concentration_top6_hours": 0.4187406292581654,
+        "peak_to_average_ratio": 1.9512502552250903
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-kalyan",
+      "entity_name": "Kalyan",
+      "pc1": 2.332627576583469,
+      "pc2": 0.4802824851513603,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_demand": 6374.403678606002,
+        "morning_mean": 10691.84011627907,
+        "afternoon_mean": 6717.009302325581,
+        "evening_mean": 8947.127906976744,
+        "weekend_mean": 4360.359375,
+        "peak_demand_q95": 12283.75,
+        "variance": 13927501.952242032,
+        "coefficient_of_variation": 0.5854597608040066,
+        "demand_concentration_top6_hours": 0.40810554758847695,
+        "peak_to_average_ratio": 1.9270430018775173
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-kasara",
+      "entity_name": "Kasara",
+      "pc1": -1.589295115283669,
+      "pc2": 3.1285571374631624,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_demand": 5248.062439496612,
+        "morning_mean": 6162.372093023256,
+        "afternoon_mean": 5266.851162790697,
+        "evening_mean": 9560.938953488372,
+        "weekend_mean": 3581.4861111111113,
+        "peak_demand_q95": 11077.0,
+        "variance": 11617138.252151648,
+        "coefficient_of_variation": 0.649457274167911,
+        "demand_concentration_top6_hours": 0.454865848042127,
+        "peak_to_average_ratio": 2.110683729034004
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-khadavli",
+      "entity_name": "Khadavli",
+      "pc1": -2.7946274243150153,
+      "pc2": -2.1584053487274297,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4275.8480154888675,
+        "morning_mean": 6351.491279069767,
+        "afternoon_mean": 4431.609302325582,
+        "evening_mean": 6700.726744186047,
+        "weekend_mean": 2912.7447916666665,
+        "peak_demand_q95": 7897.5,
+        "variance": 6501053.234403129,
+        "coefficient_of_variation": 0.5963065795262371,
+        "demand_concentration_top6_hours": 0.3913846558998328,
+        "peak_to_average_ratio": 1.847002038283875
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-khardi",
+      "entity_name": "Khardi",
+      "pc1": -3.354194790461218,
+      "pc2": 0.8963289304213332,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4407.692642787996,
+        "morning_mean": 5556.738372093023,
+        "afternoon_mean": 4477.216279069768,
+        "evening_mean": 7709.523255813953,
+        "weekend_mean": 2991.140625,
+        "peak_demand_q95": 9029.25,
+        "variance": 7712216.461678688,
+        "coefficient_of_variation": 0.6300547681867421,
+        "demand_concentration_top6_hours": 0.4368057178659757,
+        "peak_to_average_ratio": 2.0485207866691746
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-shahad",
+      "entity_name": "Shahad",
+      "pc1": -2.967636620586538,
+      "pc2": -2.0687193328931257,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4215.120038722169,
+        "morning_mean": 6897.622093023256,
+        "afternoon_mean": 4424.527906976744,
+        "evening_mean": 6079.906976744186,
+        "weekend_mean": 2866.5243055555557,
+        "peak_demand_q95": 7940.0,
+        "variance": 6195332.64193146,
+        "coefficient_of_variation": 0.5905033527457382,
+        "demand_concentration_top6_hours": 0.400631901419205,
+        "peak_to_average_ratio": 1.883694871571687
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-thansit",
+      "entity_name": "Thansit",
+      "pc1": -3.186013277949916,
+      "pc2": 0.22454429152320352,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4394.472410454985,
+        "morning_mean": 5720.258720930233,
+        "afternoon_mean": 4509.088372093023,
+        "evening_mean": 7499.607558139535,
+        "weekend_mean": 2981.7881944444443,
+        "peak_demand_q95": 8808.75,
+        "variance": 7425060.866857404,
+        "coefficient_of_variation": 0.6200736363443181,
+        "demand_concentration_top6_hours": 0.42775509301512576,
+        "peak_to_average_ratio": 2.0045068388739704
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-titwala",
+      "entity_name": "Titwala",
+      "pc1": -2.7434830175918776,
+      "pc2": -2.5207896425884067,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4247.319457889642,
+        "morning_mean": 6543.9738372093025,
+        "afternoon_mean": 4428.927906976744,
+        "evening_mean": 6494.543604651163,
+        "weekend_mean": 2911.2013888888887,
+        "peak_demand_q95": 7783.75,
+        "variance": 6345821.040250626,
+        "coefficient_of_variation": 0.5931014460729752,
+        "demand_concentration_top6_hours": 0.38504116498089425,
+        "peak_to_average_ratio": 1.8326264546786641
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-umbermali",
+      "entity_name": "Umbermali",
+      "pc1": -3.457712732823768,
+      "pc2": 1.5048371391444724,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4434.227008712488,
+        "morning_mean": 5382.985465116279,
+        "afternoon_mean": 4495.997674418604,
+        "evening_mean": 7900.145348837209,
+        "weekend_mean": 3037.0381944444443,
+        "peak_demand_q95": 9207.0,
+        "variance": 8050173.172571594,
+        "coefficient_of_variation": 0.6398595975666391,
+        "demand_concentration_top6_hours": 0.44592817383162864,
+        "peak_to_average_ratio": 2.07634836509494
+      }
+    },
+    {
+      "entity_id": "central-kasara-branch-vasind",
+      "entity_name": "Vasind",
+      "pc1": -2.7688417383946837,
+      "pc2": -1.752991885166893,
+      "cluster_id": 1,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 4324.235721200387,
+        "morning_mean": 6239.703488372093,
+        "afternoon_mean": 4477.232558139535,
+        "evening_mean": 6911.433139534884,
+        "weekend_mean": 2959.3072916666665,
+        "peak_demand_q95": 8088.5,
+        "variance": 6651918.252760782,
+        "coefficient_of_variation": 0.5964363333479155,
+        "demand_concentration_top6_hours": 0.3991068207925457,
+        "peak_to_average_ratio": 1.8705039506390904
+      }
+    },
+    {
+      "entity_id": "central-main-bhandup",
+      "entity_name": "Bhandup",
+      "pc1": 0.5514992642131903,
+      "pc2": 0.7692681994344409,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5777.190222652469,
+        "morning_mean": 7876.555232558139,
+        "afternoon_mean": 5940.544186046512,
+        "evening_mean": 9589.412790697674,
+        "weekend_mean": 3952.3663194444443,
+        "peak_demand_q95": 11118.0,
+        "variance": 12189344.639033154,
+        "coefficient_of_variation": 0.6043291048209601,
+        "demand_concentration_top6_hours": 0.4147276195027161,
+        "peak_to_average_ratio": 1.9244649339061257
+      }
+    },
+    {
+      "entity_id": "central-main-byculla",
+      "entity_name": "Byculla",
+      "pc1": 0.4445457235501171,
+      "pc2": -0.8339877923117596,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5589.11665053243,
+        "morning_mean": 9042.093023255815,
+        "afternoon_mean": 5862.990697674419,
+        "evening_mean": 8147.889534883721,
+        "weekend_mean": 3813.6979166666665,
+        "peak_demand_q95": 10394.5,
+        "variance": 10809443.04883215,
+        "coefficient_of_variation": 0.588245325839088,
+        "demand_concentration_top6_hours": 0.398008244260067,
+        "peak_to_average_ratio": 1.8597751039978383
+      }
+    },
+    {
+      "entity_id": "central-main-chinchpokli",
+      "entity_name": "Chinchpokli",
+      "pc1": 0.5468925497183349,
+      "pc2": -0.9791322482514604,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5614.208615682478,
+        "morning_mean": 8977.619186046511,
+        "afternoon_mean": 5873.997674418604,
+        "evening_mean": 8259.191860465116,
+        "weekend_mean": 3836.6822916666665,
+        "peak_demand_q95": 10355.5,
+        "variance": 10854208.5261794,
+        "coefficient_of_variation": 0.5868276032820886,
+        "demand_concentration_top6_hours": 0.39427927860305806,
+        "peak_to_average_ratio": 1.844516424108896
+      }
+    },
+    {
+      "entity_id": "central-main-csmt",
+      "entity_name": "CSMT",
+      "pc1": 4.324362125749157,
+      "pc2": -0.22415602242899035,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_demand": 7042.376089060987,
+        "morning_mean": 11300.985465116279,
+        "afternoon_mean": 7433.130232558139,
+        "evening_mean": 10125.334302325582,
+        "weekend_mean": 4929.088541666667,
+        "peak_demand_q95": 12500.0,
+        "variance": 15793056.743842594,
+        "coefficient_of_variation": 0.5643049808491296,
+        "demand_concentration_top6_hours": 0.3942372847621185,
+        "peak_to_average_ratio": 1.7749691072898548
+      }
+    },
+    {
+      "entity_id": "central-main-currey-road",
+      "entity_name": "Currey Road",
+      "pc1": 0.5971997897963425,
+      "pc2": -1.052609345616042,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5624.0198451113265,
+        "morning_mean": 8840.755813953489,
+        "afternoon_mean": 5921.797674418604,
+        "evening_mean": 8373.677325581395,
+        "weekend_mean": 3829.340277777778,
+        "peak_demand_q95": 10340.75,
+        "variance": 10928642.90425283,
+        "coefficient_of_variation": 0.5878090568070504,
+        "demand_concentration_top6_hours": 0.39010791179164245,
+        "peak_to_average_ratio": 1.8386759443938816
+      }
+    },
+    {
+      "entity_id": "central-main-dadar",
+      "entity_name": "Dadar",
+      "pc1": 6.247009506531258,
+      "pc2": -1.2964751932986116,
+      "cluster_id": 2,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 7653.156340755082,
+        "morning_mean": 11400.927325581395,
+        "afternoon_mean": 8116.951162790698,
+        "evening_mean": 11400.21511627907,
+        "weekend_mean": 5646.647569444444,
+        "peak_demand_q95": 12500.0,
+        "variance": 16644332.298403649,
+        "coefficient_of_variation": 0.5330802633158774,
+        "demand_concentration_top6_hours": 0.37241079245091346,
+        "peak_to_average_ratio": 1.6333130336609214
+      }
+    },
+    {
+      "entity_id": "central-main-diva",
+      "entity_name": "Diva",
+      "pc1": 0.2929173119892288,
+      "pc2": 2.7019277057299953,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5853.880929332043,
+        "morning_mean": 7293.433139534884,
+        "afternoon_mean": 5963.437209302326,
+        "evening_mean": 10266.078488372093,
+        "weekend_mean": 4003.0208333333335,
+        "peak_demand_q95": 11977.75,
+        "variance": 13545790.19395383,
+        "coefficient_of_variation": 0.6287214652611667,
+        "demand_concentration_top6_hours": 0.43905656997594783,
+        "peak_to_average_ratio": 2.046121221903077
+      }
+    },
+    {
+      "entity_id": "central-main-dombivli",
+      "entity_name": "Dombivli",
+      "pc1": 4.2158804692490435,
+      "pc2": 0.7029024905014203,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_demand": 7054.946757018393,
+        "morning_mean": 9280.357558139534,
+        "afternoon_mean": 7345.932558139535,
+        "evening_mean": 11616.546511627907,
+        "weekend_mean": 5225.916666666667,
+        "peak_demand_q95": 12500.0,
+        "variance": 15814605.72030168,
+        "coefficient_of_variation": 0.5636836576234417,
+        "demand_concentration_top6_hours": 0.41157329640325346,
+        "peak_to_average_ratio": 1.7718064261172157
+      }
+    },
+    {
+      "entity_id": "central-main-ghatkopar",
+      "entity_name": "Ghatkopar",
+      "pc1": 4.801494418215339,
+      "pc2": 0.05018712227883787,
+      "cluster_id": -1,
+      "is_outlier": true,
+      "behaviour": {
+        "mean_demand": 7234.380929332043,
+        "morning_mean": 10594.101744186046,
+        "afternoon_mean": 7554.369767441861,
+        "evening_mean": 11278.177325581395,
+        "weekend_mean": 5092.116319444444,
+        "peak_demand_q95": 12500.0,
+        "variance": 17159949.44782605,
+        "coefficient_of_variation": 0.5726069686124041,
+        "demand_concentration_top6_hours": 0.38981868691741567,
+        "peak_to_average_ratio": 1.7278603548948226
+      }
+    },
+    {
+      "entity_id": "central-main-kalwa",
+      "entity_name": "Kalwa",
+      "pc1": 0.36362207945070196,
+      "pc2": 2.101520079458473,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5827.387221684415,
+        "morning_mean": 7501.377906976744,
+        "afternoon_mean": 5948.360465116279,
+        "evening_mean": 10048.561046511628,
+        "weekend_mean": 3974.5260416666665,
+        "peak_demand_q95": 11728.75,
+        "variance": 13100650.311821228,
+        "coefficient_of_variation": 0.621115761236091,
+        "demand_concentration_top6_hours": 0.4310044141908672,
+        "peak_to_average_ratio": 2.012694463885272
+      }
+    },
+    {
+      "entity_id": "central-main-kalyan",
+      "entity_name": "Kalyan",
+      "pc1": 6.535659762973322,
+      "pc2": -0.8879834027450124,
+      "cluster_id": 2,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 7764.640851887706,
+        "morning_mean": 10485.59011627907,
+        "afternoon_mean": 8227.562790697675,
+        "evening_mean": 12132.311046511628,
+        "weekend_mean": 6156.784722222223,
+        "peak_demand_q95": 12500.0,
+        "variance": 16160164.754846128,
+        "coefficient_of_variation": 0.5177278405051668,
+        "demand_concentration_top6_hours": 0.3907766281296724,
+        "peak_to_average_ratio": 1.6098619676608807
+      }
+    },
+    {
+      "entity_id": "central-main-kanjurmarg",
+      "entity_name": "Kanjurmarg",
+      "pc1": 0.5507712013847452,
+      "pc2": 0.45333764973773755,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5759.037754114231,
+        "morning_mean": 7985.180232558139,
+        "afternoon_mean": 5910.641860465116,
+        "evening_mean": 9413.372093023256,
+        "weekend_mean": 3920.2708333333335,
+        "peak_demand_q95": 10966.75,
+        "variance": 12011827.07505091,
+        "coefficient_of_variation": 0.6018033626341838,
+        "demand_concentration_top6_hours": 0.4106452918823049,
+        "peak_to_average_ratio": 1.9042677732344093
+      }
+    },
+    {
+      "entity_id": "central-main-kopar",
+      "entity_name": "Kopar",
+      "pc1": 0.22627989772863535,
+      "pc2": 3.007325076113739,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5861.358664085189,
+        "morning_mean": 7180.084302325581,
+        "afternoon_mean": 5933.813953488372,
+        "evening_mean": 10392.139534883721,
+        "weekend_mean": 3993.8958333333335,
+        "peak_demand_q95": 12096.5,
+        "variance": 13749808.739220673,
+        "coefficient_of_variation": 0.632630362066175,
+        "demand_concentration_top6_hours": 0.44319508036104827,
+        "peak_to_average_ratio": 2.0637706534015625
+      }
+    },
+    {
+      "entity_id": "central-main-kurla",
+      "entity_name": "Kurla",
+      "pc1": 5.8862796520724805,
+      "pc2": -0.897751614808727,
+      "cluster_id": 2,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 7553.37366892546,
+        "morning_mean": 11233.186046511628,
+        "afternoon_mean": 7961.3744186046515,
+        "evening_mean": 11400.337209302326,
+        "weekend_mean": 5491.989583333333,
+        "peak_demand_q95": 12500.0,
+        "variance": 16994735.702578697,
+        "coefficient_of_variation": 0.5457782663812084,
+        "demand_concentration_top6_hours": 0.37714450263283533,
+        "peak_to_average_ratio": 1.654889662274347
+      }
+    },
+    {
+      "entity_id": "central-main-masjid",
+      "entity_name": "Masjid",
+      "pc1": 0.3010038128714488,
+      "pc2": -0.45241534464947436,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5564.541626331074,
+        "morning_mean": 9257.165697674418,
+        "afternoon_mean": 5874.472093023256,
+        "evening_mean": 7894.912790697675,
+        "weekend_mean": 3810.2708333333335,
+        "peak_demand_q95": 10628.75,
+        "variance": 10757463.895895516,
+        "coefficient_of_variation": 0.5894209295837155,
+        "demand_concentration_top6_hours": 0.4058550367641044,
+        "peak_to_average_ratio": 1.910085450651568
+      }
+    },
+    {
+      "entity_id": "central-main-matunga",
+      "entity_name": "Matunga",
+      "pc1": 0.6963416199996554,
+      "pc2": -1.1240240849861278,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5660.09293320426,
+        "morning_mean": 8552.412790697674,
+        "afternoon_mean": 5880.918604651163,
+        "evening_mean": 8723.68023255814,
+        "weekend_mean": 3857.1388888888887,
+        "peak_demand_q95": 10300.25,
+        "variance": 11101359.28758801,
+        "coefficient_of_variation": 0.5886599881005428,
+        "demand_concentration_top6_hours": 0.3854874781799044,
+        "peak_to_average_ratio": 1.819802275608376
+      }
+    },
+    {
+      "entity_id": "central-main-mulund",
+      "entity_name": "Mulund",
+      "pc1": 0.39371927439394316,
+      "pc2": 1.5328040716053246,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5784.978218780252,
+        "morning_mean": 7683.828488372093,
+        "afternoon_mean": 5919.855813953488,
+        "evening_mean": 9830.02034883721,
+        "weekend_mean": 3955.9079861111113,
+        "peak_demand_q95": 11406.5,
+        "variance": 12698213.820919575,
+        "coefficient_of_variation": 0.6159842242607496,
+        "demand_concentration_top6_hours": 0.42435644158994246,
+        "peak_to_average_ratio": 1.9717446753680312
+      }
+    },
+    {
+      "entity_id": "central-main-mumbra",
+      "entity_name": "Mumbra",
+      "pc1": 0.33247887885260324,
+      "pc2": 2.3207976726615347,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5840.201839303001,
+        "morning_mean": 7411.7238372093025,
+        "afternoon_mean": 5927.890697674418,
+        "evening_mean": 10152.03488372093,
+        "weekend_mean": 3980.4357638888887,
+        "peak_demand_q95": 11804.75,
+        "variance": 13262602.126250248,
+        "coefficient_of_variation": 0.6235718676532306,
+        "demand_concentration_top6_hours": 0.4346064805682192,
+        "peak_to_average_ratio": 2.0212914424561803
+      }
+    },
+    {
+      "entity_id": "central-main-nahur",
+      "entity_name": "Nahur",
+      "pc1": 0.5096547894802482,
+      "pc2": 1.054925175076404,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5790.049854791869,
+        "morning_mean": 7814.892441860465,
+        "afternoon_mean": 5927.355813953488,
+        "evening_mean": 9680.20058139535,
+        "weekend_mean": 3959.1232638888887,
+        "peak_demand_q95": 11243.5,
+        "variance": 12398307.622393493,
+        "coefficient_of_variation": 0.6081334618812528,
+        "demand_concentration_top6_hours": 0.41847004301281765,
+        "peak_to_average_ratio": 1.9418658356965328
+      }
+    },
+    {
+      "entity_id": "central-main-parel",
+      "entity_name": "Parel",
+      "pc1": 0.6386786411502866,
+      "pc2": -1.1810937427364652,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5633.439012584705,
+        "morning_mean": 8755.380813953489,
+        "afternoon_mean": 5883.304651162791,
+        "evening_mean": 8469.383720930233,
+        "weekend_mean": 3837.9305555555557,
+        "peak_demand_q95": 10267.25,
+        "variance": 10947392.048797477,
+        "coefficient_of_variation": 0.5873293969544328,
+        "demand_concentration_top6_hours": 0.3872573530362824,
+        "peak_to_average_ratio": 1.8225545669463517
+      }
+    },
+    {
+      "entity_id": "central-main-sandhurst-road",
+      "entity_name": "Sandhurst Road",
+      "pc1": 0.40354913986523766,
+      "pc2": -0.7573865057736984,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5582.765730880929,
+        "morning_mean": 9142.677325581395,
+        "afternoon_mean": 5872.137209302326,
+        "evening_mean": 8003.520348837209,
+        "weekend_mean": 3800.265625,
+        "peak_demand_q95": 10497.0,
+        "variance": 10667491.715689132,
+        "coefficient_of_variation": 0.5850348712506397,
+        "demand_concentration_top6_hours": 0.40093842195070967,
+        "peak_to_average_ratio": 1.8802508480583568
+      }
+    },
+    {
+      "entity_id": "central-main-sion",
+      "entity_name": "Sion",
+      "pc1": 0.6819898326668533,
+      "pc2": -0.8573807889566064,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5679.755566311714,
+        "morning_mean": 8488.607558139534,
+        "afternoon_mean": 5865.504651162791,
+        "evening_mean": 8854.578488372093,
+        "weekend_mean": 3882.2673611111113,
+        "peak_demand_q95": 10396.75,
+        "variance": 11283434.043349946,
+        "coefficient_of_variation": 0.591413183611856,
+        "demand_concentration_top6_hours": 0.38999138590290144,
+        "peak_to_average_ratio": 1.8304925059920105
+      }
+    },
+    {
+      "entity_id": "central-main-thakurli",
+      "entity_name": "Thakurli",
+      "pc1": 0.1546390379426894,
+      "pc2": 3.5905899842274978,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5879.136011616651,
+        "morning_mean": 6980.688953488372,
+        "afternoon_mean": 5954.583720930233,
+        "evening_mean": 10596.171511627907,
+        "weekend_mean": 4032.144097222222,
+        "peak_demand_q95": 12334.75,
+        "variance": 14187673.544424364,
+        "coefficient_of_variation": 0.6406813557149946,
+        "demand_concentration_top6_hours": 0.4504360729499454,
+        "peak_to_average_ratio": 2.0980548801095313
+      }
+    },
+    {
+      "entity_id": "central-main-thane",
+      "entity_name": "Thane",
+      "pc1": 6.271225358231771,
+      "pc2": -0.9228569432859229,
+      "cluster_id": 2,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 7678.439012584705,
+        "morning_mean": 10960.71511627907,
+        "afternoon_mean": 8090.869767441861,
+        "evening_mean": 11783.412790697674,
+        "weekend_mean": 5839.355902777777,
+        "peak_demand_q95": 12500.0,
+        "variance": 16639800.773870079,
+        "coefficient_of_variation": 0.5312526653469332,
+        "demand_concentration_top6_hours": 0.3836250461902295,
+        "peak_to_average_ratio": 1.627935050276875
+      }
+    },
+    {
+      "entity_id": "central-main-vidyavihar",
+      "entity_name": "Vidyavihar",
+      "pc1": 0.6167623940828475,
+      "pc2": -0.3063318506665901,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5702.17279767667,
+        "morning_mean": 8269.71511627907,
+        "afternoon_mean": 5886.146511627907,
+        "evening_mean": 9116.313953488372,
+        "weekend_mean": 3899.527777777778,
+        "peak_demand_q95": 10608.75,
+        "variance": 11538342.745068358,
+        "coefficient_of_variation": 0.5957051350423443,
+        "demand_concentration_top6_hours": 0.39905235838595754,
+        "peak_to_average_ratio": 1.860475011266319
+      }
+    },
+    {
+      "entity_id": "central-main-vikhroli",
+      "entity_name": "Vikhroli",
+      "pc1": 0.615300930828463,
+      "pc2": 0.2270251676832171,
+      "cluster_id": 0,
+      "is_outlier": false,
+      "behaviour": {
+        "mean_demand": 5756.282671829623,
+        "morning_mean": 8089.069767441861,
+        "afternoon_mean": 5932.472093023256,
+        "evening_mean": 9355.380813953489,
+        "weekend_mean": 3913.8506944444443,
+        "peak_demand_q95": 10910.75,
+        "variance": 11886601.853300896,
+        "coefficient_of_variation": 0.5989447265572821,
+        "demand_concentration_top6_hours": 0.40638986546730216,
+        "peak_to_average_ratio": 1.895450696574642
+      }
+    }
+  ],
+  "interpretation_note": "Cluster IDs and noise labels are algorithm outputs, not source-provided entity types. No manual cluster labels are assigned.",
+  "system_id": "mumbai-local-central",
+  "city": "Mumbai",
+  "mode": "SUBURBAN",
+  "operator": "Central Railway"
+}

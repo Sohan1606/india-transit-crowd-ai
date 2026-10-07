@@ -224,3 +224,47 @@ def test_network_context_and_peak_hours_are_carried_through(observed, metadata):
     assert any(row["peak_hour_passengers"] == 632000 for row in morning)
     totals = observed[observed["measure"].eq("station_entries_plus_exits_14h")].groupby("line")["demand_count"].max()
     assert "Western Line" in totals.index and totals["Western Line"] >= 500_000
+
+
+def test_the_two_training_entry_points_agree_on_flags():
+    """The bash and PowerShell training entry points must not drift apart.
+
+    Both are documented as *the* way to rebuild the Mumbai families - bash in a Linux/WSL box, PowerShell on
+    a Windows GPU machine - so a flag added to one and forgotten in the other would quietly produce two
+    different models from the same source file. Only flags the register CLI actually accepts are compared
+    (the shell substitutions around them differ by design), and the values that decide semantics must match.
+    """
+    import re
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[2]
+    sh = (root / "scripts/run_mumbai_registration.sh").read_text(encoding="utf-8")
+    ps = (root / "scripts/windows_gpu_training.ps1").read_text(encoding="utf-8")
+    cli = (root / "scripts/register_demand_dataset.py").read_text(encoding="utf-8")
+    accepted = set(re.findall(r'parser\.add_argument\("(--[a-z][a-z-]+)"', cli))
+    assert "--fit-window-days" in accepted and "--route-group-column" in accepted, "CLI flag parsing broke"
+
+    sh_blocks = re.findall(r"register_demand_dataset\.py \\\n(.*?)\n\n", sh + "\n\n", re.S)
+    ps_blocks = re.findall(r"register_demand_dataset\.py `(.*?)\n\s*if \(\$LASTEXITCODE", ps, re.S)
+    assert len(sh_blocks) == 2, f"expected two register commands in the bash script, found {len(sh_blocks)}"
+    assert len(ps_blocks) == 2, f"expected two register commands in the PowerShell script, found {len(ps_blocks)}"
+
+    def flags(text):
+        return set(re.findall(r"--[a-z][a-z-]+", text)) & accepted
+
+    def value(text, flag):
+        # the single token that follows the flag, quoted or not - line layout differs between the two
+        # scripts on purpose (bash continues with a backslash, PowerShell with a grave accent)
+        match = re.search(re.escape(flag) + r"\s+\"?([^\"\s]+)\"?", text)
+        return match.group(1) if match else None
+
+    decisive = ("--fit-window-days", "--demand-column", "--entity-key-columns", "--entity-hierarchy-columns",
+                "--entity-hierarchy-labels", "--route-group-column", "--route-station-column",
+                "--route-position-column", "--timezone", "--dataset-class", "--serve-as", "--system-id")
+    for left, right in zip(sh_blocks, ps_blocks):
+        normalized_right = right.replace("\n ", " ").replace("\\", "/")
+        assert flags(left) == flags(normalized_right), f"flag sets differ: {sorted(flags(left) ^ flags(normalized_right))}"
+        for flag in decisive:
+            assert value(left, flag) == value(normalized_right, flag), (
+                f"{flag} differs: bash {value(left, flag)!r} vs PowerShell {value(normalized_right, flag)!r}")
+

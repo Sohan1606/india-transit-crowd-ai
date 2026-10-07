@@ -53,6 +53,12 @@ class SystemItem(BaseModel):
     network_reference_note: str
     prediction_unavailable_reason: str | None = None
     granularity: Literal["hour", "day"] | None = None
+    #: ``production`` | ``demo`` | ``internal`` | ``None`` for a catalogued system with no family.
+    served_as: str | None = None
+    dataset_class: str | None = None
+    data_class: str | None = None
+    disclosure: str | None = None
+    metrics_are_demonstration_only: bool = False
     station_count: int | None = None
     data_period: list[dict[str, Any]] = Field(default_factory=list)
 
@@ -60,6 +66,9 @@ class SystemItem(BaseModel):
 class StationSummary(BaseModel):
     station_id: str
     station_name: str
+    # What the dataset itself says this series is: corridor, origin, destination, published slot. Empty
+    # for families whose entity id is a single station, so no client has to assume anything per city.
+    attributes: dict[str, str] = Field(default_factory=dict)
     mean_hourly_boardings: float
     latest_observation: str
     observed_hours: int
@@ -109,7 +118,7 @@ class PredictionResponse(BaseModel):
     is_model_forecast: bool | None = None
     forecast_kind: str
     origin_basis: Literal["previous_observed_period", "data_frontier_recursive_seed"] | None = None
-    unit: str | None = None
+
     # Scoring against the source observation for the requested period. When the source has not
     # published that period there is no actual value and none is invented: the fields below say
     # so explicitly instead of being omitted, so a client cannot read silence as zero error.
@@ -138,6 +147,11 @@ class PredictionResponse(BaseModel):
     explanation_method: str
     recommendation: dict[str, Any]
     evaluation_context: dict[str, Any] | None = None
+    #: ``verified_observed`` | ``synthetic_development`` | ``unverified`` - what kind of data the family
+    #: behind this answer is built from, so a demonstration can never be read as a measurement.
+    data_class: str | None = None
+    #: The sentence a UI must show for a demonstration family; ``None`` for verified observed data.
+    disclosure: str | None = None
 
 
 class HistoryPoint(BaseModel):

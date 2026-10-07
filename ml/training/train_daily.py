@@ -21,17 +21,23 @@ from typing import Any
 import joblib
 import numpy as np
 import pandas as pd
+
+# XGBoost runs wherever the operator says, without editing this file: TRANSITCROWD_XGB_DEVICE=cuda on a
+# CUDA machine, left unset (cpu) everywhere else. Only the two XGBoost candidates take a device; every
+# other candidate is a scikit-learn estimator that has no such argument.
+_XGB_DEVICE = (os.environ.get("TRANSITCROWD_XGB_DEVICE") or "cpu").strip() or "cpu"
 from sklearn.compose import ColumnTransformer
 from sklearn.dummy import DummyClassifier
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.inspection import permutation_importance
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import f1_score, mean_absolute_error, mean_squared_error
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
 from sklearn.svm import LinearSVC, LinearSVR
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 
 from ml.evaluation.metrics import classification_metrics, regression_metrics
+from ml.training import limitations
 from ml.training.horizon import horizon_bands
 from ml.training.registry import get_model_family
 from ml.features.daily import FEATURE_COLUMNS, HISTORY_FEATURES, TARGET, TIME_FEATURES, build_supervised_frame
@@ -70,17 +76,30 @@ class SeasonalNaiveDaily:
         return self
 
 
-def _preprocessor() -> ColumnTransformer:
+#: Beyond this many entities, an identity column is no longer worth one-hot expanding: a family whose
+#: series are one per station pair per published slot reaches two thousand ids, and every tree split would
+#: then scan two thousand mostly-zero columns (and a densified version of that costs gigabytes per split).
+#: Wide families get an ordinal identity instead, which a tree can still split on in one column.
+WIDE_ENTITY_THRESHOLD = 128
+
+
+def _entity_transformer(entity_count: int):
+    if int(entity_count) > WIDE_ENTITY_THRESHOLD:
+        return OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1, encoded_missing_value=-1)
+    return OneHotEncoder(handle_unknown="ignore", sparse_output=False)
+
+
+def _preprocessor(entity_count: int = 0) -> ColumnTransformer:
     return ColumnTransformer(
         transformers=[
-            ("entity_id", OneHotEncoder(handle_unknown="ignore", sparse_output=False), ["entity_id"]),
+            ("entity_id", _entity_transformer(entity_count), ["entity_id"]),
             ("numeric", StandardScaler(), [column for column in FEATURE_COLUMNS if column != "entity_id"]),
         ],
         remainder="drop", verbose_feature_names_out=True,
     )
 
 
-def make_regression_model(name: str):
+def make_regression_model(name: str, entity_count: int = 0):
     if name == "seasonal_naive":
         return _seasonal_naive_pipeline()
     from xgboost import XGBRegressor
@@ -94,6 +113,7 @@ def make_regression_model(name: str):
         ),
         "svr": LinearSVR(C=0.5, epsilon=0.05, max_iter=6000, random_state=42, dual="auto"),
         "xgboost": XGBRegressor(
+            device=_XGB_DEVICE,
             n_estimators=400, max_depth=5, learning_rate=0.04, min_child_weight=10, subsample=0.85,
             colsample_bytree=0.8, reg_lambda=6.0, objective="reg:squarederror", eval_metric="rmse",
             tree_method="hist", n_jobs=MAX_JOBS, random_state=42,
@@ -103,7 +123,7 @@ def make_regression_model(name: str):
         raise KeyError(name)
     from sklearn.pipeline import Pipeline
 
-    return Pipeline([("preprocess", _preprocessor()), ("model", estimators[name])])
+    return Pipeline([("preprocess", _preprocessor(entity_count)), ("model", estimators[name])])
 
 
 def _seasonal_naive_pipeline():
@@ -121,6 +141,9 @@ def _seasonal_naive_pipeline():
 
     class Naive(BaseEstimator, RegressorMixin):
         def fit(self, X, y=None):
+            # Scikit-learn Pipeline.check_is_fitted expects a fitted marker for custom estimators.
+            # Seasonal naive is stateless, but the wrapper still participates in the benchmark suite.
+            self.is_fitted_ = True
             return self
 
         def predict(self, X):
@@ -129,7 +152,7 @@ def _seasonal_naive_pipeline():
     return Pipeline([("passthrough", Passthrough()), ("model", Naive())])
 
 
-def make_classification_model(name: str):
+def make_classification_model(name: str, entity_count: int = 0):
     from sklearn.pipeline import Pipeline
 
     if name == "baseline":
@@ -146,7 +169,7 @@ def make_classification_model(name: str):
     }
     if name not in estimators:
         raise KeyError(name)
-    return Pipeline([("preprocess", _preprocessor()), ("model", estimators[name])])
+    return Pipeline([("preprocess", _preprocessor(entity_count)), ("model", estimators[name])])
 
 
 class _Passthrough:
@@ -170,6 +193,7 @@ def _xgb_classifier():
     from xgboost import XGBClassifier
 
     return XGBClassifier(
+            device=_XGB_DEVICE,
         n_estimators=400, max_depth=5, learning_rate=0.04, min_child_weight=10, subsample=0.85,
         colsample_bytree=0.8, reg_lambda=6.0, objective="multi:softprob", num_class=len(RISK_ORDER),
         eval_metric="mlogloss", tree_method="hist", n_jobs=MAX_JOBS, random_state=42,
@@ -278,14 +302,14 @@ def fit_daily_profiles(daily: pd.DataFrame, min_samples: int = 4) -> dict[str, A
     }
 
 
-def _fit_regression(name: str, X: pd.DataFrame, y: pd.Series):
-    model = make_regression_model(name)
+def _fit_regression(name: str, X: pd.DataFrame, y: pd.Series, entity_count: int = 0):
+    model = make_regression_model(name, entity_count=entity_count)
     model.fit(X, y)
     return model
 
 
-def _fit_classifier(name: str, X: pd.DataFrame, labels: np.ndarray):
-    model = make_classification_model(name)
+def _fit_classifier(name: str, X: pd.DataFrame, labels: np.ndarray, entity_count: int = 0):
+    model = make_classification_model(name, entity_count=entity_count)
     encoded = _encode(name, labels)
     if name == "xgboost":
         from sklearn.utils.class_weight import compute_sample_weight
@@ -321,14 +345,33 @@ def _probabilities(name: str, model, X: pd.DataFrame) -> np.ndarray | None:
 
 
 def train_daily(daily: pd.DataFrame, dataset_metadata: dict[str, Any] | None = None,
-                tz: str = "Asia/Kolkata", split_ratios=SPLIT_RATIOS) -> dict[str, Any]:
+                tz: str = "Asia/Kolkata", split_ratios=SPLIT_RATIOS,
+                fit_window_days: int | None = None) -> dict[str, Any]:
     """Chronological benchmark suite for one day-granularity model family."""
     metadata = dict(dataset_metadata or {})
     system_id = str(daily["system_id"].iloc[0])
     # Refusing an unregistered family here is deliberate: a model must be attached to a
     # verified system/mode/operator family before it can be served.
     family = get_model_family(system_id)
+    fit_window: dict[str, Any] = {}
+    if fit_window_days:
+        # See ml.training.train.train_and_save: the window bounds what is *fitted*, never what is served,
+        # and it is recorded beside the metrics so a number is never quoted without its rows.
+        # A normalized file read back from disk carries its moments as ISO strings, so the bound is
+        # established on parsed values rather than trusting a lexical comparison to be chronological.
+        stamps = pd.to_datetime(daily["timestamp"], errors="coerce", utc=True)
+        latest = stamps.max()
+        earliest_allowed = latest - pd.Timedelta(days=int(fit_window_days))
+        before = len(daily)
+        daily = daily.loc[stamps.gt(earliest_allowed)].copy()
+        fit_window = {"requested_days": int(fit_window_days), "rows_used": int(len(daily)),
+                      "rows_available": int(before),
+                      "first_fitted_timestamp": str(pd.to_datetime(daily["timestamp"], errors="coerce", utc=True).min()),
+                      "last_fitted_timestamp": str(latest),
+                      "reported_in": "UTC",
+                      "note": "models were fitted on this window only; the dataset's full history remains served as observations"}
     supervised = build_supervised_frame(daily, timezone=tz)
+    entity_count = int(supervised["entity_id"].astype(str).nunique())
     unique_days = np.array(sorted(supervised["timestamp"].unique()))
     if len(unique_days) < 12:
         raise ValueError("A chronological train/validation/test split needs at least 12 target days.")
@@ -351,7 +394,7 @@ def train_daily(daily: pd.DataFrame, dataset_metadata: dict[str, Any] | None = N
     fitted: dict[str, Any] = {}
     for name in REGRESSION_KEYS:
         started = datetime.now(timezone.utc)
-        model = _fit_regression(name, X_train, y_train)
+        model = _fit_regression(name, X_train, y_train, entity_count)
         seconds = (datetime.now(timezone.utc) - started).total_seconds()
         prediction = np.maximum(np.asarray(model.predict(X_valid), dtype=float), 0.0)
         regression_scores[name] = {"validation": regression_metrics(y_valid, prediction), "fit_seconds": round(seconds, 3)}
@@ -370,7 +413,7 @@ def train_daily(daily: pd.DataFrame, dataset_metadata: dict[str, Any] | None = N
     classification_models: dict[str, Any] = {}
     for name in CLASSIFICATION_KEYS:
         started = datetime.now(timezone.utc)
-        model = _fit_classifier(name, X_train, labels_train)
+        model = _fit_classifier(name, X_train, labels_train, entity_count)
         seconds = (datetime.now(timezone.utc) - started).total_seconds()
         predicted = _predict_classifier(name, model, X_valid)
         probabilities = _probabilities(name, model, X_valid)
@@ -492,14 +535,15 @@ def train_daily(daily: pd.DataFrame, dataset_metadata: dict[str, Any] | None = N
         },
         "station_analytics": profiles,
         "artifacts": {"bundle": "transitcrowd.joblib", "report": "model_report.json", "station_analytics": "station_analytics.json"},
-        "limitations": [
-            "Target is CMRL station entries per day; it is not onboard load, occupancy, capacity utilisation or a safety level.",
-            "The archive begins at the collector's first capture date, so annual seasonality and festival/holiday effects outside the window are unmodelled.",
-            "No weather, disruption, fare-change, event or service-frequency variable is joined to the model.",
-            "Trees cannot extrapolate beyond the observed feature range; forecasts far beyond the data frontier regress toward recent levels.",
-            "Forecasts past the last observation are one-day-ahead model calls applied recursively and are labelled as model forecasts, never as live counts.",
-            "CMRL data are copyrighted by the operator; this project documents the download path and does not redistribute the raw archive.",
-        ],
+        "limitations": limitations.build(
+            family, metadata,
+            first_observation=str(pd.Timestamp(supervised["timestamp"].min())),
+            last_observation=str(pd.Timestamp(supervised["timestamp"].max())),
+            fit_window=fit_window,
+            horizon_text=("Forecasts past the last observation are recursive one-day model calls bounded by the "
+                          "family's measured horizon; the horizon governance recorded in this report is what the "
+                          "service accepts, and nothing beyond it is answered with a guess."),
+        )
     }
     # --- horizon governance (validation stage only) -------------------------------------
     # The champion is re-run recursively across the validation partition, exactly as the API
@@ -515,7 +559,8 @@ def train_daily(daily: pd.DataFrame, dataset_metadata: dict[str, Any] | None = N
             daily,
             history=daily.loc[pd.to_datetime(daily["timestamp"]).lt(horizon_start)],
             predict_fn=_champion_predict, start=horizon_start, end=horizon_end, timezone=tz,
-            entities=list(entity_ids), max_horizon=HORIZON_SCAN_DAYS)
+            entities=list(entity_ids), max_horizon=HORIZON_SCAN_DAYS,
+            max_entities=(80 if len(entity_ids) > 240 else None))
     except ValueError as exc:
         bands = {"error": str(exc), "usable_horizon_days": 0, "max_measured_horizon_days": 0, "per_horizon": {}}
     measured = int(bands.get("max_measured_horizon_days") or 0)
@@ -539,6 +584,13 @@ def train_daily(daily: pd.DataFrame, dataset_metadata: dict[str, Any] | None = N
                                   "beyond_validated_range" if MAX_RECURSIVE_HORIZON_DAYS > measured else "not applicable"),
     }
 
+    report["fit_window"] = fit_window
+    report["entity_encoding"] = {
+        "entities": entity_count, "transformer": "ordinal" if entity_count > WIDE_ENTITY_THRESHOLD else "one-hot",
+        "threshold": WIDE_ENTITY_THRESHOLD,
+        "note": "chosen from the family's own entity count so a wide family stays trainable; both encodings give "
+                "the model the entity's identity, only at different widths",
+    }
     report["forecast_horizon"] = {
         "policy": bands.get("policy"), "method": bands.get("method"),
         "evaluation_window": bands.get("evaluation_window"), "evaluated_pairs": bands.get("evaluated_pairs"),
@@ -569,6 +621,13 @@ def train_daily(daily: pd.DataFrame, dataset_metadata: dict[str, Any] | None = N
         "validated_horizon_days": int(measured), "serviceable_horizon_days": int(serviceable),
         "horizon_error_bands": bands,
         "timezone": tz, "model_family": family, "global_feature_importance": importance,
+        # Provenance and the clock times the data actually contains. An hour-granularity family
+        # that only ever observed some hours of the day must not be asked to forecast the rest, so
+        # the supported set travels with the artifact instead of being assumed by the API.
+        "served_as": str(family.get("served_as") or "production"),
+        "dataset_class": str(family.get("dataset_class") or "verified_project_source"),
+        "supported_time_slots": (sorted({int(hour) for hour in pd.to_datetime(daily["timestamp"]).dt.hour})
+                                  if str(family.get("granularity") or "day") == "hour" else None),
         "dataset_metadata": metadata, "model_report": report,
         "supervised_rows": int(len(supervised)),
     }

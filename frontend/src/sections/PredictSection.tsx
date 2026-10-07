@@ -1,8 +1,69 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowDownRight, ArrowRight, CalendarDays, Clock3, MapPin, Sparkles, TrainFront } from 'lucide-react'
-import { useEffect, useRef, type FormEvent } from 'react'
-import type { AppMetadata, PredictionResult, SourceGapResponse, StationComparison, StationSummary, TransitSystem } from '../types/api'
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
+import type { AppMetadata, PredictionResult, RouteContext, SourceGapResponse, StationComparison, StationSummary, TransitSystem } from '../types/api'
 import { NumberTicker, RiskBadge, SectionHeading } from '../components/ui'
+
+
+/**
+ * A family whose series are identified by several columns gets one dependent select per column, in the
+ * order the dataset declared. Every option list is derived from the station attributes the API published,
+ * so an unpublished combination - a time slot the source never measured, a destination that is not on that
+ * line - cannot even be chosen, and no city's structure is written into this client.
+ */
+function EntityCascade(props: {
+  stations: StationSummary[]
+  levels: { column: string; label: string }[]
+  disabled: boolean
+  onPick: (stationId: string) => void
+}) {
+  const { stations, levels, disabled, onPick } = props
+  const [picks, setPicks] = useState<string[]>([])
+
+  const optionsAt = (depth: number): string[] => {
+    const column = levels[depth].column
+    const matching = stations.filter((station) => levels.slice(0, depth)
+      .every((level, index) => (station.attributes ?? {})[level.column] === picks[index]))
+    return [...new Set(matching.map((station) => (station.attributes ?? {})[column]).filter((value): value is string => Boolean(value)))].sort()
+  }
+
+  const chosen = levels.length > 0 && picks.length === levels.length && picks.every(Boolean)
+    ? stations.find((station) => levels.every((level, index) => (station.attributes ?? {})[level.column] === picks[index]))
+    : undefined
+  useEffect(() => { onPick(chosen ? chosen.station_id : '') }, [chosen, onPick])
+
+  return (
+    <div className="entity-cascade">
+      <div className="cascade-levels">
+        {levels.map((level, depth) => {
+          const options = optionsAt(depth)
+          const usable = options.length > 0
+          const value = usable && (picks[depth] === undefined || !options.includes(picks[depth])) ? '' : (picks[depth] ?? '')
+          return (
+            <div className="cascade-level" key={level.column}>
+              <span className="field-label">{level.label}{usable ? '' : ' · unavailable'}</span>
+              <div className="control-wrap">
+                <select value={value} disabled={disabled || !usable} aria-label={level.label}
+                  onChange={(event) => setPicks((current) => {
+                    const next = current.slice(0, depth)
+                    next[depth] = event.target.value
+                    return next
+                  })}>
+                  <option value="" disabled>{options.length ? 'select…' : 'no values'}</option>
+                  {options.map((option) => <option value={option} key={option}>{option}</option>)}
+                </select>
+                <span className="select-caret">⌄</span>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <p className="form-hint"><span className="form-hint-dot" /> {chosen
+        ? `${chosen.station_name} · ${(chosen.observed_days ?? chosen.observed_hours).toLocaleString()} observed periods recorded`
+        : `Choose ${levels.map((level) => level.label.toLowerCase()).join(', then ')} - the options are the values this source actually publishes.`}</p>
+    </div>
+  )
+}
 
 function plusHoursInIst(isoTimestamp: string, hours: number): string {
   const milliseconds = Date.parse(isoTimestamp)
@@ -79,7 +140,7 @@ function ResultCard({ result, granularity }: { result: PredictionResult; granula
       <div className="result-main">
         <div className="result-demand-block">
           <p className="result-caption">{words.caption} <span>· {words.scope}</span></p>
-          <div className="result-number"><NumberTicker value={demand} /> <small>{result.unit ? `per day · ${result.measure.replaceAll('_', ' ')}` : words.unit}</small></div>
+          <div className="result-number"><NumberTicker value={demand} /> <small>{result.unit ? `${words.unit} · ${result.measure.replaceAll('_', ' ')}` : words.unit}</small></div>
           <p className="result-context">{isFuture
             ? `This day has not been observed by the source yet — ${horizon !== null ? words.horizon(horizon) : 'beyond the data frontier'} and produced entirely by the model. It can be checked against real counts once the source publishes the day.`
             : `A model estimate of ${words.noun} at this station for the selected ${granularity === 'day' ? 'day' : 'hour'} — not the number currently onboard a train.`}</p>
@@ -145,6 +206,7 @@ function ResultCard({ result, granularity }: { result: PredictionResult; granula
           </p>
         </div>
       </div>
+      {result.disclosure ? <p className="demo-note">{result.disclosure}</p> : null}
       <section className="result-explain" aria-labelledby="why-this-heading">
         <div className="result-section-heading"><div><p className="eyebrow"><span className="eyebrow-dot" /> MODEL SENSITIVITY</p><h3>Why this estimate?</h3></div><span className="explain-legend">REFERENCE = TRAIN MEDIAN</span></div>
         <p className="explain-disclaimer">Each driver below shows how the saved model output changes when one input is replaced with its training median. This is sensitivity, not causal attribution.</p>
@@ -246,6 +308,24 @@ export function PredictSection({
   const modes = Array.from(new Set(systems.filter((item) => item.city === city).map((item) => item.mode))).sort()
   const operators = Array.from(new Set(systems.filter((item) => item.city === city && item.mode === mode).map((item) => item.operator))).sort()
   const isAvailable = Boolean(selectedSystem?.prediction_available && selectedSystem.system_id === metadata.system_id)
+  // A family may be served on data it is honest about not being measurement. The flag comes from the
+  // loaded family, never from a system name, so any future demo family is labelled the same way.
+  const demoFamily = metadata.served_as === 'demo'
+  const hierarchyLevels = useMemo(() => metadata.entity_hierarchy ?? [], [metadata.entity_hierarchy])
+  const isDemonstration = metadata.data_class === 'synthetic_development' || metadata.served_as === 'demo'
+  // The series label has to say what the file is. Calling modelled synthetic data "observed" is the exact
+  // overclaim this project exists to avoid, so the wording switches on the family's own declared class.
+  const dataClassLabel = isDemonstration ? 'SYNTHETIC DEMONSTRATION DATA' : 'OBSERVED DATA'
+  // TOWARDS is journey context for families whose source publishes no destination-specific counts: it is
+  // derived from the corridor's own station ordering, shown so the choice reads like a real trip, and never
+  // sent as if it were a measured direction.
+  const routeContext: RouteContext | null = metadata.route_context ?? null
+  const [towards, setTowards] = useState('')
+  const towardsOptions = stationId && routeContext ? (routeContext.towards_for_entity?.[stationId] ?? []) : []
+  useEffect(() => { setTowards((current) => (towardsOptions.includes(current) ? current : '')) }, [stationId, towardsOptions.join('|')])
+  const declaredSlots = metadata.supported_time_slots ?? null
+  const slotLimited = Boolean(declaredSlots && declaredSlots.length > 0 && declaredSlots.length < 24)
+  const hourOptions = slotLimited ? (declaredSlots as number[]) : Array.from({ length: 24 }, (_, index) => index)
   const words = vocabulary(granularity)
   const minDate = metadata.dataset.timestamp_min.slice(0, 10)
   const maxDate = granularity === 'day'
@@ -256,9 +336,17 @@ export function PredictSection({
     <section id="predict" className="predict-section section-anchor section-pad">
       <div className="section-shell">
         <div className="predict-intro">
-          <SectionHeading eyebrow="THE PREDICTIVE ENGINE" title={<>The station-<span className="headline-unit">{granularity === 'day' ? 'day' : 'hour'}</span><br /><em>signal, made visible.</em></>} copy="Discover a city, mode and operator. Forecasts appear only where verified observed passenger-demand history and matching model artifacts exist." />
-          <div className="engine-status"><span className="status-ring" /><span>{isAvailable ? 'MODEL READY' : 'NO MODEL'}</span><small>{isAvailable ? `${metadata.operator} ${granularity === 'day' ? 'DAILY' : 'HOURLY'} SNAPSHOT · IST · NOT LIVE${gap?.days_behind_today !== null && gap?.days_behind_today !== undefined ? ` · ${gap.days_behind_today}D BEHIND TODAY` : ''}` : 'NETWORK DISCOVERY ONLY'}</small></div>
+          <SectionHeading eyebrow="THE PREDICTIVE ENGINE" title={<>The station-<span className="headline-unit">{granularity === 'day' ? 'day' : 'hour'}</span><br /><em>signal, made visible.</em></>} copy="Select a registered transit model family and forecast only within the demand history and horizon that its data and artifacts support. Synthetic demonstration families are labelled clearly." />
+          <div className="engine-status"><span className="status-ring" /><span>{isAvailable ? 'MODEL READY' : 'NO MODEL'}</span><small>{isAvailable ? `${metadata.operator} ${granularity === 'day' ? 'DAILY' : 'HOURLY'} SNAPSHOT · IST · NOT LIVE${demoFamily ? ' · SYNTHETIC DEMO' : ''}${gap?.days_behind_today !== null && gap?.days_behind_today !== undefined ? ` · ${gap.days_behind_today}D BEHIND TODAY` : ''}` : 'NETWORK DISCOVERY ONLY'}</small></div>
         </div>
+        {demoFamily ? (
+          <p className="demo-note" role="status">
+            <strong>SYNTHETIC DEMONSTRATION DATA.</strong> This family is forecast from modelled data supplied to
+            exercise the pipeline. <strong>NOT LIVE PASSENGER RIDERSHIP</strong> — not an operator measurement, not a
+            crowd or occupancy statement, and not a real-world accuracy claim.{' '}
+            {metadata.supported_time_note ?? ''}
+          </p>
+        ) : null}
         <div className="predict-layout">
           <form className="prediction-form" onSubmit={onSubmit} aria-label="India transit system demand prediction form">
             <div className="form-header"><span>01 / DISCOVER A SYSTEM</span><span>INDIA · CITY / MODE / OPERATOR</span></div>
@@ -276,17 +364,42 @@ export function PredictSection({
             </div>
             {selectedSystem && !isAvailable ? <UnavailablePanel system={selectedSystem} /> : (
               <>
-                <label className="field-label" htmlFor="station-select">STATION · {metadata.operator} OBSERVED DATA</label>
+                {hierarchyLevels.length > 0 ? (
+                  <>
+                    <label className="field-label">SERIES · {metadata.operator} {dataClassLabel}</label>
+                    <EntityCascade key={metadata.system_id} stations={stations} levels={hierarchyLevels}
+                      disabled={!isAvailable || stations.length === 0} onPick={setStationId} />
+                    {towardsOptions.length > 0 && (
+                      <div className="towards-row">
+                        <div className="cascade-level">
+                          <span className="field-label">TOWARDS · ROUTE CONTEXT</span>
+                          <div className="control-wrap">
+                            <MapPin size={16} aria-hidden="true" />
+                            <select value={towards} disabled={!isAvailable} aria-label="Towards"
+                              onChange={(event) => setTowards(event.target.value)}>
+                              {towardsOptions.map((option) => <option value={option} key={option}>{option}</option>)}
+                            </select>
+                            <span className="select-caret">⌄</span>
+                          </div>
+                        </div>
+                        <p className="towards-note">{routeContext?.towards_kind ??
+                          'route context only - the forecast is the corridor and station series this file measures'}.</p>
+                      </div>
+                    )}
+                  </>
+                ) : (<>
+                <label className="field-label" htmlFor="station-select">STATION · {metadata.operator} {dataClassLabel}</label>
                 <div className="control-wrap"><TrainFront size={16} aria-hidden="true" /><select id="station-select" name="station_id" value={stationId} onChange={(event) => setStationId(event.target.value)} required disabled={!isAvailable || stations.length === 0}>
                   {stations.map((item) => <option value={item.station_id} key={item.station_id}>
                     {item.station_name} · {(granularity === 'day' ? item.observed_days ?? item.observed_hours : item.observed_hours).toLocaleString()} observed {granularity === 'day' ? 'days' : 'hours'}
                   </option>)}
                 </select><span className="select-caret">⌄</span></div>
+                </>)}
                 <div className={granularity === 'day' ? 'form-split single-field-split' : 'form-split'}>
                   <div><label className="field-label" htmlFor="target-date">TARGET DATE · IST</label><div className="control-wrap"><CalendarDays size={16} aria-hidden="true" /><input id="target-date" name="date" type="date" value={date} min={minDate} max={maxDate} onChange={(event) => setDate(event.target.value)} required disabled={!isAvailable} /></div></div>
                   {granularity === 'hour' && (
                     <div><label className="field-label" htmlFor="target-hour">TARGET HOUR</label><div className="control-wrap"><Clock3 size={16} aria-hidden="true" /><select id="target-hour" name="hour" value={hour} onChange={(event) => setHour(Number(event.target.value))} required disabled={!isAvailable}>
-                      {Array.from({ length: 24 }, (_, index) => <option key={index} value={index}>{clock(index)} – {clock((index + 1) % 24)}</option>)}
+                      {hourOptions.map((index) => <option key={index} value={index}>{clock(index)} – {clock((index + 1) % 24)}</option>)}
                     </select><span className="select-caret">⌄</span></div></div>
                   )}
                 </div>

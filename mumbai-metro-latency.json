@@ -1,0 +1,13 @@
+{
+  "system_id": "mumbai-metro",
+  "granularity": "day",
+  "served_as": "demo",
+  "cold_load_seconds": 3.189,
+  "requests": 24,
+  "p50_ms": 1016.62,
+  "p95_ms": 2152.98,
+  "max_ms": 2310.56,
+  "artifact_bytes": 50740341,
+  "dataset_bytes": 2712163,
+  "artifact_mtime_unchanged": true
+}

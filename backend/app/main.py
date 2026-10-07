@@ -64,9 +64,12 @@ def create_app(service: TransitInferenceService | None = None, artifact_path: Pa
     app = FastAPI(
         title="India Transit Crowd AI API",
         description=(
-            "India transit discovery with artifact-backed passenger-demand prediction only for verified observed-demand data. "
-            "Loaded families: Bengaluru Namma Metro/BMRCL station-hour boardings and Chennai Metro CMRL station-day entries. "
-            "Predictions for days that have not been observed are labelled MODEL FORECAST; static GTFS is never used as a demand target."
+            "India transit discovery with artifact-backed passenger-demand prediction. Families that pass the "
+            "observed-data gate are served as production; families fitted on supplied synthetic development data "
+            "(Mumbai Local Central, Mumbai Metro) are served as labelled demonstrations - every answer carries "
+            "SYNTHETIC DEMONSTRATION DATA, NOT LIVE PASSENGER RIDERSHIP. Which families exist is read from "
+            "data/registry/model_families.json at startup. Predictions for periods the dataset has not observed "
+            "are labelled as projections made past the data frontier; static GTFS is never used as a demand target."
         ),
         version="2.0.0",
         docs_url="/api/docs",
@@ -102,8 +105,8 @@ def create_app(service: TransitInferenceService | None = None, artifact_path: Pa
     def root():
         return {
             "service": "INDIA TRANSIT CROWD AI",
-            "prediction_scope": ("observed-demand predictions for verified model families only: Bengaluru Namma Metro "
-                                 "station-hour boardings (hourly) and Chennai Metro station-day entries (daily)"),
+            "prediction_scope": ("artifact-backed passenger-demand forecasts for registered model families, including "
+                                 "verified observed families and explicitly labelled synthetic demonstration families"),
             "health": "/api/health", "systems": "/api/systems", "docs": "/api/docs",
         }
 

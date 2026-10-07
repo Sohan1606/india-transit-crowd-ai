@@ -26,7 +26,9 @@ Deliberate refusals (each is a non-zero exit with a reason, never a silent fallb
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
+import shutil
 import tempfile
 import json
 import re
@@ -44,7 +46,7 @@ sys.path.insert(0, str(ROOT))
 from ml.data_pipeline.cleaning import DataValidationError, clean_normalized_demand  # noqa: E402
 from ml.data_pipeline.profile import measure_relations, profile_dataset  # noqa: E402
 from ml.features.periodic import PERIOD_SECONDS  # noqa: E402
-from ml.training.registry import REGISTRY_PATH, get_model_family, register_family  # noqa: E402
+from ml.training.registry import OBSERVED_TARGET_CRITERION, REGISTRY_PATH, get_model_family, register_family  # noqa: E402
 from scripts.validate_demand_dataset import evaluate  # noqa: E402
 
 PRODUCTION_CLASSES = {"observed", "observed_survey", "observed_count"}
@@ -123,6 +125,46 @@ def decide(profile: dict[str, Any], args: argparse.Namespace) -> tuple[dict[str,
             "period_seconds": PERIOD_SECONDS.get(str(granularity), 86400)}, refusals
 
 
+def profile_timestamp_guess(frame: pd.DataFrame) -> str:
+    """Cheap fallback used only by --exclude-unobserved-future before profiling has run."""
+    from ml.data_pipeline.profile import profile_dataset
+    return profile_dataset(frame)["mapping"]["timestamp"]
+
+
+def _train_only(args: argparse.Namespace) -> None:
+    """Run the trainer for a family that is already registered, from the file its entry points at.
+
+    Registration and training are separate effects: a re-train must not re-profile the source, rewrite the
+    normalized data or touch provenance, because those are the audited record of how the family was built.
+    """
+    from ml.training.registry import get_model_family
+    family = get_model_family(args.system_id)
+    csv_path = ROOT / str(family["dataset_relative_path"])
+    sidecar_path = ROOT / str(family["metadata_relative_path"])
+    if not csv_path.is_file():
+        raise SystemExit(f"the registered normalized file is missing: {csv_path.relative_to(ROOT) if csv_path.is_relative_to(ROOT) else csv_path} - "
+                         "re-run registration (for a private source, restore it with scripts/fetch_lfs_object.py --all first)")
+    metadata = json.loads(sidecar_path.read_text(encoding="utf-8")) if sidecar_path.is_file() else {}
+    granularity = str(family.get("granularity") or metadata.get("granularity") or "day")
+    cleaned = pd.read_csv(csv_path, encoding="utf-8-sig")
+    if "timestamp" not in cleaned.columns and "observation_timestamp" in cleaned.columns:
+        cleaned = cleaned.rename(columns={"observation_timestamp": "timestamp"})
+    print(f"[train-only] {args.system_id}: {len(cleaned):,} normalized rows at {granularity} granularity")
+    if granularity == "day":
+        from ml.training.train_daily import save_artifacts, train_daily
+        result = train_daily(cleaned, dataset_metadata=metadata, tz=str(family.get("timezone") or "Asia/Kolkata"),
+                             fit_window_days=args.fit_window_days or None)
+        directory = ROOT / "backend/models" / args.system_id
+        save_artifacts(result, directory)
+        print(f"[train-only] day-granularity artifacts saved to backend/models/{args.system_id}")
+    else:
+        subprocess.run([sys.executable, str(ROOT / "scripts/train_models.py"), "--data", str(csv_path),
+                        "--metadata", str(sidecar_path), "--output-dir",
+                        str(ROOT / "backend/models" / args.system_id),
+                        "--fit-window-days", str(args.fit_window_days or 0)], check=True)
+        print(f"[train-only] {granularity}-granularity artifacts saved to backend/models/{args.system_id}")
+
+
 def normalize(frame: pd.DataFrame, decisions: dict[str, Any], args: argparse.Namespace) -> tuple[pd.DataFrame, dict[str, Any]]:
     mapping = decisions["mapping"]
     period = int(decisions["period_seconds"])
@@ -180,6 +222,9 @@ def main() -> None:
     parser.add_argument("--timezone", default="Asia/Kolkata")
     parser.add_argument("--granularity", default="auto", choices=["auto", *sorted(PERIOD_SECONDS)])
     parser.add_argument("--timestamp-column", default=None)
+    parser.add_argument("--timestamp-columns", default=None,
+                        help="comma-separated columns to join into one timestamp when a file splits it, e.g. "
+                             "'Date,Time' - the joined value is what the grid and period are measured from")
     parser.add_argument("--entity-column", default=None)
     parser.add_argument("--entity-name-column", default=None)
     parser.add_argument("--entity-key-columns", default=None,
@@ -188,6 +233,26 @@ def main() -> None:
     parser.add_argument("--demand-column", default=None)
     parser.add_argument("--measure", default=None, help="canonical measure label, e.g. daily_station_entries")
     parser.add_argument("--line-column", default=None)
+    parser.add_argument("--entity-attribute-columns", default=None,
+                        help="comma-separated context columns recorded per entity in the sidecar (e.g. the line, the "
+                             "origin, the destination and the time slot that together identify a series); the API "
+                             "publishes them so a client can build dependent selectors from the data instead of a list")
+    parser.add_argument("--entity-hierarchy-columns", default=None,
+                        help="ordered subset of --entity-attribute-columns that forms a cascade (parent first). The "
+                             "frontend renders one select per level and resolves it to a single entity id, which is "
+                             "how a slot-based or direction-segmented family exposes its supported choices without any "
+                             "per-city code")
+    parser.add_argument("--entity-hierarchy-labels", default=None,
+                        help="display labels for --entity-hierarchy-columns, comma-separated and in the same order "
+                             "(e.g. 'Line,From,Towards,Time slot'). The client renders these, so a file whose column "
+                             "is named Destination_Station can still be presented as the journey's TOWARDS")
+    parser.add_argument("--route-group-column", default=None,
+                        help="column naming a route/corridor, used with --route-station-column and "
+                             "--route-position-column to derive the ordered station list and the two endpoints "
+                             "from the data itself (no route table is written into this repository)")
+    parser.add_argument("--route-station-column", default=None, help="station column for the route context")
+    parser.add_argument("--route-position-column", default=None,
+                        help="numeric position of the station along its route; ordering and endpoints come from it")
     parser.add_argument("--services-column", default=None, help="optional scheduled-services count")
     parser.add_argument("--source-id", required=True)
     parser.add_argument("--source-url", required=True)
@@ -201,18 +266,78 @@ def main() -> None:
     parser.add_argument("--provenance-statement", default=None,
                         help="one paragraph naming who counted these passengers, when and how")
     parser.add_argument("--out-dir", type=Path, default=None)
+    parser.add_argument("--serve-as", default="auto", choices=("auto", "production", "demo", "internal"),
+                        help="how the family may be used: 'production' = verified observed data, every gate "
+                             "criterion; 'demo' = a non-observed dataset (synthetic/simulated/modelled) that IS "
+                             "served, with a synthetic disclosure on every response and every metric labelled a "
+                             "demonstration result; 'internal' = loaded by tooling, never served. 'auto' picks "
+                             "production for an observed class and internal otherwise.")
+    parser.add_argument("--print-audit", action="store_true",
+                        help="run the full read-only audit (inventory, grid, slots, duplicates, precomputed-target "
+                             "verification) on the raw file and stop - nothing is decided or written")
+    parser.add_argument("--exclude-unobserved-future", action="store_true",
+                        help="drop rows whose timestamp is later than today before anything else happens. A file "
+                             "that publishes the rest of the current year (a projection, or a synthetic table built "
+                             "for a whole calendar year) must not be trained on days that have not happened: it "
+                             "would make every 'future' claim false and the held-out test period meaningless")
     parser.add_argument("--dry-run", action="store_true", help="profile, decide and gate without writing anything")
     parser.add_argument("--write", action="store_true")
     parser.add_argument("--install-registry", action="store_true")
     parser.add_argument("--allow-development-family", action="store_true",
                         help="register a non-production family marked development_only (never served)")
     parser.add_argument("--train", action="store_true")
+    parser.add_argument("--fit-window-days", type=int, default=0,
+                        help="with --train/--train-only: fit on the most recent N days only (the stored data and "
+                             "the served observation history stay complete); recorded inside the model report")
+    parser.add_argument("--no-inference-copy", action="store_true",
+                        help="skip publishing the compressed, committed inference copy under data/inference/")
+    parser.add_argument("--train-only", action="store_true",
+                        help="train and persist artifacts for an already-registered family from the normalized file "
+                             "its registry entry points at, without re-profiling or re-writing anything else")
     args = parser.parse_args()
+
+    if args.train_only:
+        _train_only(args)
+        return
 
     if not args.csv.is_file():
         parser.error(f"CSV not found: {args.csv}")
-    frame = pd.read_csv(args.csv)
-    profile = profile_dataset(frame, timezone=args.timezone)
+    if args.print_audit:
+        from ml.data_pipeline.audit import audit_frame
+        import subprocess as _sp
+        _sp.run([sys.executable, str(ROOT / "scripts/audit_demand_dataset.py"), "--csv", str(args.csv),
+                 "--timezone", args.timezone], check=False)
+        return
+    frame = pd.read_csv(args.csv, encoding="utf-8-sig")
+    if args.timestamp_columns:
+        # Supplied files commonly split the moment across columns (`Date` + `Time`). Composing them is
+        # a reading step, not a Mumbai exception: any file with the same shape uses the same flag.
+        parts = [name.strip() for name in str(args.timestamp_columns).split(",") if name.strip()]
+        missing = [name for name in parts if name not in frame.columns]
+        if missing:
+            raise SystemExit(f"--timestamp-columns names columns absent from the file: {missing}. "
+                             f"First columns available: {list(frame.columns)[:24]}")
+        if args.timestamp_column:
+            raise SystemExit("use either --timestamp-column or --timestamp-columns, not both")
+        joined = frame[parts[0]].astype(str)
+        for extra in parts[1:]:
+            joined = joined + " " + frame[extra].astype(str)
+        frame["_composed_timestamp"] = joined
+        args.timestamp_column = "_composed_timestamp"
+    excluded_future_rows = 0
+    if args.exclude_unobserved_future:
+        moment = pd.to_datetime(frame[args.timestamp_column or profile_timestamp_guess(frame)],
+                                errors="coerce").dt.tz_localize(args.timezone)
+        today = pd.Timestamp.now(tz=args.timezone).normalize()
+        keep = moment.lt(today)
+        excluded_future_rows = int((~keep & moment.notna()).sum())
+        if excluded_future_rows:
+            frame = frame.loc[keep | moment.isna()].copy()
+            print(f"[future] excluded {excluded_future_rows:,} row(s) dated on or after {today.date()} - the "
+                  "series is usable only through "
+                  f"{moment[moment.lt(today)].max().date() if (~keep & moment.notna()).any() else 'the source end'}")
+    profile = profile_dataset(frame, timezone=args.timezone, dataset_class=args.dataset_class,
+                              timestamp_column=args.timestamp_column)
     decisions, refusals = decide(profile, args)
     print(f"[profile] {args.csv.name}: {profile['rows']:,} rows x {len(profile['columns'])} columns")
     for role in ("timestamp", "entity", "entity_name", "demand"):
@@ -233,6 +358,81 @@ def main() -> None:
     except (DataValidationError, ValueError) as exc:
         print(f"\nREFUSED - normalization failed: {exc}")
         raise SystemExit(2) from exc
+
+    attribute_columns = [name.strip() for name in str(args.entity_attribute_columns or "").split(",") if name.strip()]
+    hierarchy_columns = [name.strip() for name in str(args.entity_hierarchy_columns or "").split(",") if name.strip()]
+    unknown = [name for name in attribute_columns + hierarchy_columns if name not in frame.columns]
+    if unknown:
+        raise SystemExit(f"--entity-attribute-columns/--entity-hierarchy-columns name missing columns: {unknown}")
+    if hierarchy_columns and set(hierarchy_columns) - set(attribute_columns):
+        raise SystemExit("--entity-hierarchy-columns must be a subset of --entity-attribute-columns")
+    entity_attributes: dict[str, dict[str, str]] = {}
+    if attribute_columns:
+        # Rebuild the composite id exactly as normalize() composes it, so the attributes attach to the
+        # same keys the service will be asked about. Vectorised: these files reach hundreds of thousands
+        # of rows and a row-wise apply would cost more than the analysis it describes.
+        key_columns = [name.strip() for name in str(args.entity_key_columns or "").split(",") if name.strip()]
+        base = key_columns or [decisions["mapping"]["entity"]]
+        composed = frame[base[0]].astype(str).str.strip()
+        for extra in base[1:]:
+            composed = composed + " / " + frame[extra].astype(str).str.strip()
+        keyed = pd.DataFrame({"_entity_id": composed.astype(str)})
+        for name in attribute_columns:
+            keyed[name] = frame[name].astype(str).str.strip()
+        for row in keyed.drop_duplicates("_entity_id").to_dict("records"):
+            # The canonical id in the normalized file is the slug of that composition, so the attributes
+            # are keyed the same way - otherwise a client asking about an entity finds nothing on it.
+            entity_attributes[_slug(row["_entity_id"])] = {name: row[name] for name in attribute_columns}
+        print(f"[attributes] recorded {len(entity_attributes):,} entity attribute sets over columns "
+              f"{', '.join(attribute_columns)}")
+
+    hierarchy_labels = [name.strip() for name in str(args.entity_hierarchy_labels or "").split(",") if name.strip()]
+    if hierarchy_labels and len(hierarchy_labels) != len(hierarchy_columns):
+        raise SystemExit("--entity-hierarchy-labels must give exactly one label per --entity-hierarchy-columns entry")
+
+    # Route context, derived from the file's own ordering columns. A corridor's station order and its two
+    # endpoints are facts in this data (Station_Position), so the choices a rider can be offered are computed
+    # here instead of being retyped into a client. Where the file has no destination-specific counts, this is
+    # journey context only - the forecast remains the one the series actually measures, and nothing invents a
+    # directional number.
+    route_context: dict[str, Any] = {}
+    if args.route_group_column and args.route_station_column and args.route_position_column:
+        missing = [name for name in (args.route_group_column, args.route_station_column, args.route_position_column)
+                   if name not in frame.columns]
+        if missing:
+            raise SystemExit(f"--route-*-column names missing columns: {missing}")
+        ordered = pd.DataFrame({"_group": frame[args.route_group_column].astype(str).str.strip(),
+                                "_station": frame[args.route_station_column].astype(str).str.strip(),
+                                "_position": pd.to_numeric(frame[args.route_position_column], errors="coerce")})
+        routes: dict[str, list[str]] = {}
+        for group, group_rows in ordered.dropna().drop_duplicates(["_group", "_station"]).groupby("_group"):
+            stations = group_rows.sort_values("_position")["_station"].tolist()
+            if len(stations) > 1:
+                routes[str(group)] = [str(name) for name in stations]
+        towards_for: dict[str, list[str]] = {}
+        if key_columns:
+            positions = {(str(group), str(station)): order for group, order in routes.items() for station in order}
+            composed_rows = pd.DataFrame({"_entity": composed, "_group": frame[args.route_group_column].astype(str).str.strip(),
+                                          "_station": frame[args.route_station_column].astype(str).str.strip()})
+            for row in composed_rows.drop_duplicates("_entity").to_dict("records"):
+                order = routes.get(row["_group"]) or []
+                if not order:
+                    continue
+                endpoints = [order[0], order[-1]]
+                towards = [f"Towards {name}" for name in endpoints if name != row["_station"]]
+                if towards:
+                    towards_for[_slug(row["_entity"])] = towards
+        route_context = {
+            "group_column": args.route_group_column, "station_column": args.route_station_column,
+            "position_column": args.route_position_column,
+            "routes": {group: {"ordered_stations": order, "endpoints": [order[0], order[-1]]}
+                       for group, order in sorted(routes.items())},
+            "towards_for_entity": towards_for,
+            "towards_kind": ("route context derived from station ordering; this dataset publishes no "
+                             "destination-specific passenger counts, so no directional demand figure is claimed"),
+        }
+        print(f"[routes] derived {len(routes)} route(s) and {len(towards_for)} towards-choice set(s) from "
+              f"{args.route_position_column} ordering within {args.route_group_column}")
 
     relations: dict[str, Any] = {}
     measure_candidates = [column for column in ([decisions["mapping"].get("demand")] + list(profile["ambiguous_demand_columns"]))
@@ -270,6 +470,16 @@ def main() -> None:
                                                  if args.dataset_class in DEVELOPMENT_CLASSES else
                                                  "Publisher terms apply; refetched from the recorded source."),
         "provenance_statement": args.provenance_statement, "observation_class": args.dataset_class,
+        "rows_excluded_as_unobserved_future": int(excluded_future_rows),
+        # What each series actually is, straight from the file's own columns, so a client can build
+        # dependent selectors (line -> origin -> destination -> time slot) from the data instead of a
+        # hand-written city list. Empty for families whose entity id is a single station.
+        "entity_attributes": entity_attributes,
+        "entity_hierarchy": [{"column": name,
+                              "label": hierarchy_labels[index] if hierarchy_labels
+                              else name.replace("_", " ").title()}
+                             for index, name in enumerate(hierarchy_columns)],
+        "route_context": route_context,
         "granularity": decisions["granularity"], "period_seconds": decisions["period_seconds"],
         "timezone": args.timezone, "measure": cleaned["measure"].iloc[0],
         "column_mapping": {key: value for key, value in decisions["mapping"].items() if isinstance(value, str)},
@@ -313,17 +523,61 @@ def main() -> None:
     for written in (csv_path, sidecar_path, gate_path):
         print(f"[write] {_rel(written)}")
 
-    if args.dataset_class in DEVELOPMENT_CLASSES and not args.allow_development_family:
+    serve_as = args.serve_as
+    if serve_as == "auto":
+        serve_as = "production" if args.dataset_class in PRODUCTION_CLASSES else "internal"
+    if args.dataset_class in DEVELOPMENT_CLASSES and not args.allow_development_family and serve_as != "demo":
         print("\nThis dataset is classified as development/test data, so it was not registered as a served "
               "family. Re-run with --allow-development-family to register it as development_only (the API will "
               "still refuse to serve it), and never present its numbers as observed passengers.")
         raise SystemExit(0)
     # The gate is a conjunction: the report also names the critical subset for triage, but a
-    # family is promoted only when every criterion passes.
-    if passed != len(report["criteria"]):
+    # family is promoted only when every criterion passes - with one declared exception below.
+    failed_criteria = [name for name, result in report["criteria"].items() if not result.get("pass")]
+    if serve_as == "demo":
+        blocking = [name for name in failed_criteria if name != OBSERVED_TARGET_CRITERION]
+        if blocking:
+            print(f"\nNot registered as a demonstration: {passed}/{len(report['criteria'])} criteria pass and "
+                  f"{len(blocking)} failure(s) are not the one a non-observed dataset can be excused for: "
+                  f"{', '.join(blocking)}. Fix the data and re-run.")
+            raise SystemExit(1)
+        if not failed_criteria:
+            print("\nNot registered as a demonstration: this dataset passed "
+                  f"'{OBSERVED_TARGET_CRITERION}', so its values are treated as observed ground truth. Register it "
+                  "with --serve-as production instead of hiding it behind a demo label.")
+            raise SystemExit(1)
+        print(f"\nGate: {passed}/{len(report['criteria'])} criteria pass; '{OBSERVED_TARGET_CRITERION}' is the only "
+              "failure, which is expected and honest for a synthetic/demonstration dataset. Every other criterion "
+              "(grid, coverage, chronology, leakage probe, horizon, entity integrity) is met.")
+    elif failed_criteria:
         print(f"\nNot registered: {passed}/{len(report['criteria'])} criteria pass and the gate is a conjunction, "
               "not a score. Fix the data (or document why a criterion cannot be met) and re-run.")
         raise SystemExit(1)
+
+    # A registry entry must resolve in a fresh clone, not only in the workspace that produced it. The
+    # development copy under data/development/ stays git-ignored (it is derived from a source this project
+    # may not redistribute), and a compressed inference copy of the same rows is published under
+    # data/inference/ for the registry to point at: same content, portable path, no 140 MB raw parse at
+    # every service start.
+    inference_paths: dict[str, str] = {}
+    if args.write and not args.no_inference_copy:
+        inference_dir = ROOT / "data/inference"
+        inference_dir.mkdir(parents=True, exist_ok=True)
+        gz_path = inference_dir / f"{_slug(args.system_id)}_demand_timeseries.csv.gz"
+        with open(csv_path, "rb") as source, gzip.open(gz_path, "wb", compresslevel=9) as target:
+            shutil.copyfileobj(source, target, 1024 * 1024)
+        metadata["normalized_gz_sha256"] = _sha256(gz_path)
+        metadata["inference_copy"] = {"dataset_relative_path": _rel(gz_path), "rows": int(len(cleaned)),
+                                      "note": "gzip of the identical normalized file; the service verifies this "
+                                              "container's own checksum, so a packaged family cannot silently "
+                                              "drift from the rows it was trained on"}
+        sidecar = json.dumps(metadata, indent=2) + "\n"
+        sidecar_path.write_text(sidecar, encoding="utf-8")
+        inference_sidecar = inference_dir / f"{_slug(args.system_id)}_demand_timeseries.metadata.json"
+        inference_sidecar.write_text(sidecar, encoding="utf-8")
+        inference_paths = {"dataset_relative_path": _rel(gz_path), "metadata_relative_path": _rel(inference_sidecar)}
+        print(f"[inference] packaged {gz_path.name} ({gz_path.stat().st_size:,} bytes) for portable serving "
+              f"({len(cleaned):,} rows)")
 
     family = {
         "system_id": args.system_id, "city": args.city, "mode": args.mode, "operator": args.operator,
@@ -332,16 +586,24 @@ def main() -> None:
         "granularity": decisions["granularity"], "target": f"target_next_{_slug(str(decisions['granularity']))}_demand",
         "feature_period_seconds": decisions["period_seconds"],
         "label_unit": "entries" if "entries" in metadata["measure"] else "passengers",
-        "dataset_relative_path": str(csv_path.relative_to(ROOT)),
-        "metadata_relative_path": str(sidecar_path.relative_to(ROOT)),
+        "dataset_relative_path": inference_paths.get("dataset_relative_path", str(csv_path.relative_to(ROOT))),
+        "metadata_relative_path": inference_paths.get("metadata_relative_path", str(sidecar_path.relative_to(ROOT))),
+        "training_dataset_relative_path": str(csv_path.relative_to(ROOT)),
+        # Recorded so a checkout without the (deliberately uncommitted) development copy can be repaired by
+        # reading the registry alone: the entry says which command rebuilds what it points away from.
+        "development_rebuild_command": "python3 scripts/fetch_lfs_object.py --all --under data/development",
         "max_recursive_horizon_days": 60 if decisions["granularity"] == "day" else 336,
-        "development_only": args.dataset_class in DEVELOPMENT_CLASSES,
+        "dataset_class": args.dataset_class,
+        "served_as": serve_as,
+        "development_only": serve_as == "internal",
         "registered_at_utc": datetime.now(dt_timezone.utc).isoformat(timespec="seconds"),
     }
     if args.install_registry:
         path = register_family(family, REGISTRY_PATH)
-        print(f"[registry] family '{args.system_id}' written to {path.relative_to(ROOT)}"
-              + (" (development_only: not served)" if family["development_only"] else ""))
+        suffix = {"internal": " (internal: loaded by tooling, never served)",
+                  "demo": " (DEMO: served with a synthetic disclosure on every response)",
+                  "production": " (production: verified observed data)"}[serve_as]
+        print(f"[registry] family '{args.system_id}' written to {path.relative_to(ROOT)}" + suffix)
     if args.train:
         if decisions["granularity"] not in TRAINABLE:
             print(f"[train] skipped: no leakage-safe trainer is implemented for '{decisions['granularity']}' "
@@ -357,13 +619,15 @@ def main() -> None:
             return
         if decisions["granularity"] == "day":
             from ml.training.train_daily import save_artifacts, train_daily
-            result = train_daily(cleaned, dataset_metadata=metadata, tz=args.timezone)
+            result = train_daily(cleaned, dataset_metadata=metadata, tz=args.timezone,
+                                 fit_window_days=args.fit_window_days or None)
             directory = ROOT / "backend/models" / args.system_id
             save_artifacts(result, directory)
             print(f"[train] day-granularity family trained and saved to {_rel(directory)}")
         else:
             command = [sys.executable, str(ROOT / "scripts/train_models.py"), "--data", str(csv_path),
-                       "--metadata", str(sidecar_path), "--output-dir", str(ROOT / "backend/models" / args.system_id)]
+                       "--metadata", str(sidecar_path), "--output-dir", str(ROOT / "backend/models" / args.system_id),
+                       "--fit-window-days", str(args.fit_window_days or 0)]
             print("[train] " + " ".join(str(part) for part in command))
             subprocess.run([str(part) for part in command], check=True)
 

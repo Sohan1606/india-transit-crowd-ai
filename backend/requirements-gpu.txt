@@ -1,0 +1,18 @@
+# Training-time requirements for a machine with an NVIDIA GPU. This file exists so that enabling GPU
+# training never requires editing Python source: install this instead of backend/requirements.txt on the
+# training box, export TRANSITCROWD_XGB_DEVICE=cuda, run the training, and keep backend/requirements-runtime.txt
+# for serving (the served API needs no GPU and no scikit-learn training extras).
+#
+# `xgboost` (not `xgboost-cpu`) is the build with CUDA support; the trainers pass device= through to it.
+fastapi==0.142.2
+uvicorn[standard]==0.54.0
+pydantic==2.13.4
+pandas==2.2.3
+numpy==2.3.5
+scikit-learn==1.6.1
+xgboost==2.1.4
+joblib==1.5.3
+httpx2==2.13.1
+pytest==9.0.3
+# Nothing else changes for GPU training: the candidates that are not XGBoost are scikit-learn estimators
+# that run on CPU in either case, and the served API never needs this file.

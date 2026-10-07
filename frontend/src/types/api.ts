@@ -19,6 +19,12 @@ export interface TransitSystem {
   data_period: Array<Record<string, string>>
   /** Observation resolution of the registered model family: 'hour' or 'day'. */
   granularity?: 'hour' | 'day' | string
+  /** ``demo`` = served on synthetic/modelled data; every answer carries its disclosure. */
+  served_as?: 'production' | 'demo' | 'internal' | null
+  dataset_class?: string | null
+  data_class?: 'verified_observed' | 'synthetic_development' | 'unverified' | null
+  disclosure?: string | null
+  metrics_are_demonstration_only?: boolean
 }
 
 export interface DemandSourceCandidate {
@@ -69,6 +75,24 @@ export interface DatasetMetadata {
 }
 
 export interface AppMetadata {
+  /** ``demo`` means the family is served on synthetic/modelled data and must be labelled as such. */
+  served_as?: 'production' | 'demo' | 'internal' | null
+  dataset_class?: string | null
+  data_class?: 'verified_observed' | 'synthetic_development' | 'unverified' | null
+  disclosure?: string | null
+  metrics_are_demonstration_only?: boolean
+  /** Clock hours (or published slot labels) the family's data actually contains; absent or full-length
+   *  means "any hour". Values come from the source file, never from a per-city list in the client. */
+  supported_time_slots?: (number | string)[] | null
+  supported_time_note?: string | null
+  /** Ordered levels identifying one series when a family's entity is more than a single station - e.g.
+   *  a corridor and a station, or a line, an origin, a destination and a published time slot. */
+  entity_hierarchy?: { column: string; label: string }[] | null
+  /** Journey context derived from the source's own ordering columns, when it publishes them. */
+  route_context?: RouteContext | null
+  entity_selection?: string | null
+  entities_with_declared_attributes?: number
+  time_slot_note?: string | null
   project: string
   tagline: string
   system_id: string
@@ -99,6 +123,17 @@ export interface AppMetadata {
   seasonal_naive_test_mae?: number
 }
 
+/** Corridor ordering, endpoints and per-entity TOWARDS choices, computed at registration from the
+ *  file's own position column - no route table is duplicated in the client. */
+export interface RouteContext {
+  group_column: string
+  station_column: string
+  position_column: string
+  routes: Record<string, { ordered_stations: string[]; endpoints: string[] }>
+  towards_for_entity: Record<string, string[]>
+  towards_kind?: string
+}
+
 export interface StationSummary {
   station_id: string
   station_name: string
@@ -109,6 +144,8 @@ export interface StationSummary {
   granularity?: 'hour' | 'day' | string
   mean_daily_entries?: number
   observed_days?: number
+  /** The source's own description of this series, keyed by the family's hierarchy columns. */
+  attributes?: Record<string, string>
 }
 
 export interface ExplanationItem {
@@ -159,6 +196,10 @@ export interface Recommendation {
 }
 
 export interface PredictionResult {
+  /** What kind of data the answering family is built from; a demo family is never 'verified_observed'. */
+  data_class?: 'verified_observed' | 'synthetic_development' | 'unverified' | null
+  /** Set only for a demonstration family: the sentence that must be visible next to the answer. */
+  disclosure?: string | null
   system_id: string
   station_id: string
   station_name: string

@@ -1,0 +1,4403 @@
+{
+  "fit_window": {
+    "requested_days": 120,
+    "rows_used": 152640,
+    "rows_available": 354888,
+    "first_fitted_timestamp": "2026-06-09 00:00:00+05:30",
+    "last_fitted_timestamp": "2026-10-06 23:00:00+05:30",
+    "note": "models were fitted on this window only; the dataset's full history remains served as observations"
+  },
+  "project": "INDIA TRANSIT CROWD AI",
+  "tagline": "PREDICT THE CROWD. PLAN THE JOURNEY.",
+  "model_version": "2.0.0-india",
+  "training_timestamp_utc": "2026-10-07T05:11:48.614112+00:00",
+  "model_family": {
+    "system_id": "mumbai-local-central",
+    "city": "Mumbai",
+    "mode": "SUBURBAN",
+    "operator": "Central Railway",
+    "timezone": "Asia/Kolkata",
+    "entity_type": "STATION",
+    "measure": "passengers_per_hour",
+    "artifact_subdirectory": "mumbai-local-central",
+    "source_id": "mumbai-central-synthetic-2026",
+    "granularity": "hour",
+    "target": "target_next_hour_demand",
+    "feature_period_seconds": 3600,
+    "label_unit": "passengers",
+    "dataset_relative_path": "data\\inference\\mumbai-local-central_demand_timeseries.csv.gz",
+    "metadata_relative_path": "data\\inference\\mumbai-local-central_demand_timeseries.metadata.json",
+    "training_dataset_relative_path": "data\\development\\mumbai-local-central_demand_timeseries.csv",
+    "development_rebuild_command": "python3 scripts/fetch_lfs_object.py --all --under data/development",
+    "max_recursive_horizon_days": 336,
+    "dataset_class": "synthetic_development",
+    "served_as": "demo",
+    "development_only": false,
+    "registered_at_utc": "2026-10-07T05:08:38+00:00",
+    "disclosure": "SYNTHETIC DEMONSTRATION FORECAST - modelled data supplied to exercise and demonstrate the forecasting pipeline. NOT live passenger ridership, NOT an operator measurement, NOT a real-world Mumbai crowd estimate."
+  },
+  "dataset": {
+    "system_id": "mumbai-local-central",
+    "generated_at_utc": "2026-10-07T05:08:30+00:00",
+    "source_file": "data\\development\\synthetic\\mumbai_local_all_central_stations_2026_synthetic-1.csv",
+    "source_title": "Central Railway observed passenger demand (synthetic_development)",
+    "source_url": "https://github.com/Sohan1606/india-transit-crowd-ai/tree/feature/future-demand-dataset/data/development/synthetic",
+    "upstream_commit": "01f8be4",
+    "source_sha256": "f54eb33127c3445ff32839a5ea9ae7a2be9fc164219b0c86a135fe85b653b831",
+    "normalized_sha256": "7317155cd12886feb859ce22f502d496e1f15387f2040dd418530a34285574fd",
+    "license": "Provided by the dataset owner for development use; not a public feed",
+    "license_note": null,
+    "redistribution": "Supplied private file; never redistributed. Regenerate with scripts/fetch_lfs_object.py.",
+    "provenance_statement": "Synthetic Central-suburb demand table supplied for development. Data_Type=Synthetic on per Line+station series. Served as a labelled demonstration family, never as live ridership.",
+    "observation_class": "synthetic_development",
+    "rows_excluded_as_unobserved_future": 109392,
+    "entity_attributes": {
+      "central-main-csmt": {
+        "Line": "Central Main",
+        "Source_Station": "CSMT",
+        "Station_Position": "0",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-masjid": {
+        "Line": "Central Main",
+        "Source_Station": "Masjid",
+        "Station_Position": "1",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-sandhurst-road": {
+        "Line": "Central Main",
+        "Source_Station": "Sandhurst Road",
+        "Station_Position": "2",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-byculla": {
+        "Line": "Central Main",
+        "Source_Station": "Byculla",
+        "Station_Position": "3",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-chinchpokli": {
+        "Line": "Central Main",
+        "Source_Station": "Chinchpokli",
+        "Station_Position": "4",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-currey-road": {
+        "Line": "Central Main",
+        "Source_Station": "Currey Road",
+        "Station_Position": "5",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-parel": {
+        "Line": "Central Main",
+        "Source_Station": "Parel",
+        "Station_Position": "6",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-dadar": {
+        "Line": "Central Main",
+        "Source_Station": "Dadar",
+        "Station_Position": "7",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-matunga": {
+        "Line": "Central Main",
+        "Source_Station": "Matunga",
+        "Station_Position": "8",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-sion": {
+        "Line": "Central Main",
+        "Source_Station": "Sion",
+        "Station_Position": "9",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-kurla": {
+        "Line": "Central Main",
+        "Source_Station": "Kurla",
+        "Station_Position": "10",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-vidyavihar": {
+        "Line": "Central Main",
+        "Source_Station": "Vidyavihar",
+        "Station_Position": "11",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-ghatkopar": {
+        "Line": "Central Main",
+        "Source_Station": "Ghatkopar",
+        "Station_Position": "12",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-vikhroli": {
+        "Line": "Central Main",
+        "Source_Station": "Vikhroli",
+        "Station_Position": "13",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-kanjurmarg": {
+        "Line": "Central Main",
+        "Source_Station": "Kanjurmarg",
+        "Station_Position": "14",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-bhandup": {
+        "Line": "Central Main",
+        "Source_Station": "Bhandup",
+        "Station_Position": "15",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-nahur": {
+        "Line": "Central Main",
+        "Source_Station": "Nahur",
+        "Station_Position": "16",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-mulund": {
+        "Line": "Central Main",
+        "Source_Station": "Mulund",
+        "Station_Position": "17",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-thane": {
+        "Line": "Central Main",
+        "Source_Station": "Thane",
+        "Station_Position": "18",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-kalwa": {
+        "Line": "Central Main",
+        "Source_Station": "Kalwa",
+        "Station_Position": "19",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-mumbra": {
+        "Line": "Central Main",
+        "Source_Station": "Mumbra",
+        "Station_Position": "20",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-diva": {
+        "Line": "Central Main",
+        "Source_Station": "Diva",
+        "Station_Position": "21",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-kopar": {
+        "Line": "Central Main",
+        "Source_Station": "Kopar",
+        "Station_Position": "22",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-dombivli": {
+        "Line": "Central Main",
+        "Source_Station": "Dombivli",
+        "Station_Position": "23",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-thakurli": {
+        "Line": "Central Main",
+        "Source_Station": "Thakurli",
+        "Station_Position": "24",
+        "Peak_Direction": "Mixed"
+      },
+      "central-main-kalyan": {
+        "Line": "Central Main",
+        "Source_Station": "Kalyan",
+        "Station_Position": "25",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-kalyan": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Kalyan",
+        "Station_Position": "0",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-shahad": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Shahad",
+        "Station_Position": "1",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-ambivli": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Ambivli",
+        "Station_Position": "2",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-titwala": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Titwala",
+        "Station_Position": "3",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-khadavli": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Khadavli",
+        "Station_Position": "4",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-vasind": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Vasind",
+        "Station_Position": "5",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-asangaon": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Asangaon",
+        "Station_Position": "6",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-atgaon": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Atgaon",
+        "Station_Position": "7",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-thansit": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Thansit",
+        "Station_Position": "8",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-khardi": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Khardi",
+        "Station_Position": "9",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-umbermali": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Umbermali",
+        "Station_Position": "10",
+        "Peak_Direction": "Mixed"
+      },
+      "central-kasara-branch-kasara": {
+        "Line": "Central Kasara Branch",
+        "Source_Station": "Kasara",
+        "Station_Position": "11",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-kalyan": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Kalyan",
+        "Station_Position": "0",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-vithalwadi": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Vithalwadi",
+        "Station_Position": "1",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-ulhasnagar": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Ulhasnagar",
+        "Station_Position": "2",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-ambernath": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Ambernath",
+        "Station_Position": "3",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-badlapur": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Badlapur",
+        "Station_Position": "4",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-vangani": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Vangani",
+        "Station_Position": "5",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-shelu": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Shelu",
+        "Station_Position": "6",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-neral": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Neral",
+        "Station_Position": "7",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-bhivpuri-road": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Bhivpuri Road",
+        "Station_Position": "8",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-karjat": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Karjat",
+        "Station_Position": "9",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-palasdari": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Palasdari",
+        "Station_Position": "10",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-kelavli": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Kelavli",
+        "Station_Position": "11",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-dolavli": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Dolavli",
+        "Station_Position": "12",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-lowjee": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Lowjee",
+        "Station_Position": "13",
+        "Peak_Direction": "Mixed"
+      },
+      "central-karjat-khopoli-branch-khopoli": {
+        "Line": "Central Karjat/Khopoli Branch",
+        "Source_Station": "Khopoli",
+        "Station_Position": "14",
+        "Peak_Direction": "Mixed"
+      }
+    },
+    "entity_hierarchy": [
+      {
+        "column": "Line",
+        "label": "Corridor"
+      },
+      {
+        "column": "Source_Station",
+        "label": "From"
+      }
+    ],
+    "route_context": {
+      "group_column": "Line",
+      "station_column": "Source_Station",
+      "position_column": "Station_Position",
+      "routes": {
+        "Central Karjat/Khopoli Branch": {
+          "ordered_stations": [
+            "Kalyan",
+            "Vithalwadi",
+            "Ulhasnagar",
+            "Ambernath",
+            "Badlapur",
+            "Vangani",
+            "Shelu",
+            "Neral",
+            "Bhivpuri Road",
+            "Karjat",
+            "Palasdari",
+            "Kelavli",
+            "Dolavli",
+            "Lowjee",
+            "Khopoli"
+          ],
+          "endpoints": [
+            "Kalyan",
+            "Khopoli"
+          ]
+        },
+        "Central Kasara Branch": {
+          "ordered_stations": [
+            "Kalyan",
+            "Shahad",
+            "Ambivli",
+            "Titwala",
+            "Khadavli",
+            "Vasind",
+            "Asangaon",
+            "Atgaon",
+            "Thansit",
+            "Khardi",
+            "Umbermali",
+            "Kasara"
+          ],
+          "endpoints": [
+            "Kalyan",
+            "Kasara"
+          ]
+        },
+        "Central Main": {
+          "ordered_stations": [
+            "CSMT",
+            "Masjid",
+            "Sandhurst Road",
+            "Byculla",
+            "Chinchpokli",
+            "Currey Road",
+            "Parel",
+            "Dadar",
+            "Matunga",
+            "Sion",
+            "Kurla",
+            "Vidyavihar",
+            "Ghatkopar",
+            "Vikhroli",
+            "Kanjurmarg",
+            "Bhandup",
+            "Nahur",
+            "Mulund",
+            "Thane",
+            "Kalwa",
+            "Mumbra",
+            "Diva",
+            "Kopar",
+            "Dombivli",
+            "Thakurli",
+            "Kalyan"
+          ],
+          "endpoints": [
+            "CSMT",
+            "Kalyan"
+          ]
+        }
+      },
+      "towards_for_entity": {
+        "central-main-csmt": [
+          "Towards Kalyan"
+        ],
+        "central-main-masjid": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-sandhurst-road": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-byculla": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-chinchpokli": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-currey-road": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-parel": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-dadar": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-matunga": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-sion": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-kurla": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-vidyavihar": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-ghatkopar": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-vikhroli": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-kanjurmarg": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-bhandup": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-nahur": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-mulund": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-thane": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-kalwa": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-mumbra": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-diva": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-kopar": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-dombivli": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-thakurli": [
+          "Towards CSMT",
+          "Towards Kalyan"
+        ],
+        "central-main-kalyan": [
+          "Towards CSMT"
+        ],
+        "central-kasara-branch-kalyan": [
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-shahad": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-ambivli": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-titwala": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-khadavli": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-vasind": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-asangaon": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-atgaon": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-thansit": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-khardi": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-umbermali": [
+          "Towards Kalyan",
+          "Towards Kasara"
+        ],
+        "central-kasara-branch-kasara": [
+          "Towards Kalyan"
+        ],
+        "central-karjat-khopoli-branch-kalyan": [
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-vithalwadi": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-ulhasnagar": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-ambernath": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-badlapur": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-vangani": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-shelu": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-neral": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-bhivpuri-road": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-karjat": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-palasdari": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-kelavli": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-dolavli": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-lowjee": [
+          "Towards Kalyan",
+          "Towards Khopoli"
+        ],
+        "central-karjat-khopoli-branch-khopoli": [
+          "Towards Kalyan"
+        ]
+      },
+      "towards_kind": "route context derived from station ordering; this dataset publishes no destination-specific passenger counts, so no directional demand figure is claimed"
+    },
+    "granularity": "hour",
+    "period_seconds": 3600,
+    "timezone": "Asia/Kolkata",
+    "measure": "passengers_per_hour",
+    "column_mapping": {
+      "timestamp": "_composed_timestamp",
+      "entity": "Source_Station",
+      "demand": "Estimated_Passenger_Count",
+      "entity_name": "Source_Station"
+    },
+    "profiler_scores": {
+      "timestamp": {
+        "Record_ID": 0.4583,
+        "Date": 1.0,
+        "Time": 0.6583,
+        "Day_Number": 0.5583,
+        "Is_Weekend": 0.4583,
+        "Month": 0.4583,
+        "Is_Indian_Holiday": 0.5583,
+        "Station_Position": 0.4583,
+        "Stations_On_Route": 0.4583,
+        "Rainfall_mm": 0.4583,
+        "Temperature_C": 0.4583,
+        "Train_Capacity": 0.4583,
+        "Estimated_Passenger_Count": 0.4583,
+        "Capacity_Utilization_Pct": 0.4583,
+        "Target_Next_Hour_Passengers": 0.5583,
+        "_composed_timestamp": 0.9
+      },
+      "entity": {
+        "Record_ID": -1.0,
+        "Date": 0.8498,
+        "Time": 0.85,
+        "Day_of_Week": 0.85,
+        "Day_Number": 0.75,
+        "Is_Weekend": 0.75,
+        "Month": 0.75,
+        "Season": 0.85,
+        "Is_Indian_Holiday": 0.9,
+        "Source_Station": 1.0,
+        "Line": 0.85,
+        "Station_Position": 0.9,
+        "Stations_On_Route": 0.9,
+        "Peak_Period": 0.85,
+        "Peak_Direction": 0.85,
+        "Rainfall_mm": 0.7499,
+        "Temperature_C": 0.7498,
+        "Estimated_Passenger_Count": 0.7414,
+        "Capacity_Utilization_Pct": 0.7414,
+        "Crowd_Density": 0.85,
+        "Target_Next_Hour_Passengers": 0.7413,
+        "Target_Next_Hour_Crowd": 0.85,
+        "_composed_timestamp": 0.8453
+      }
+    },
+    "ambiguous_demand_columns": [],
+    "measure_relations": {},
+    "timestamp_min": "2026-06-09T00:00:00+05:30",
+    "timestamp_max": "2026-10-06T23:00:00+05:30",
+    "unique_days": 279,
+    "observed_rows": 354888,
+    "station_count": 53,
+    "station_ids": [
+      "central-karjat-khopoli-branch-ambernath",
+      "central-karjat-khopoli-branch-badlapur",
+      "central-karjat-khopoli-branch-bhivpuri-road",
+      "central-karjat-khopoli-branch-dolavli",
+      "central-karjat-khopoli-branch-kalyan",
+      "central-karjat-khopoli-branch-karjat",
+      "central-karjat-khopoli-branch-kelavli",
+      "central-karjat-khopoli-branch-khopoli",
+      "central-karjat-khopoli-branch-lowjee",
+      "central-karjat-khopoli-branch-neral",
+      "central-karjat-khopoli-branch-palasdari",
+      "central-karjat-khopoli-branch-shelu",
+      "central-karjat-khopoli-branch-ulhasnagar",
+      "central-karjat-khopoli-branch-vangani",
+      "central-karjat-khopoli-branch-vithalwadi",
+      "central-kasara-branch-ambivli",
+      "central-kasara-branch-asangaon",
+      "central-kasara-branch-atgaon",
+      "central-kasara-branch-kalyan",
+      "central-kasara-branch-kasara",
+      "central-kasara-branch-khadavli",
+      "central-kasara-branch-khardi",
+      "central-kasara-branch-shahad",
+      "central-kasara-branch-thansit",
+      "central-kasara-branch-titwala",
+      "central-kasara-branch-umbermali",
+      "central-kasara-branch-vasind",
+      "central-main-bhandup",
+      "central-main-byculla",
+      "central-main-chinchpokli",
+      "central-main-csmt",
+      "central-main-currey-road",
+      "central-main-dadar",
+      "central-main-diva",
+      "central-main-dombivli",
+      "central-main-ghatkopar",
+      "central-main-kalwa",
+      "central-main-kalyan",
+      "central-main-kanjurmarg",
+      "central-main-kopar",
+      "central-main-kurla",
+      "central-main-masjid",
+      "central-main-matunga",
+      "central-main-mulund",
+      "central-main-mumbra",
+      "central-main-nahur",
+      "central-main-parel",
+      "central-main-sandhurst-road",
+      "central-main-sion",
+      "central-main-thakurli",
+      "central-main-thane",
+      "central-main-vidyavihar",
+      "central-main-vikhroli"
+    ],
+    "station_names": {
+      "central-karjat-khopoli-branch-ambernath": "Ambernath",
+      "central-karjat-khopoli-branch-badlapur": "Badlapur",
+      "central-karjat-khopoli-branch-bhivpuri-road": "Bhivpuri Road",
+      "central-karjat-khopoli-branch-dolavli": "Dolavli",
+      "central-karjat-khopoli-branch-kalyan": "Kalyan",
+      "central-karjat-khopoli-branch-karjat": "Karjat",
+      "central-karjat-khopoli-branch-kelavli": "Kelavli",
+      "central-karjat-khopoli-branch-khopoli": "Khopoli",
+      "central-karjat-khopoli-branch-lowjee": "Lowjee",
+      "central-karjat-khopoli-branch-neral": "Neral",
+      "central-karjat-khopoli-branch-palasdari": "Palasdari",
+      "central-karjat-khopoli-branch-shelu": "Shelu",
+      "central-karjat-khopoli-branch-ulhasnagar": "Ulhasnagar",
+      "central-karjat-khopoli-branch-vangani": "Vangani",
+      "central-karjat-khopoli-branch-vithalwadi": "Vithalwadi",
+      "central-kasara-branch-ambivli": "Ambivli",
+      "central-kasara-branch-asangaon": "Asangaon",
+      "central-kasara-branch-atgaon": "Atgaon",
+      "central-kasara-branch-kalyan": "Kalyan",
+      "central-kasara-branch-kasara": "Kasara",
+      "central-kasara-branch-khadavli": "Khadavli",
+      "central-kasara-branch-khardi": "Khardi",
+      "central-kasara-branch-shahad": "Shahad",
+      "central-kasara-branch-thansit": "Thansit",
+      "central-kasara-branch-titwala": "Titwala",
+      "central-kasara-branch-umbermali": "Umbermali",
+      "central-kasara-branch-vasind": "Vasind",
+      "central-main-bhandup": "Bhandup",
+      "central-main-byculla": "Byculla",
+      "central-main-chinchpokli": "Chinchpokli",
+      "central-main-csmt": "CSMT",
+      "central-main-currey-road": "Currey Road",
+      "central-main-dadar": "Dadar",
+      "central-main-diva": "Diva",
+      "central-main-dombivli": "Dombivli",
+      "central-main-ghatkopar": "Ghatkopar",
+      "central-main-kalwa": "Kalwa",
+      "central-main-kalyan": "Kalyan",
+      "central-main-kanjurmarg": "Kanjurmarg",
+      "central-main-kopar": "Kopar",
+      "central-main-kurla": "Kurla",
+      "central-main-masjid": "Masjid",
+      "central-main-matunga": "Matunga",
+      "central-main-mulund": "Mulund",
+      "central-main-mumbra": "Mumbra",
+      "central-main-nahur": "Nahur",
+      "central-main-parel": "Parel",
+      "central-main-sandhurst-road": "Sandhurst Road",
+      "central-main-sion": "Sion",
+      "central-main-thakurli": "Thakurli",
+      "central-main-thane": "Thane",
+      "central-main-vidyavihar": "Vidyavihar",
+      "central-main-vikhroli": "Vikhroli"
+    },
+    "explicit_zero_observations": 0,
+    "missing_station_days_filled": 0,
+    "missing_hours_filled": 0,
+    "cleaning_report": {
+      "rows_in": 354888,
+      "rows_out": 354888,
+      "system_id": "mumbai-local-central",
+      "entity_count": 53,
+      "timestamp_min": "2026-01-01T00:00:00+05:30",
+      "timestamp_max": "2026-10-06T23:00:00+05:30",
+      "explicit_zero_observations": 0,
+      "missing_observations_filled": 0,
+      "timezone": "Asia/Kolkata"
+    },
+    "is_live": false,
+    "dataset_class": "synthetic_development",
+    "production_eligible": false,
+    "how_to_fetch": "python3 scripts/register_demand_dataset.py --csv <file> ... (this run)",
+    "normalized_gz_sha256": "66c2a315d00e1da755cf09f713f2ef5519f441577b5a96bc0e3e2ce93939ef8e",
+    "inference_copy": {
+      "dataset_relative_path": "data\\inference\\mumbai-local-central_demand_timeseries.csv.gz",
+      "rows": 354888,
+      "note": "gzip of the identical normalized file; the service verifies this container's own checksum, so a packaged family cannot silently drift from the rows it was trained on"
+    },
+    "training_input": "data\\development\\mumbai-local-central_demand_timeseries.csv",
+    "training_input_sha256": "7317155cd12886feb859ce22f502d496e1f15387f2040dd418530a34285574fd",
+    "training_quality_check": {
+      "rows_in": 354888,
+      "rows_out": 354888,
+      "system_id": "mumbai-local-central",
+      "entity_count": 53,
+      "timestamp_min": "2026-01-01T00:00:00+05:30",
+      "timestamp_max": "2026-10-06T23:00:00+05:30",
+      "explicit_zero_observations": 0,
+      "missing_observations_filled": 0,
+      "timezone": "Asia/Kolkata"
+    },
+    "training_validation": {
+      "rows_in": 354888,
+      "rows_out": 354888,
+      "system_id": "mumbai-local-central",
+      "entity_count": 53,
+      "timestamp_min": "2026-01-01T00:00:00+05:30",
+      "timestamp_max": "2026-10-06T23:00:00+05:30",
+      "explicit_zero_observations": 0,
+      "missing_observations_filled": 0,
+      "timezone": "Asia/Kolkata"
+    },
+    "system": {
+      "system_id": "mumbai-local-central",
+      "city": "Mumbai",
+      "mode": "SUBURBAN",
+      "operator": "Central Railway"
+    },
+    "source": "verified observed station-hour demand",
+    "observed_entity_hour_rows": 152640,
+    "supervised_rows": 143736,
+    "columns": [
+      "system_id",
+      "city",
+      "mode",
+      "operator",
+      "entity_id",
+      "entity_name",
+      "entity_type",
+      "timestamp",
+      "demand_count",
+      "measure",
+      "source_id"
+    ],
+    "entity_ids": [
+      "central-karjat-khopoli-branch-ambernath",
+      "central-karjat-khopoli-branch-badlapur",
+      "central-karjat-khopoli-branch-bhivpuri-road",
+      "central-karjat-khopoli-branch-dolavli",
+      "central-karjat-khopoli-branch-kalyan",
+      "central-karjat-khopoli-branch-karjat",
+      "central-karjat-khopoli-branch-kelavli",
+      "central-karjat-khopoli-branch-khopoli",
+      "central-karjat-khopoli-branch-lowjee",
+      "central-karjat-khopoli-branch-neral",
+      "central-karjat-khopoli-branch-palasdari",
+      "central-karjat-khopoli-branch-shelu",
+      "central-karjat-khopoli-branch-ulhasnagar",
+      "central-karjat-khopoli-branch-vangani",
+      "central-karjat-khopoli-branch-vithalwadi",
+      "central-kasara-branch-ambivli",
+      "central-kasara-branch-asangaon",
+      "central-kasara-branch-atgaon",
+      "central-kasara-branch-kalyan",
+      "central-kasara-branch-kasara",
+      "central-kasara-branch-khadavli",
+      "central-kasara-branch-khardi",
+      "central-kasara-branch-shahad",
+      "central-kasara-branch-thansit",
+      "central-kasara-branch-titwala",
+      "central-kasara-branch-umbermali",
+      "central-kasara-branch-vasind",
+      "central-main-bhandup",
+      "central-main-byculla",
+      "central-main-chinchpokli",
+      "central-main-csmt",
+      "central-main-currey-road",
+      "central-main-dadar",
+      "central-main-diva",
+      "central-main-dombivli",
+      "central-main-ghatkopar",
+      "central-main-kalwa",
+      "central-main-kalyan",
+      "central-main-kanjurmarg",
+      "central-main-kopar",
+      "central-main-kurla",
+      "central-main-masjid",
+      "central-main-matunga",
+      "central-main-mulund",
+      "central-main-mumbra",
+      "central-main-nahur",
+      "central-main-parel",
+      "central-main-sandhurst-road",
+      "central-main-sion",
+      "central-main-thakurli",
+      "central-main-thane",
+      "central-main-vidyavihar",
+      "central-main-vikhroli"
+    ],
+    "entity_names": {
+      "central-karjat-khopoli-branch-ambernath": "Ambernath",
+      "central-karjat-khopoli-branch-badlapur": "Badlapur",
+      "central-karjat-khopoli-branch-bhivpuri-road": "Bhivpuri Road",
+      "central-karjat-khopoli-branch-dolavli": "Dolavli",
+      "central-karjat-khopoli-branch-kalyan": "Kalyan",
+      "central-karjat-khopoli-branch-karjat": "Karjat",
+      "central-karjat-khopoli-branch-kelavli": "Kelavli",
+      "central-karjat-khopoli-branch-khopoli": "Khopoli",
+      "central-karjat-khopoli-branch-lowjee": "Lowjee",
+      "central-karjat-khopoli-branch-neral": "Neral",
+      "central-karjat-khopoli-branch-palasdari": "Palasdari",
+      "central-karjat-khopoli-branch-shelu": "Shelu",
+      "central-karjat-khopoli-branch-ulhasnagar": "Ulhasnagar",
+      "central-karjat-khopoli-branch-vangani": "Vangani",
+      "central-karjat-khopoli-branch-vithalwadi": "Vithalwadi",
+      "central-kasara-branch-ambivli": "Ambivli",
+      "central-kasara-branch-asangaon": "Asangaon",
+      "central-kasara-branch-atgaon": "Atgaon",
+      "central-kasara-branch-kalyan": "Kalyan",
+      "central-kasara-branch-kasara": "Kasara",
+      "central-kasara-branch-khadavli": "Khadavli",
+      "central-kasara-branch-khardi": "Khardi",
+      "central-kasara-branch-shahad": "Shahad",
+      "central-kasara-branch-thansit": "Thansit",
+      "central-kasara-branch-titwala": "Titwala",
+      "central-kasara-branch-umbermali": "Umbermali",
+      "central-kasara-branch-vasind": "Vasind",
+      "central-main-bhandup": "Bhandup",
+      "central-main-byculla": "Byculla",
+      "central-main-chinchpokli": "Chinchpokli",
+      "central-main-csmt": "CSMT",
+      "central-main-currey-road": "Currey Road",
+      "central-main-dadar": "Dadar",
+      "central-main-diva": "Diva",
+      "central-main-dombivli": "Dombivli",
+      "central-main-ghatkopar": "Ghatkopar",
+      "central-main-kalwa": "Kalwa",
+      "central-main-kalyan": "Kalyan",
+      "central-main-kanjurmarg": "Kanjurmarg",
+      "central-main-kopar": "Kopar",
+      "central-main-kurla": "Kurla",
+      "central-main-masjid": "Masjid",
+      "central-main-matunga": "Matunga",
+      "central-main-mulund": "Mulund",
+      "central-main-mumbra": "Mumbra",
+      "central-main-nahur": "Nahur",
+      "central-main-parel": "Parel",
+      "central-main-sandhurst-road": "Sandhurst Road",
+      "central-main-sion": "Sion",
+      "central-main-thakurli": "Thakurli",
+      "central-main-thane": "Thane",
+      "central-main-vidyavihar": "Vidyavihar",
+      "central-main-vikhroli": "Vikhroli"
+    },
+    "entity_count": 53,
+    "missing_observations_filled": 0,
+    "target_measure": "passengers_per_hour",
+    "target_semantics": "next consecutive station-hour boardings; not onboard load or physical occupancy"
+  },
+  "feature_schema": {
+    "feature_count": 18,
+    "features": [
+      "entity_id",
+      "hour",
+      "day_of_week",
+      "day_of_month",
+      "month",
+      "week_of_year",
+      "is_weekend",
+      "is_peak_hour",
+      "lag_1",
+      "lag_24",
+      "lag_168",
+      "rolling_mean_3",
+      "rolling_mean_24",
+      "rolling_mean_168",
+      "rolling_std_24",
+      "rolling_std_168",
+      "same_hour_previous_day",
+      "same_hour_previous_week"
+    ],
+    "time_features": [
+      "hour",
+      "day_of_week",
+      "day_of_month",
+      "month",
+      "week_of_year",
+      "is_weekend",
+      "is_peak_hour"
+    ],
+    "historical_features": [
+      "lag_1",
+      "lag_24",
+      "lag_168",
+      "rolling_mean_3",
+      "rolling_mean_24",
+      "rolling_mean_168",
+      "rolling_std_24",
+      "rolling_std_168",
+      "same_hour_previous_day",
+      "same_hour_previous_week"
+    ],
+    "target": "target_next_hour_demand",
+    "target_semantics": "observed station boardings in target hour T, using only observations strictly before T"
+  },
+  "split": {
+    "strategy": "Chronological global target-time split over unique station-hour timestamps: earliest 70% train, next 15% validation, latest 15% test; same timestamp never crosses partitions.",
+    "train": {
+      "rows": 100594,
+      "start": "2026-06-16 00:00:00+05:30",
+      "end": "2026-09-03 01:00:00+05:30",
+      "unique_target_hours": 1898
+    },
+    "validation": {
+      "rows": 21571,
+      "start": "2026-09-03 02:00:00+05:30",
+      "end": "2026-09-20 00:00:00+05:30",
+      "unique_target_hours": 407
+    },
+    "test": {
+      "rows": 21571,
+      "start": "2026-09-20 01:00:00+05:30",
+      "end": "2026-10-06 23:00:00+05:30",
+      "unique_target_hours": 407
+    },
+    "train_cutoff": "2026-09-03T01:00:00+05:30",
+    "validation_cutoff": "2026-09-20T00:00:00+05:30",
+    "time_series_cross_validation": "Three expanding-window TimeSeriesSplit folds within train; thresholds fitted separately on each fold's training rows only.",
+    "leakage_controls": [
+      "Target features for hour T use entity-hour observations strictly before T.",
+      "Only consecutive observed hourly histories train; missing station-hours stay missing and are not zero-filled.",
+      "Explicit source zeros are retained as observations; no entity is discarded solely for low or zero demand.",
+      "Risk thresholds are fitted from chronological train targets only and frozen for validation, test and inference.",
+      "Validation selects the champion; the latest test window is reported once and never used for selection.",
+      "PCA/DBSCAN behaviour features are fitted from observations through the training cutoff only."
+    ]
+  },
+  "cross_validation": {
+    "method": "sklearn.model_selection.TimeSeriesSplit on unique sorted target timestamps; expanding training windows; no shuffling.",
+    "n_splits": 3,
+    "regression_reference_model": "Linear Regression",
+    "regression_folds": [
+      {
+        "train_rows": 25228,
+        "validation_rows": 25122,
+        "validation_start": "2026-07-05 20:00:00+05:30",
+        "validation_end": "2026-07-25 13:00:00+05:30",
+        "mae": 632.8917636423658,
+        "rmse": 790.0739651480494
+      },
+      {
+        "train_rows": 50350,
+        "validation_rows": 25122,
+        "validation_start": "2026-07-25 14:00:00+05:30",
+        "validation_end": "2026-08-14 07:00:00+05:30",
+        "mae": 427.6074713674147,
+        "rmse": 547.3187565317926
+      },
+      {
+        "train_rows": 75472,
+        "validation_rows": 25122,
+        "validation_start": "2026-08-14 08:00:00+05:30",
+        "validation_end": "2026-09-03 01:00:00+05:30",
+        "mae": 539.057567223393,
+        "rmse": 710.5256266652316
+      }
+    ],
+    "regression_mean_mae": 533.1856007443912,
+    "classification_reference_model": "Logistic Regression; risk thresholds are re-fitted on each fold's training rows only.",
+    "classification_folds": [
+      {
+        "train_rows": 25228,
+        "validation_rows": 25122,
+        "validation_start": "2026-07-05 20:00:00+05:30",
+        "validation_end": "2026-07-25 13:00:00+05:30",
+        "macro_f1": 0.863723911905253
+      },
+      {
+        "train_rows": 50350,
+        "validation_rows": 25122,
+        "validation_start": "2026-07-25 14:00:00+05:30",
+        "validation_end": "2026-08-14 07:00:00+05:30",
+        "macro_f1": 0.6885200729668506
+      },
+      {
+        "train_rows": 75472,
+        "validation_rows": 25122,
+        "validation_start": "2026-08-14 08:00:00+05:30",
+        "validation_end": "2026-09-03 01:00:00+05:30",
+        "macro_f1": 0.6778777489852539
+      }
+    ],
+    "classification_mean_macro_f1": 0.7433739112857859
+  },
+  "regression": {
+    "selection_metric": "validation MAE; tie-break on validation RMSE",
+    "champion_key": "random_forest",
+    "champion_name": "Random Forest",
+    "ranking_by_validation": [
+      "random_forest",
+      "decision_tree",
+      "xgboost",
+      "linear_regression",
+      "svr",
+      "seasonal_naive"
+    ],
+    "models": [
+      {
+        "key": "seasonal_naive",
+        "name": "Seasonal Naive",
+        "validation": {
+          "mae": 981.1902090770016,
+          "rmse": 1522.5394172059716,
+          "r2": 0.8005807039642949
+        },
+        "test": {
+          "mae": 1063.5428584673868,
+          "rmse": 1587.9826321374962,
+          "r2": 0.7693755562433243
+        },
+        "fit_seconds": 0.0,
+        "validation_rank": 6
+      },
+      {
+        "key": "linear_regression",
+        "name": "Linear Regression",
+        "validation": {
+          "mae": 558.9239933400091,
+          "rmse": 776.5946303675065,
+          "r2": 0.9481177435969044
+        },
+        "test": {
+          "mae": 589.5726173935833,
+          "rmse": 806.2994152265139,
+          "r2": 0.9405425157835156
+        },
+        "fit_seconds": 0.207,
+        "validation_rank": 4
+      },
+      {
+        "key": "decision_tree",
+        "name": "Decision Tree",
+        "validation": {
+          "mae": 417.0224900975636,
+          "rmse": 607.9571822370112,
+          "r2": 0.9682037373444274
+        },
+        "test": {
+          "mae": 422.77920929482843,
+          "rmse": 599.1983003680418,
+          "r2": 0.9671636417509648
+        },
+        "fit_seconds": 1.085,
+        "validation_rank": 2
+      },
+      {
+        "key": "random_forest",
+        "name": "Random Forest",
+        "validation": {
+          "mae": 392.42590567588456,
+          "rmse": 570.729707796444,
+          "r2": 0.9719785214366083
+        },
+        "test": {
+          "mae": 388.90901999094723,
+          "rmse": 539.2500526529536,
+          "r2": 0.9734053528890856
+        },
+        "fit_seconds": 27.973,
+        "validation_rank": 1
+      },
+      {
+        "key": "svr",
+        "name": "Svr",
+        "validation": {
+          "mae": 559.1670808615557,
+          "rmse": 768.6565103395102,
+          "r2": 0.9491729728522116
+        },
+        "test": {
+          "mae": 578.7931653076957,
+          "rmse": 802.0097258502685,
+          "r2": 0.9411734865163627
+        },
+        "fit_seconds": 0.121,
+        "validation_rank": 5
+      },
+      {
+        "key": "xgboost",
+        "name": "Xgboost",
+        "validation": {
+          "mae": 443.61652829428107,
+          "rmse": 640.3983129527539,
+          "r2": 0.9647198480265948
+        },
+        "test": {
+          "mae": 483.46438005145075,
+          "rmse": 665.4576608355671,
+          "r2": 0.959500030349434
+        },
+        "fit_seconds": 0.892,
+        "validation_rank": 3
+      }
+    ]
+  },
+  "classification": {
+    "selection_metric": "validation macro F1; tie-break on HIGH recall; model key breaks remaining ties",
+    "champion_key": "xgboost",
+    "champion_name": "Xgboost",
+    "ranking_by_validation": [
+      "xgboost",
+      "random_forest",
+      "svm",
+      "logistic_regression",
+      "decision_tree",
+      "baseline"
+    ],
+    "models": [
+      {
+        "key": "baseline",
+        "name": "Baseline",
+        "validation": {
+          "accuracy": 0.49362570117287097,
+          "precision_macro": 0.12340642529321774,
+          "recall_macro": 0.25,
+          "f1_macro": 0.16524411061795835,
+          "f1_weighted": 0.3262749598739086,
+          "cohen_kappa": 0.0,
+          "confusion_matrix": [
+            [
+              10648,
+              0,
+              0,
+              0
+            ],
+            [
+              7477,
+              0,
+              0,
+              0
+            ],
+            [
+              2736,
+              0,
+              0,
+              0
+            ],
+            [
+              710,
+              0,
+              0,
+              0
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.49362570117287097,
+              "recall": 1.0,
+              "f1-score": 0.6609764424718334,
+              "support": 10648.0
+            },
+            "MODERATE": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 7477.0
+            },
+            "HIGH": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 2736.0
+            },
+            "SEVERE": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 710.0
+            },
+            "accuracy": 0.49362570117287097,
+            "macro avg": {
+              "precision": 0.12340642529321774,
+              "recall": 0.25,
+              "f1-score": 0.16524411061795835,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.24366633285840852,
+              "recall": 0.49362570117287097,
+              "f1-score": 0.3262749598739086,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.0,
+          "severe_recall": 0.0,
+          "roc_auc_ovr_macro": 0.5,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.5127717769227204,
+          "precision_macro": 0.1281929442306801,
+          "recall_macro": 0.25,
+          "f1_macro": 0.16948087766609463,
+          "f1_weighted": 0.3476200431810621,
+          "cohen_kappa": 0.0,
+          "confusion_matrix": [
+            [
+              11061,
+              0,
+              0,
+              0
+            ],
+            [
+              7783,
+              0,
+              0,
+              0
+            ],
+            [
+              2381,
+              0,
+              0,
+              0
+            ],
+            [
+              346,
+              0,
+              0,
+              0
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.5127717769227204,
+              "recall": 1.0,
+              "f1-score": 0.6779235106643785,
+              "support": 11061.0
+            },
+            "MODERATE": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 7783.0
+            },
+            "HIGH": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 2381.0
+            },
+            "SEVERE": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1-score": 0.0,
+              "support": 346.0
+            },
+            "accuracy": 0.5127717769227204,
+            "macro avg": {
+              "precision": 0.1281929442306801,
+              "recall": 0.25,
+              "f1-score": 0.16948087766609463,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.26293489520848407,
+              "recall": 0.5127717769227204,
+              "f1-score": 0.3476200431810621,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.0,
+          "severe_recall": 0.0,
+          "roc_auc_ovr_macro": 0.5,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "fit_seconds": 0.011,
+        "validation_rank": 6
+      },
+      {
+        "key": "logistic_regression",
+        "name": "Logistic Regression",
+        "validation": {
+          "accuracy": 0.848824811088962,
+          "precision_macro": 0.6739141953691804,
+          "recall_macro": 0.7018991722875562,
+          "f1_macro": 0.6841392131310137,
+          "f1_weighted": 0.8538056973684292,
+          "cohen_kappa": 0.7591592475344298,
+          "confusion_matrix": [
+            [
+              10413,
+              235,
+              0,
+              0
+            ],
+            [
+              316,
+              5761,
+              1212,
+              188
+            ],
+            [
+              0,
+              403,
+              1869,
+              464
+            ],
+            [
+              0,
+              180,
+              263,
+              267
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9705471152949948,
+              "recall": 0.9779301277235162,
+              "f1-score": 0.9742246339523787,
+              "support": 10648.0
+            },
+            "MODERATE": {
+              "precision": 0.8756649946800426,
+              "recall": 0.7704961883108199,
+              "f1-score": 0.8197211155378487,
+              "support": 7477.0
+            },
+            "HIGH": {
+              "precision": 0.5589114832535885,
+              "recall": 0.6831140350877193,
+              "f1-score": 0.6148026315789473,
+              "support": 2736.0
+            },
+            "SEVERE": {
+              "precision": 0.29053318824809576,
+              "recall": 0.376056338028169,
+              "f1-score": 0.3278084714548803,
+              "support": 710.0
+            },
+            "accuracy": 0.848824811088962,
+            "macro avg": {
+              "precision": 0.6739141953691804,
+              "recall": 0.7018991722875562,
+              "f1-score": 0.6841392131310137,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.8630658398183557,
+              "recall": 0.848824811088962,
+              "f1-score": 0.8538056973684292,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.6831140350877193,
+          "severe_recall": 0.376056338028169,
+          "roc_auc_ovr_macro": 0.9469796114167844,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.8249501645728061,
+          "precision_macro": 0.6150819305777111,
+          "recall_macro": 0.6603160419455145,
+          "f1_macro": 0.6269695412447707,
+          "f1_weighted": 0.836088234506978,
+          "cohen_kappa": 0.7161549364007225,
+          "confusion_matrix": [
+            [
+              10444,
+              617,
+              0,
+              0
+            ],
+            [
+              162,
+              5549,
+              1924,
+              148
+            ],
+            [
+              0,
+              443,
+              1710,
+              228
+            ],
+            [
+              0,
+              33,
+              221,
+              92
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9847256270035829,
+              "recall": 0.9442184250971883,
+              "f1-score": 0.9640467069737388,
+              "support": 11061.0
+            },
+            "MODERATE": {
+              "precision": 0.8354411321890997,
+              "recall": 0.71296415264037,
+              "f1-score": 0.7693587521663778,
+              "support": 7783.0
+            },
+            "HIGH": {
+              "precision": 0.44357976653696496,
+              "recall": 0.7181856362872743,
+              "f1-score": 0.5484284797947402,
+              "support": 2381.0
+            },
+            "SEVERE": {
+              "precision": 0.19658119658119658,
+              "recall": 0.2658959537572254,
+              "f1-score": 0.22604422604422605,
+              "support": 346.0
+            },
+            "accuracy": 0.8249501645728061,
+            "macro avg": {
+              "precision": 0.6150819305777111,
+              "recall": 0.6603160419455145,
+              "f1-score": 0.6269695412447707,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.8584891293985443,
+              "recall": 0.8249501645728061,
+              "f1-score": 0.836088234506978,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.7181856362872743,
+          "severe_recall": 0.2658959537572254,
+          "roc_auc_ovr_macro": 0.9387601790109609,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "fit_seconds": 6.009,
+        "validation_rank": 4
+      },
+      {
+        "key": "decision_tree",
+        "name": "Decision Tree",
+        "validation": {
+          "accuracy": 0.8240229938343145,
+          "precision_macro": 0.6503319511753483,
+          "recall_macro": 0.680304198037528,
+          "f1_macro": 0.6560002765323201,
+          "f1_weighted": 0.8266914499611672,
+          "cohen_kappa": 0.7170594248000829,
+          "confusion_matrix": [
+            [
+              10317,
+              326,
+              5,
+              0
+            ],
+            [
+              558,
+              5794,
+              850,
+              275
+            ],
+            [
+              26,
+              727,
+              1310,
+              673
+            ],
+            [
+              3,
+              167,
+              186,
+              354
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9461665443873808,
+              "recall": 0.9689143501126972,
+              "f1-score": 0.9574053452115813,
+              "support": 10648.0
+            },
+            "MODERATE": {
+              "precision": 0.8260621613915027,
+              "recall": 0.7749097231509964,
+              "f1-score": 0.7996687599199503,
+              "support": 7477.0
+            },
+            "HIGH": {
+              "precision": 0.5572096980008507,
+              "recall": 0.4788011695906433,
+              "f1-score": 0.5150383330057008,
+              "support": 2736.0
+            },
+            "SEVERE": {
+              "precision": 0.271889400921659,
+              "recall": 0.49859154929577465,
+              "f1-score": 0.3518886679920477,
+              "support": 710.0
+            },
+            "accuracy": 0.8240229938343145,
+            "macro avg": {
+              "precision": 0.6503319511753483,
+              "recall": 0.680304198037528,
+              "f1-score": 0.6560002765323201,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.8330079900674888,
+              "recall": 0.8240229938343145,
+              "f1-score": 0.8266914499611672,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.4788011695906433,
+          "severe_recall": 0.49859154929577465,
+          "roc_auc_ovr_macro": 0.8854749318402136,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.8468313940012053,
+          "precision_macro": 0.6270689781475224,
+          "recall_macro": 0.6788453008892255,
+          "f1_macro": 0.63290467622766,
+          "f1_weighted": 0.863439424762631,
+          "cohen_kappa": 0.7506047819473802,
+          "confusion_matrix": [
+            [
+              10442,
+              619,
+              0,
+              0
+            ],
+            [
+              178,
+              6316,
+              1003,
+              286
+            ],
+            [
+              0,
+              187,
+              1377,
+              817
+            ],
+            [
+              0,
+              6,
+              208,
+              132
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9832391713747646,
+              "recall": 0.9440376096193834,
+              "f1-score": 0.9632397029657304,
+              "support": 11061.0
+            },
+            "MODERATE": {
+              "precision": 0.8860830527497194,
+              "recall": 0.8115122703327766,
+              "f1-score": 0.8471598149017504,
+              "support": 7783.0
+            },
+            "HIGH": {
+              "precision": 0.5320710973724884,
+              "recall": 0.5783284334313313,
+              "f1-score": 0.5542362648420205,
+              "support": 2381.0
+            },
+            "SEVERE": {
+              "precision": 0.10688259109311742,
+              "recall": 0.3815028901734104,
+              "f1-score": 0.16698292220113853,
+              "support": 346.0
+            },
+            "accuracy": 0.8468313940012053,
+            "macro avg": {
+              "precision": 0.6270689781475224,
+              "recall": 0.6788453008892255,
+              "f1-score": 0.63290467622766,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.8843278259463841,
+              "recall": 0.8468313940012053,
+              "f1-score": 0.863439424762631,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.5783284334313313,
+          "severe_recall": 0.3815028901734104,
+          "roc_auc_ovr_macro": 0.946962620034637,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "fit_seconds": 1.154,
+        "validation_rank": 5
+      },
+      {
+        "key": "random_forest",
+        "name": "Random Forest",
+        "validation": {
+          "accuracy": 0.8570766306615363,
+          "precision_macro": 0.7095379917421752,
+          "recall_macro": 0.6920045645939698,
+          "f1_macro": 0.6997029801445515,
+          "f1_weighted": 0.8545652840966764,
+          "cohen_kappa": 0.7674056087433122,
+          "confusion_matrix": [
+            [
+              10509,
+              139,
+              0,
+              0
+            ],
+            [
+              540,
+              6064,
+              823,
+              50
+            ],
+            [
+              24,
+              776,
+              1656,
+              280
+            ],
+            [
+              4,
+              176,
+              271,
+              259
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9487225783154284,
+              "recall": 0.9869459053343351,
+              "f1-score": 0.9674568469505178,
+              "support": 10648.0
+            },
+            "MODERATE": {
+              "precision": 0.847519217330538,
+              "recall": 0.8110204627524408,
+              "f1-score": 0.8288682340076544,
+              "support": 7477.0
+            },
+            "HIGH": {
+              "precision": 0.6021818181818182,
+              "recall": 0.6052631578947368,
+              "f1-score": 0.6037185563251914,
+              "support": 2736.0
+            },
+            "SEVERE": {
+              "precision": 0.4397283531409168,
+              "recall": 0.3647887323943662,
+              "f1-score": 0.3987682832948422,
+              "support": 710.0
+            },
+            "accuracy": 0.8570766306615363,
+            "macro avg": {
+              "precision": 0.7095379917421752,
+              "recall": 0.6920045645939698,
+              "f1-score": 0.6997029801445515,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.8529356908422705,
+              "recall": 0.8570766306615363,
+              "f1-score": 0.8545652840966764,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.6052631578947368,
+          "severe_recall": 0.3647887323943662,
+          "roc_auc_ovr_macro": 0.9577096559789289,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.8887395113810208,
+          "precision_macro": 0.6620910694673404,
+          "recall_macro": 0.6881882441333937,
+          "f1_macro": 0.6708958448482624,
+          "f1_weighted": 0.8915536402924779,
+          "cohen_kappa": 0.8160493057958038,
+          "confusion_matrix": [
+            [
+              10584,
+              477,
+              0,
+              0
+            ],
+            [
+              198,
+              6584,
+              940,
+              61
+            ],
+            [
+              0,
+              236,
+              1959,
+              186
+            ],
+            [
+              0,
+              18,
+              284,
+              44
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9816360601001669,
+              "recall": 0.9568755085435313,
+              "f1-score": 0.969097651421508,
+              "support": 11061.0
+            },
+            "MODERATE": {
+              "precision": 0.9000683526999317,
+              "recall": 0.8459462932031351,
+              "f1-score": 0.8721684991389588,
+              "support": 7783.0
+            },
+            "HIGH": {
+              "precision": 0.6154571159283695,
+              "recall": 0.8227635447291054,
+              "f1-score": 0.7041696621135873,
+              "support": 2381.0
+            },
+            "SEVERE": {
+              "precision": 0.15120274914089346,
+              "recall": 0.12716763005780346,
+              "f1-score": 0.13814756671899528,
+              "support": 346.0
+            },
+            "accuracy": 0.8887395113810208,
+            "macro avg": {
+              "precision": 0.6620910694673404,
+              "recall": 0.6881882441333937,
+              "f1-score": 0.6708958448482624,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.8984668301914475,
+              "recall": 0.8887395113810208,
+              "f1-score": 0.8915536402924779,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.8227635447291054,
+          "severe_recall": 0.12716763005780346,
+          "roc_auc_ovr_macro": 0.9693099006940673,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "fit_seconds": 22.427,
+        "validation_rank": 2
+      },
+      {
+        "key": "svm",
+        "name": "Svm",
+        "validation": {
+          "accuracy": 0.8537851745398916,
+          "precision_macro": 0.696281256060333,
+          "recall_macro": 0.7016391773885071,
+          "f1_macro": 0.6898883055093387,
+          "f1_weighted": 0.855757516276198,
+          "cohen_kappa": 0.7672057559507943,
+          "confusion_matrix": [
+            [
+              10455,
+              193,
+              0,
+              0
+            ],
+            [
+              312,
+              5579,
+              1445,
+              141
+            ],
+            [
+              1,
+              367,
+              2184,
+              184
+            ],
+            [
+              0,
+              168,
+              343,
+              199
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9709323922734027,
+              "recall": 0.9818745304282495,
+              "f1-score": 0.9763728053791557,
+              "support": 10648.0
+            },
+            "MODERATE": {
+              "precision": 0.8845726970033296,
+              "recall": 0.7461548749498462,
+              "f1-score": 0.809489262913523,
+              "support": 7477.0
+            },
+            "HIGH": {
+              "precision": 0.5498489425981873,
+              "recall": 0.7982456140350878,
+              "f1-score": 0.6511627906976745,
+              "support": 2736.0
+            },
+            "SEVERE": {
+              "precision": 0.3797709923664122,
+              "recall": 0.2802816901408451,
+              "f1-score": 0.3225283630470016,
+              "support": 710.0
+            },
+            "accuracy": 0.8537851745398916,
+            "macro avg": {
+              "precision": 0.696281256060333,
+              "recall": 0.7016391773885071,
+              "f1-score": 0.6898883055093387,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.868131393071711,
+              "recall": 0.8537851745398916,
+              "f1-score": 0.855757516276198,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.7982456140350878,
+          "severe_recall": 0.2802816901408451,
+          "roc_auc_ovr_macro": null,
+          "roc_auc_note": "Not available: a probability score for every risk class and all four classes in the evaluation partition are required."
+        },
+        "test": {
+          "accuracy": 0.8341291548838718,
+          "precision_macro": 0.5908458415393855,
+          "recall_macro": 0.6197845148523218,
+          "f1_macro": 0.5874821510375465,
+          "f1_weighted": 0.8397847182673235,
+          "cohen_kappa": 0.7297374186415257,
+          "confusion_matrix": [
+            [
+              10579,
+              482,
+              0,
+              0
+            ],
+            [
+              184,
+              5526,
+              2028,
+              45
+            ],
+            [
+              0,
+              459,
+              1880,
+              42
+            ],
+            [
+              0,
+              38,
+              300,
+              8
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9829043946854966,
+              "recall": 0.956423469849019,
+              "f1-score": 0.969483137829912,
+              "support": 11061.0
+            },
+            "MODERATE": {
+              "precision": 0.849500384319754,
+              "recall": 0.7100089939611974,
+              "f1-score": 0.7735162374020157,
+              "support": 7783.0
+            },
+            "HIGH": {
+              "precision": 0.4467680608365019,
+              "recall": 0.7895842083158336,
+              "f1-score": 0.5706480497799362,
+              "support": 2381.0
+            },
+            "SEVERE": {
+              "precision": 0.08421052631578947,
+              "recall": 0.023121387283236993,
+              "f1-score": 0.036281179138321996,
+              "support": 346.0
+            },
+            "accuracy": 0.8341291548838718,
+            "macro avg": {
+              "precision": 0.5908458415393855,
+              "recall": 0.6197845148523218,
+              "f1-score": 0.5874821510375465,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.8611774417381622,
+              "recall": 0.8341291548838718,
+              "f1-score": 0.8397847182673235,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.7895842083158336,
+          "severe_recall": 0.023121387283236993,
+          "roc_auc_ovr_macro": null,
+          "roc_auc_note": "Not available: a probability score for every risk class and all four classes in the evaluation partition are required."
+        },
+        "fit_seconds": 1.133,
+        "validation_rank": 3
+      },
+      {
+        "key": "xgboost",
+        "name": "Xgboost",
+        "validation": {
+          "accuracy": 0.8756200454313662,
+          "precision_macro": 0.7269289014945102,
+          "recall_macro": 0.754629518432761,
+          "f1_macro": 0.7373832516731739,
+          "f1_weighted": 0.8792229686765657,
+          "cohen_kappa": 0.8014901912767347,
+          "confusion_matrix": [
+            [
+              10439,
+              209,
+              0,
+              0
+            ],
+            [
+              316,
+              6047,
+              1016,
+              98
+            ],
+            [
+              3,
+              288,
+              2065,
+              380
+            ],
+            [
+              3,
+              48,
+              322,
+              337
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9700771303782176,
+              "recall": 0.9803719008264463,
+              "f1-score": 0.975197346910178,
+              "support": 10648.0
+            },
+            "MODERATE": {
+              "precision": 0.9173240291262136,
+              "recall": 0.8087468235923498,
+              "f1-score": 0.8596204421067596,
+              "support": 7477.0
+            },
+            "HIGH": {
+              "precision": 0.6068175139582721,
+              "recall": 0.7547514619883041,
+              "f1-score": 0.6727480045610034,
+              "support": 2736.0
+            },
+            "SEVERE": {
+              "precision": 0.4134969325153374,
+              "recall": 0.47464788732394364,
+              "f1-score": 0.4419672131147541,
+              "support": 710.0
+            },
+            "accuracy": 0.8756200454313662,
+            "macro avg": {
+              "precision": 0.7269289014945102,
+              "recall": 0.754629518432761,
+              "f1-score": 0.7373832516731739,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.8873973663863374,
+              "recall": 0.8756200454313662,
+              "f1-score": 0.8792229686765657,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.7547514619883041,
+          "severe_recall": 0.47464788732394364,
+          "roc_auc_ovr_macro": 0.9650391058354001,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "test": {
+          "accuracy": 0.877057160076028,
+          "precision_macro": 0.6799202307123565,
+          "recall_macro": 0.6894096996185399,
+          "f1_macro": 0.6734961128302213,
+          "f1_weighted": 0.8799761944931456,
+          "cohen_kappa": 0.7974803786177855,
+          "confusion_matrix": [
+            [
+              10545,
+              516,
+              0,
+              0
+            ],
+            [
+              185,
+              6333,
+              1224,
+              41
+            ],
+            [
+              0,
+              298,
+              1987,
+              96
+            ],
+            [
+              0,
+              22,
+              270,
+              54
+            ]
+          ],
+          "class_order": [
+            "LOW",
+            "MODERATE",
+            "HIGH",
+            "SEVERE"
+          ],
+          "classification_report": {
+            "LOW": {
+              "precision": 0.9827586206896551,
+              "recall": 0.9533496067263357,
+              "f1-score": 0.9678307558166216,
+              "support": 11061.0
+            },
+            "MODERATE": {
+              "precision": 0.8833868042962756,
+              "recall": 0.813696518052165,
+              "f1-score": 0.8471107544141252,
+              "support": 7783.0
+            },
+            "HIGH": {
+              "precision": 0.57081298477449,
+              "recall": 0.8345233095338094,
+              "f1-score": 0.6779256226543842,
+              "support": 2381.0
+            },
+            "SEVERE": {
+              "precision": 0.28272251308900526,
+              "recall": 0.15606936416184972,
+              "f1-score": 0.2011173184357542,
+              "support": 346.0
+            },
+            "accuracy": 0.877057160076028,
+            "macro avg": {
+              "precision": 0.6799202307123565,
+              "recall": 0.6894096996185399,
+              "f1-score": 0.6734961128302213,
+              "support": 21571.0
+            },
+            "weighted avg": {
+              "precision": 0.8902053825767486,
+              "recall": 0.877057160076028,
+              "f1-score": 0.8799761944931456,
+              "support": 21571.0
+            }
+          },
+          "high_recall": 0.8345233095338094,
+          "severe_recall": 0.15606936416184972,
+          "roc_auc_ovr_macro": 0.9661747793511497,
+          "roc_auc_note": "One-vs-rest macro ROC-AUC from predicted class probabilities; class order aligned alphabetically for sklearn."
+        },
+        "fit_seconds": 2.133,
+        "validation_rank": 1
+      }
+    ]
+  },
+  "demand_risk": {
+    "method": "Historical-relative q50/q80/q95, fit on the chronological training targets only: entity when adequately sampled, then its city/mode/operator system, then global.",
+    "definitions": {
+      "LOW": "demand <= q50",
+      "MODERATE": "q50 < demand <= q80",
+      "HIGH": "q80 < demand <= q95",
+      "SEVERE": "demand > q95"
+    },
+    "minimum_entity_training_targets": 500,
+    "minimum_system_training_targets": 500,
+    "global": {
+      "q50": 4660.5,
+      "q80": 9068.0,
+      "q95": 11957.0,
+      "sample_count": 100594
+    },
+    "systems": {
+      "mumbai-local-central": {
+        "q50": 4660.5,
+        "q80": 9068.0,
+        "q95": 11957.0,
+        "sample_count": 100594,
+        "source": "system_training_distribution"
+      }
+    },
+    "entities": {
+      "central-karjat-khopoli-branch-ambernath": {
+        "q50": 4821.5,
+        "q80": 9179.800000000001,
+        "q95": 9976.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-badlapur": {
+        "q50": 4933.5,
+        "q80": 9263.400000000001,
+        "q95": 9963.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-bhivpuri-road": {
+        "q50": 4040.0,
+        "q80": 7960.0,
+        "q95": 8960.75,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-dolavli": {
+        "q50": 3909.5,
+        "q80": 8577.2,
+        "q95": 9740.199999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-kalyan": {
+        "q50": 6044.5,
+        "q80": 11045.6,
+        "q95": 12500.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-karjat": {
+        "q50": 4900.0,
+        "q80": 10024.600000000002,
+        "q95": 11177.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-kelavli": {
+        "q50": 3976.0,
+        "q80": 8407.400000000001,
+        "q95": 9539.15,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-khopoli": {
+        "q50": 4416.5,
+        "q80": 10695.200000000004,
+        "q95": 11848.15,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-lowjee": {
+        "q50": 3862.0,
+        "q80": 8818.800000000003,
+        "q95": 9900.599999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-neral": {
+        "q50": 4083.0,
+        "q80": 7875.200000000001,
+        "q95": 8754.05,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-palasdari": {
+        "q50": 3921.5,
+        "q80": 8118.200000000001,
+        "q95": 9327.449999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-shelu": {
+        "q50": 4064.5,
+        "q80": 7845.0,
+        "q95": 8565.9,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-ulhasnagar": {
+        "q50": 4811.5,
+        "q80": 9112.800000000001,
+        "q95": 10056.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-vangani": {
+        "q50": 4122.5,
+        "q80": 7801.6,
+        "q95": 8400.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-karjat-khopoli-branch-vithalwadi": {
+        "q50": 3980.5,
+        "q80": 7459.200000000001,
+        "q95": 8529.05,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-ambivli": {
+        "q50": 3768.0,
+        "q80": 7178.6,
+        "q95": 7834.15,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-asangaon": {
+        "q50": 3758.0,
+        "q80": 7432.0,
+        "q95": 8325.15,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-atgaon": {
+        "q50": 3692.5,
+        "q80": 7505.8,
+        "q95": 8489.9,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-kalyan": {
+        "q50": 5635.0,
+        "q80": 10388.2,
+        "q95": 12273.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-kasara": {
+        "q50": 4151.0,
+        "q80": 9901.800000000001,
+        "q95": 11078.599999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-khadavli": {
+        "q50": 3855.0,
+        "q80": 7284.8,
+        "q95": 7892.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-khardi": {
+        "q50": 3682.5,
+        "q80": 7840.8,
+        "q95": 9022.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-shahad": {
+        "q50": 3744.0,
+        "q80": 7104.6,
+        "q95": 7950.15,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-thansit": {
+        "q50": 3759.0,
+        "q80": 7584.6,
+        "q95": 8805.75,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-titwala": {
+        "q50": 3835.0,
+        "q80": 7241.000000000002,
+        "q95": 7794.45,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-umbermali": {
+        "q50": 3599.0,
+        "q80": 7996.400000000006,
+        "q95": 9208.599999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-kasara-branch-vasind": {
+        "q50": 3815.5,
+        "q80": 7370.6,
+        "q95": 8098.949999999998,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-bhandup": {
+        "q50": 4938.5,
+        "q80": 9977.2,
+        "q95": 11120.649999999998,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-byculla": {
+        "q50": 5008.5,
+        "q80": 9419.6,
+        "q95": 10395.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-chinchpokli": {
+        "q50": 5040.5,
+        "q80": 9484.6,
+        "q95": 10348.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-csmt": {
+        "q50": 6403.5,
+        "q80": 11808.2,
+        "q95": 12500.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-currey-road": {
+        "q50": 5085.5,
+        "q80": 9498.0,
+        "q95": 10362.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-dadar": {
+        "q50": 7337.0,
+        "q80": 12500.0,
+        "q95": 12500.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-diva": {
+        "q50": 4867.5,
+        "q80": 10680.600000000002,
+        "q95": 11972.349999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-dombivli": {
+        "q50": 6162.0,
+        "q80": 12500.0,
+        "q95": 12500.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-ghatkopar": {
+        "q50": 6488.5,
+        "q80": 12500.0,
+        "q95": 12500.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-kalwa": {
+        "q50": 4891.5,
+        "q80": 10450.800000000001,
+        "q95": 11730.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-kalyan": {
+        "q50": 7133.5,
+        "q80": 12500.0,
+        "q95": 12500.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-kanjurmarg": {
+        "q50": 5016.0,
+        "q80": 9924.600000000002,
+        "q95": 10994.149999999998,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-kopar": {
+        "q50": 4820.5,
+        "q80": 10751.400000000001,
+        "q95": 12098.05,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-kurla": {
+        "q50": 7157.0,
+        "q80": 12500.0,
+        "q95": 12500.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-masjid": {
+        "q50": 4983.0,
+        "q80": 9144.400000000001,
+        "q95": 10629.599999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-matunga": {
+        "q50": 5128.0,
+        "q80": 9634.2,
+        "q95": 10305.599999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-mulund": {
+        "q50": 4903.0,
+        "q80": 10160.800000000001,
+        "q95": 11402.449999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-mumbra": {
+        "q50": 4860.0,
+        "q80": 10515.400000000001,
+        "q95": 11806.15,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-nahur": {
+        "q50": 4977.5,
+        "q80": 10098.2,
+        "q95": 11245.9,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-parel": {
+        "q50": 5091.0,
+        "q80": 9567.2,
+        "q95": 10272.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-sandhurst-road": {
+        "q50": 4997.5,
+        "q80": 9275.2,
+        "q95": 10502.199999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-sion": {
+        "q50": 4982.5,
+        "q80": 9655.0,
+        "q95": 10402.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-thakurli": {
+        "q50": 4768.0,
+        "q80": 11089.400000000003,
+        "q95": 12332.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-thane": {
+        "q50": 7195.0,
+        "q80": 12500.0,
+        "q95": 12500.0,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-vidyavihar": {
+        "q50": 5072.0,
+        "q80": 9761.2,
+        "q95": 10628.3,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      },
+      "central-main-vikhroli": {
+        "q50": 5023.0,
+        "q80": 9858.0,
+        "q95": 10905.349999999999,
+        "sample_count": 1898,
+        "source": "entity_training_distribution"
+      }
+    },
+    "fitted_on": "training partition only; frozen before validation/test/production inference"
+  },
+  "explainability": {
+    "global_method": "Permutation importance on chronological validation observations, scoring increase in MAE; associational, not causal.",
+    "native_method": "Native tree feature importance for the selected regression model when supported.",
+    "local_method": "At inference, one feature at a time is replaced with its training median and the selected model is re-run; not SHAP and not causal attribution.",
+    "global_feature_importance": [
+      {
+        "feature": "same_hour_previous_week",
+        "importance": 1171.021440047018,
+        "std": 12.672732921917484,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "lag_168",
+        "importance": 1119.8356955468573,
+        "std": 13.106515988312214,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "lag_1",
+        "importance": 222.47660451277474,
+        "std": 3.4609439897744583,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "rolling_mean_168",
+        "importance": 41.927709086742254,
+        "std": 3.58212773769205,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "rolling_mean_3",
+        "importance": 29.668131324127177,
+        "std": 2.076044236057918,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "lag_24",
+        "importance": 29.545505990304832,
+        "std": 0.6772881338619351,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "same_hour_previous_day",
+        "importance": 28.124761521771877,
+        "std": 0.36857656741254635,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "rolling_std_168",
+        "importance": 21.022883694883394,
+        "std": 1.0151459106570055,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "rolling_mean_24",
+        "importance": 12.5287345589929,
+        "std": 1.0631479200547924,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "day_of_week",
+        "importance": 8.44396901028197,
+        "std": 0.4294908279501018,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "hour",
+        "importance": 7.53375806631944,
+        "std": 1.2346213670502963,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "is_weekend",
+        "importance": 6.215420640351681,
+        "std": 0.16425331280440136,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "rolling_std_24",
+        "importance": 5.06147834927818,
+        "std": 0.4693766196068499,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "entity_id",
+        "importance": 1.0267628852354278,
+        "std": 0.16474393489912575,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "day_of_month",
+        "importance": 0.9207390777764127,
+        "std": 0.5422214897527502,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "is_peak_hour",
+        "importance": 0.6595205809148107,
+        "std": 0.4265665218396602,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "month",
+        "importance": 1.8947806286936004e-14,
+        "std": 2.6796244628203094e-14,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      },
+      {
+        "feature": "week_of_year",
+        "importance": 0.0,
+        "std": 0.0,
+        "method": "validation permutation importance (increase in MAE)",
+        "validation_rows": 2500
+      }
+    ],
+    "native_feature_importance": [
+      {
+        "feature": "numeric__same_hour_previous_week",
+        "importance": 0.4955507840377123,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__lag_168",
+        "importance": 0.4632125932640993,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__lag_1",
+        "importance": 0.017938910305981895,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__same_hour_previous_day",
+        "importance": 0.00818602651022016,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__rolling_mean_3",
+        "importance": 0.0027549909626655624,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__rolling_mean_168",
+        "importance": 0.002476985191596071,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__rolling_std_168",
+        "importance": 0.0018986215869807486,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__lag_24",
+        "importance": 0.0015309296614014318,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__rolling_mean_24",
+        "importance": 0.001247550428872009,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__day_of_week",
+        "importance": 0.0010982175936720803,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__rolling_std_24",
+        "importance": 0.0008913628298852455,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__day_of_month",
+        "importance": 0.0008223703258218294,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__is_weekend",
+        "importance": 0.0008100481528739194,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__week_of_year",
+        "importance": 0.0006289643469578882,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__hour",
+        "importance": 0.00046124329633756784,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__month",
+        "importance": 8.019612359505917e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "numeric__is_peak_hour",
+        "importance": 5.424088799430317e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-kalyan",
+        "importance": 2.010236589070025e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-dombivli",
+        "importance": 1.992621720933166e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-kasara",
+        "importance": 1.3833526342608783e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-umbermali",
+        "importance": 1.2029237353475419e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-vangani",
+        "importance": 1.1850104634815755e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-thakurli",
+        "importance": 1.1674255109752432e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-kalyan",
+        "importance": 1.0610123369405952e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-kalyan",
+        "importance": 1.0463406697875495e-05,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-khopoli",
+        "importance": 9.140391977788075e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-vithalwadi",
+        "importance": 8.601535750012767e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-sion",
+        "importance": 8.428405303358588e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-masjid",
+        "importance": 8.249361106441436e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-thansit",
+        "importance": 7.875399208437691e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-csmt",
+        "importance": 7.771345630923742e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-khardi",
+        "importance": 6.944873336164089e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-shahad",
+        "importance": 6.739215322246804e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-titwala",
+        "importance": 6.6386700529311e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-lowjee",
+        "importance": 6.549402767830536e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-atgaon",
+        "importance": 6.435909862308657e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-bhivpuri-road",
+        "importance": 6.10391982803954e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-shelu",
+        "importance": 6.068025288156254e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-parel",
+        "importance": 6.052535684895628e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-kopar",
+        "importance": 6.025056680755027e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-palasdari",
+        "importance": 5.8763565330092165e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-badlapur",
+        "importance": 5.8645133924222415e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-matunga",
+        "importance": 5.8207246261913585e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-kalwa",
+        "importance": 5.633140963423409e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-khadavli",
+        "importance": 5.563792879222241e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-sandhurst-road",
+        "importance": 5.525090296845074e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-mumbra",
+        "importance": 5.404632889294388e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-neral",
+        "importance": 5.345106754718076e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-vidyavihar",
+        "importance": 5.3150660794192775e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-bhandup",
+        "importance": 5.0141384977410244e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-ambernath",
+        "importance": 4.988218901339841e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-asangaon",
+        "importance": 4.956513297490682e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-mulund",
+        "importance": 4.902535155954248e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-vikhroli",
+        "importance": 4.861904827412377e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-ulhasnagar",
+        "importance": 4.654996905087048e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-vasind",
+        "importance": 4.5455480871073805e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-chinchpokli",
+        "importance": 4.500312397384772e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-kelavli",
+        "importance": 4.394589449579781e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-dolavli",
+        "importance": 4.331158900376779e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-currey-road",
+        "importance": 4.202617791803211e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-kanjurmarg",
+        "importance": 4.131073643939445e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-thane",
+        "importance": 4.129892069529037e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-nahur",
+        "importance": 4.126384282491003e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-karjat-khopoli-branch-karjat",
+        "importance": 4.113541917362135e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-diva",
+        "importance": 3.873292255667203e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-kasara-branch-ambivli",
+        "importance": 3.834549954765445e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-ghatkopar",
+        "importance": 3.7824443654696314e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-dadar",
+        "importance": 3.0854565343357465e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-byculla",
+        "importance": 2.8043702339471155e-06,
+        "method": "native tree impurity/gain importance"
+      },
+      {
+        "feature": "entity_id__entity_id_central-main-kurla",
+        "importance": 2.2692450410048074e-06,
+        "method": "native tree impurity/gain importance"
+      }
+    ],
+    "uncertainty": "No calibrated prediction interval or confidence percentage is produced."
+  },
+  "station_analytics": {
+    "method": "StandardScaler \u2192 PCA (2 components) \u2192 DBSCAN in PCA space",
+    "entity_count": 53,
+    "features_used": [
+      "mean_demand",
+      "morning_mean",
+      "afternoon_mean",
+      "evening_mean",
+      "weekend_mean",
+      "peak_demand_q95",
+      "variance",
+      "coefficient_of_variation",
+      "demand_concentration_top6_hours",
+      "peak_to_average_ratio"
+    ],
+    "pca": {
+      "components": 2,
+      "explained_variance_ratio": [
+        0.7220928534794094,
+        0.2492529100101671
+      ],
+      "total_explained_variance_ratio": 0.9713457634895766
+    },
+    "dbscan": {
+      "eps": 0.8324549275463363,
+      "min_samples": 3,
+      "metric": "euclidean",
+      "eps_selection": "75th percentile of observed distance to the min_samples-th nearest entity in the two-dimensional PCA projection",
+      "cluster_count_excluding_noise": 3,
+      "outlier_count": 7,
+      "outlier_entity_ids": [
+        "central-karjat-khopoli-branch-kalyan",
+        "central-karjat-khopoli-branch-khopoli",
+        "central-kasara-branch-kalyan",
+        "central-kasara-branch-kasara",
+        "central-main-csmt",
+        "central-main-dombivli",
+        "central-main-ghatkopar"
+      ],
+      "clusters": [
+        {
+          "cluster_id": 0,
+          "entity_count": 23,
+          "entities": [
+            "central-karjat-khopoli-branch-ambernath",
+            "central-karjat-khopoli-branch-badlapur",
+            "central-karjat-khopoli-branch-karjat",
+            "central-karjat-khopoli-branch-ulhasnagar",
+            "central-main-bhandup",
+            "central-main-byculla",
+            "central-main-chinchpokli",
+            "central-main-currey-road",
+            "central-main-diva",
+            "central-main-kalwa",
+            "central-main-kanjurmarg",
+            "central-main-kopar",
+            "central-main-masjid",
+            "central-main-matunga",
+            "central-main-mulund",
+            "central-main-mumbra",
+            "central-main-nahur",
+            "central-main-parel",
+            "central-main-sandhurst-road",
+            "central-main-sion",
+            "central-main-thakurli",
+            "central-main-vidyavihar",
+            "central-main-vikhroli"
+          ]
+        },
+        {
+          "cluster_id": 1,
+          "entity_count": 19,
+          "entities": [
+            "central-karjat-khopoli-branch-bhivpuri-road",
+            "central-karjat-khopoli-branch-dolavli",
+            "central-karjat-khopoli-branch-kelavli",
+            "central-karjat-khopoli-branch-lowjee",
+            "central-karjat-khopoli-branch-neral",
+            "central-karjat-khopoli-branch-palasdari",
+            "central-karjat-khopoli-branch-shelu",
+            "central-karjat-khopoli-branch-vangani",
+            "central-karjat-khopoli-branch-vithalwadi",
+            "central-kasara-branch-ambivli",
+            "central-kasara-branch-asangaon",
+            "central-kasara-branch-atgaon",
+            "central-kasara-branch-khadavli",
+            "central-kasara-branch-khardi",
+            "central-kasara-branch-shahad",
+            "central-kasara-branch-thansit",
+            "central-kasara-branch-titwala",
+            "central-kasara-branch-umbermali",
+            "central-kasara-branch-vasind"
+          ]
+        },
+        {
+          "cluster_id": 2,
+          "entity_count": 4,
+          "entities": [
+            "central-main-dadar",
+            "central-main-kalyan",
+            "central-main-kurla",
+            "central-main-thane"
+          ]
+        }
+      ]
+    },
+    "entities": [
+      {
+        "entity_id": "central-karjat-khopoli-branch-ambernath",
+        "entity_name": "Ambernath",
+        "pc1": 0.09276439120669114,
+        "pc2": -1.3029989879048207,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5423.956437560503,
+          "morning_mean": 8524.459302325582,
+          "afternoon_mean": 5664.3093023255815,
+          "evening_mean": 8106.029069767442,
+          "weekend_mean": 3679.1493055555557,
+          "peak_demand_q95": 9942.5,
+          "variance": 10172160.25947695,
+          "coefficient_of_variation": 0.5880177067693619,
+          "demand_concentration_top6_hours": 0.3895906554711467,
+          "peak_to_average_ratio": 1.8330715068338144
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-badlapur",
+        "entity_name": "Badlapur",
+        "pc1": 0.21144392343669005,
+        "pc2": -1.387124582267505,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5455.681510164569,
+          "morning_mean": 8357.947674418605,
+          "afternoon_mean": 5693.53023255814,
+          "evening_mean": 8321.316860465116,
+          "weekend_mean": 3718.6354166666665,
+          "peak_demand_q95": 9951.75,
+          "variance": 10344972.396144088,
+          "coefficient_of_variation": 0.5895432330611184,
+          "demand_concentration_top6_hours": 0.383534671582445,
+          "peak_to_average_ratio": 1.8241075805944194
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-bhivpuri-road",
+        "entity_name": "Bhivpuri Road",
+        "pc1": -2.271801011520761,
+        "pc2": -0.5139864363843113,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4639.7836398838335,
+          "morning_mean": 6424.267441860465,
+          "afternoon_mean": 4786.932558139535,
+          "evening_mean": 7653.218023255814,
+          "weekend_mean": 3168.043402777778,
+          "peak_demand_q95": 8953.0,
+          "variance": 7973901.688425473,
+          "coefficient_of_variation": 0.6086080735203412,
+          "demand_concentration_top6_hours": 0.41259144291754135,
+          "peak_to_average_ratio": 1.9296158387730675
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-dolavli",
+        "entity_name": "Dolavli",
+        "pc1": -2.6366783909025715,
+        "pc2": 1.5618813277502173,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4731.79912875121,
+          "morning_mean": 5845.546511627907,
+          "afternoon_mean": 4800.162790697675,
+          "evening_mean": 8353.39534883721,
+          "weekend_mean": 3223.5173611111113,
+          "peak_demand_q95": 9727.0,
+          "variance": 9032624.566136703,
+          "coefficient_of_variation": 0.6351564018716689,
+          "demand_concentration_top6_hours": 0.44201580985561917,
+          "peak_to_average_ratio": 2.0556662984481116
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-kalyan",
+        "entity_name": "Kalyan",
+        "pc1": 3.451117675868295,
+        "pc2": 0.19316766898291476,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_demand": 6754.92545982575,
+          "morning_mean": 11118.40988372093,
+          "afternoon_mean": 7131.441860465116,
+          "evening_mean": 9562.438953488372,
+          "weekend_mean": 4675.920138888889,
+          "peak_demand_q95": 12500.0,
+          "variance": 15071255.417483453,
+          "coefficient_of_variation": 0.5747171460772502,
+          "demand_concentration_top6_hours": 0.4021316033923963,
+          "peak_to_average_ratio": 1.8505015450344362
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-karjat",
+        "entity_name": "Karjat",
+        "pc1": 0.39293521598453157,
+        "pc2": 1.046858702001424,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5749.202807357212,
+          "morning_mean": 7764.267441860465,
+          "afternoon_mean": 5870.160465116279,
+          "evening_mean": 9634.136627906977,
+          "weekend_mean": 3928.75,
+          "peak_demand_q95": 11150.25,
+          "variance": 12300698.788975662,
+          "coefficient_of_variation": 0.6100385259216177,
+          "demand_concentration_top6_hours": 0.4190842095362296,
+          "peak_to_average_ratio": 1.9394428016578418
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-kelavli",
+        "entity_name": "Kelavli",
+        "pc1": -2.536757755157076,
+        "pc2": 1.0537389037691212,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4705.159244917715,
+          "morning_mean": 6019.427325581395,
+          "afternoon_mean": 4804.513953488372,
+          "evening_mean": 8190.9941860465115,
+          "weekend_mean": 3223.3611111111113,
+          "peak_demand_q95": 9538.0,
+          "variance": 8748067.29651908,
+          "coefficient_of_variation": 0.6286106448339505,
+          "demand_concentration_top6_hours": 0.4345597953667426,
+          "peak_to_average_ratio": 2.027136490715481
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-khopoli",
+        "entity_name": "Khopoli",
+        "pc1": -0.7065324562375017,
+        "pc2": 3.6651133464853776,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_demand": 5594.637463697967,
+          "morning_mean": 6554.578488372093,
+          "afternoon_mean": 5628.823255813953,
+          "evening_mean": 10206.241279069767,
+          "weekend_mean": 3823.746527777778,
+          "peak_demand_q95": 11848.75,
+          "variance": 13266390.615421254,
+          "coefficient_of_variation": 0.6510351558280152,
+          "demand_concentration_top6_hours": 0.45557363154872527,
+          "peak_to_average_ratio": 2.1178762836525538
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-lowjee",
+        "entity_name": "Lowjee",
+        "pc1": -2.776876968836831,
+        "pc2": 2.1370853299499224,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4747.385285575992,
+          "morning_mean": 5709.183139534884,
+          "afternoon_mean": 4771.993023255814,
+          "evening_mean": 8513.311046511628,
+          "weekend_mean": 3217.0798611111113,
+          "peak_demand_q95": 9936.5,
+          "variance": 9332442.339454347,
+          "coefficient_of_variation": 0.6434920388707225,
+          "demand_concentration_top6_hours": 0.44980033006167186,
+          "peak_to_average_ratio": 2.0930468883977302
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-neral",
+        "entity_name": "Neral",
+        "pc1": -2.1314497642689005,
+        "pc2": -1.1219173556557809,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4626.185866408518,
+          "morning_mean": 6566.328488372093,
+          "afternoon_mean": 4779.920930232558,
+          "evening_mean": 7470.845930232558,
+          "weekend_mean": 3172.0451388888887,
+          "peak_demand_q95": 8747.5,
+          "variance": 7691284.013856389,
+          "coefficient_of_variation": 0.5994822752077853,
+          "demand_concentration_top6_hours": 0.40437168243106736,
+          "peak_to_average_ratio": 1.8908665264655724
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-palasdari",
+        "entity_name": "Palasdari",
+        "pc1": -2.4357816838419195,
+        "pc2": 0.48665737791584346,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4686.239593417231,
+          "morning_mean": 6136.976744186047,
+          "afternoon_mean": 4774.158139534884,
+          "evening_mean": 8034.171511627907,
+          "weekend_mean": 3202.6927083333335,
+          "peak_demand_q95": 9327.0,
+          "variance": 8416039.063117743,
+          "coefficient_of_variation": 0.6190552089998482,
+          "demand_concentration_top6_hours": 0.427958017655485,
+          "peak_to_average_ratio": 1.9902951639736162
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-shelu",
+        "entity_name": "Shelu",
+        "pc1": -2.0090580773797164,
+        "pc2": -1.7174650719213524,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4614.595837366893,
+          "morning_mean": 6705.3808139534885,
+          "afternoon_mean": 4784.818604651163,
+          "evening_mean": 7273.334302325581,
+          "weekend_mean": 3143.340277777778,
+          "peak_demand_q95": 8562.0,
+          "variance": 7455981.939750339,
+          "coefficient_of_variation": 0.5917234132135616,
+          "demand_concentration_top6_hours": 0.3952406988942846,
+          "peak_to_average_ratio": 1.8554170943138353
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-ulhasnagar",
+        "entity_name": "Ulhasnagar",
+        "pc1": 0.015495636466884793,
+        "pc2": -1.1084648875100362,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5409.26669893514,
+          "morning_mean": 8700.904069767443,
+          "afternoon_mean": 5656.048837209302,
+          "evening_mean": 7928.65988372093,
+          "weekend_mean": 3687.9392361111113,
+          "peak_demand_q95": 10040.0,
+          "variance": 10073417.522772936,
+          "coefficient_of_variation": 0.5867458452151343,
+          "demand_concentration_top6_hours": 0.39607704541307504,
+          "peak_to_average_ratio": 1.8560741332973023
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-vangani",
+        "entity_name": "Vangani",
+        "pc1": -2.073690121816661,
+        "pc2": -1.937390289230214,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4566.7715392061955,
+          "morning_mean": 6842.561046511628,
+          "afternoon_mean": 4735.276744186047,
+          "evening_mean": 7130.968023255814,
+          "weekend_mean": 3104.5260416666665,
+          "peak_demand_q95": 8392.5,
+          "variance": 7415759.128831803,
+          "coefficient_of_variation": 0.5963050972321448,
+          "demand_concentration_top6_hours": 0.3902054250143813,
+          "peak_to_average_ratio": 1.8377315195099073
+        }
+      },
+      {
+        "entity_id": "central-karjat-khopoli-branch-vithalwadi",
+        "entity_name": "Vithalwadi",
+        "pc1": -2.3458575363373333,
+        "pc2": -1.6549831238453028,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4481.857696030977,
+          "morning_mean": 7387.872093023256,
+          "afternoon_mean": 4718.988372093023,
+          "evening_mean": 6416.9011627906975,
+          "weekend_mean": 3077.284722222222,
+          "peak_demand_q95": 8526.5,
+          "variance": 6994156.129797984,
+          "coefficient_of_variation": 0.5900782381273236,
+          "demand_concentration_top6_hours": 0.40347449715597045,
+          "peak_to_average_ratio": 1.902447730000633
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-ambivli",
+        "entity_name": "Ambivli",
+        "pc1": -2.855483268276077,
+        "pc2": -2.350763628024338,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4230.613746369797,
+          "morning_mean": 6714.985465116279,
+          "afternoon_mean": 4432.881395348837,
+          "evening_mean": 6249.622093023256,
+          "weekend_mean": 2871.7829861111113,
+          "peak_demand_q95": 7832.0,
+          "variance": 6245577.427768443,
+          "coefficient_of_variation": 0.590721696389698,
+          "demand_concentration_top6_hours": 0.3929437893468767,
+          "peak_to_average_ratio": 1.8512680356887885
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-asangaon",
+        "entity_name": "Asangaon",
+        "pc1": -2.968058144352911,
+        "pc2": -1.0151599062963967,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4336.726040658277,
+          "morning_mean": 6059.709302325581,
+          "afternoon_mean": 4456.3744186046515,
+          "evening_mean": 7104.2238372093025,
+          "weekend_mean": 2957.6961805555557,
+          "peak_demand_q95": 8326.0,
+          "variance": 6911417.336369319,
+          "coefficient_of_variation": 0.6062078713830757,
+          "demand_concentration_top6_hours": 0.41010827111135123,
+          "peak_to_average_ratio": 1.9198814778570117
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-atgaon",
+        "entity_name": "Atgaon",
+        "pc1": -3.0863119861995543,
+        "pc2": -0.5069176761355753,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4350.031461761859,
+          "morning_mean": 5880.662790697675,
+          "afternoon_mean": 4447.325581395349,
+          "evening_mean": 7265.555232558139,
+          "weekend_mean": 2973.7795138888887,
+          "peak_demand_q95": 8488.0,
+          "variance": 7065703.893976276,
+          "coefficient_of_variation": 0.611062058328906,
+          "demand_concentration_top6_hours": 0.4187406292581654,
+          "peak_to_average_ratio": 1.9512502552250903
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-kalyan",
+        "entity_name": "Kalyan",
+        "pc1": 2.332627576583469,
+        "pc2": 0.4802824851513603,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_demand": 6374.403678606002,
+          "morning_mean": 10691.84011627907,
+          "afternoon_mean": 6717.009302325581,
+          "evening_mean": 8947.127906976744,
+          "weekend_mean": 4360.359375,
+          "peak_demand_q95": 12283.75,
+          "variance": 13927501.952242032,
+          "coefficient_of_variation": 0.5854597608040066,
+          "demand_concentration_top6_hours": 0.40810554758847695,
+          "peak_to_average_ratio": 1.9270430018775173
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-kasara",
+        "entity_name": "Kasara",
+        "pc1": -1.589295115283669,
+        "pc2": 3.1285571374631624,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_demand": 5248.062439496612,
+          "morning_mean": 6162.372093023256,
+          "afternoon_mean": 5266.851162790697,
+          "evening_mean": 9560.938953488372,
+          "weekend_mean": 3581.4861111111113,
+          "peak_demand_q95": 11077.0,
+          "variance": 11617138.252151648,
+          "coefficient_of_variation": 0.649457274167911,
+          "demand_concentration_top6_hours": 0.454865848042127,
+          "peak_to_average_ratio": 2.110683729034004
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-khadavli",
+        "entity_name": "Khadavli",
+        "pc1": -2.7946274243150153,
+        "pc2": -2.1584053487274297,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4275.8480154888675,
+          "morning_mean": 6351.491279069767,
+          "afternoon_mean": 4431.609302325582,
+          "evening_mean": 6700.726744186047,
+          "weekend_mean": 2912.7447916666665,
+          "peak_demand_q95": 7897.5,
+          "variance": 6501053.234403129,
+          "coefficient_of_variation": 0.5963065795262371,
+          "demand_concentration_top6_hours": 0.3913846558998328,
+          "peak_to_average_ratio": 1.847002038283875
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-khardi",
+        "entity_name": "Khardi",
+        "pc1": -3.354194790461218,
+        "pc2": 0.8963289304213332,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4407.692642787996,
+          "morning_mean": 5556.738372093023,
+          "afternoon_mean": 4477.216279069768,
+          "evening_mean": 7709.523255813953,
+          "weekend_mean": 2991.140625,
+          "peak_demand_q95": 9029.25,
+          "variance": 7712216.461678688,
+          "coefficient_of_variation": 0.6300547681867421,
+          "demand_concentration_top6_hours": 0.4368057178659757,
+          "peak_to_average_ratio": 2.0485207866691746
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-shahad",
+        "entity_name": "Shahad",
+        "pc1": -2.967636620586538,
+        "pc2": -2.0687193328931257,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4215.120038722169,
+          "morning_mean": 6897.622093023256,
+          "afternoon_mean": 4424.527906976744,
+          "evening_mean": 6079.906976744186,
+          "weekend_mean": 2866.5243055555557,
+          "peak_demand_q95": 7940.0,
+          "variance": 6195332.64193146,
+          "coefficient_of_variation": 0.5905033527457382,
+          "demand_concentration_top6_hours": 0.400631901419205,
+          "peak_to_average_ratio": 1.883694871571687
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-thansit",
+        "entity_name": "Thansit",
+        "pc1": -3.186013277949916,
+        "pc2": 0.22454429152320352,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4394.472410454985,
+          "morning_mean": 5720.258720930233,
+          "afternoon_mean": 4509.088372093023,
+          "evening_mean": 7499.607558139535,
+          "weekend_mean": 2981.7881944444443,
+          "peak_demand_q95": 8808.75,
+          "variance": 7425060.866857404,
+          "coefficient_of_variation": 0.6200736363443181,
+          "demand_concentration_top6_hours": 0.42775509301512576,
+          "peak_to_average_ratio": 2.0045068388739704
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-titwala",
+        "entity_name": "Titwala",
+        "pc1": -2.7434830175918776,
+        "pc2": -2.5207896425884067,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4247.319457889642,
+          "morning_mean": 6543.9738372093025,
+          "afternoon_mean": 4428.927906976744,
+          "evening_mean": 6494.543604651163,
+          "weekend_mean": 2911.2013888888887,
+          "peak_demand_q95": 7783.75,
+          "variance": 6345821.040250626,
+          "coefficient_of_variation": 0.5931014460729752,
+          "demand_concentration_top6_hours": 0.38504116498089425,
+          "peak_to_average_ratio": 1.8326264546786641
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-umbermali",
+        "entity_name": "Umbermali",
+        "pc1": -3.457712732823768,
+        "pc2": 1.5048371391444724,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4434.227008712488,
+          "morning_mean": 5382.985465116279,
+          "afternoon_mean": 4495.997674418604,
+          "evening_mean": 7900.145348837209,
+          "weekend_mean": 3037.0381944444443,
+          "peak_demand_q95": 9207.0,
+          "variance": 8050173.172571594,
+          "coefficient_of_variation": 0.6398595975666391,
+          "demand_concentration_top6_hours": 0.44592817383162864,
+          "peak_to_average_ratio": 2.07634836509494
+        }
+      },
+      {
+        "entity_id": "central-kasara-branch-vasind",
+        "entity_name": "Vasind",
+        "pc1": -2.7688417383946837,
+        "pc2": -1.752991885166893,
+        "cluster_id": 1,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 4324.235721200387,
+          "morning_mean": 6239.703488372093,
+          "afternoon_mean": 4477.232558139535,
+          "evening_mean": 6911.433139534884,
+          "weekend_mean": 2959.3072916666665,
+          "peak_demand_q95": 8088.5,
+          "variance": 6651918.252760782,
+          "coefficient_of_variation": 0.5964363333479155,
+          "demand_concentration_top6_hours": 0.3991068207925457,
+          "peak_to_average_ratio": 1.8705039506390904
+        }
+      },
+      {
+        "entity_id": "central-main-bhandup",
+        "entity_name": "Bhandup",
+        "pc1": 0.5514992642131903,
+        "pc2": 0.7692681994344409,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5777.190222652469,
+          "morning_mean": 7876.555232558139,
+          "afternoon_mean": 5940.544186046512,
+          "evening_mean": 9589.412790697674,
+          "weekend_mean": 3952.3663194444443,
+          "peak_demand_q95": 11118.0,
+          "variance": 12189344.639033154,
+          "coefficient_of_variation": 0.6043291048209601,
+          "demand_concentration_top6_hours": 0.4147276195027161,
+          "peak_to_average_ratio": 1.9244649339061257
+        }
+      },
+      {
+        "entity_id": "central-main-byculla",
+        "entity_name": "Byculla",
+        "pc1": 0.4445457235501171,
+        "pc2": -0.8339877923117596,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5589.11665053243,
+          "morning_mean": 9042.093023255815,
+          "afternoon_mean": 5862.990697674419,
+          "evening_mean": 8147.889534883721,
+          "weekend_mean": 3813.6979166666665,
+          "peak_demand_q95": 10394.5,
+          "variance": 10809443.04883215,
+          "coefficient_of_variation": 0.588245325839088,
+          "demand_concentration_top6_hours": 0.398008244260067,
+          "peak_to_average_ratio": 1.8597751039978383
+        }
+      },
+      {
+        "entity_id": "central-main-chinchpokli",
+        "entity_name": "Chinchpokli",
+        "pc1": 0.5468925497183349,
+        "pc2": -0.9791322482514604,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5614.208615682478,
+          "morning_mean": 8977.619186046511,
+          "afternoon_mean": 5873.997674418604,
+          "evening_mean": 8259.191860465116,
+          "weekend_mean": 3836.6822916666665,
+          "peak_demand_q95": 10355.5,
+          "variance": 10854208.5261794,
+          "coefficient_of_variation": 0.5868276032820886,
+          "demand_concentration_top6_hours": 0.39427927860305806,
+          "peak_to_average_ratio": 1.844516424108896
+        }
+      },
+      {
+        "entity_id": "central-main-csmt",
+        "entity_name": "CSMT",
+        "pc1": 4.324362125749157,
+        "pc2": -0.22415602242899035,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_demand": 7042.376089060987,
+          "morning_mean": 11300.985465116279,
+          "afternoon_mean": 7433.130232558139,
+          "evening_mean": 10125.334302325582,
+          "weekend_mean": 4929.088541666667,
+          "peak_demand_q95": 12500.0,
+          "variance": 15793056.743842594,
+          "coefficient_of_variation": 0.5643049808491296,
+          "demand_concentration_top6_hours": 0.3942372847621185,
+          "peak_to_average_ratio": 1.7749691072898548
+        }
+      },
+      {
+        "entity_id": "central-main-currey-road",
+        "entity_name": "Currey Road",
+        "pc1": 0.5971997897963425,
+        "pc2": -1.052609345616042,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5624.0198451113265,
+          "morning_mean": 8840.755813953489,
+          "afternoon_mean": 5921.797674418604,
+          "evening_mean": 8373.677325581395,
+          "weekend_mean": 3829.340277777778,
+          "peak_demand_q95": 10340.75,
+          "variance": 10928642.90425283,
+          "coefficient_of_variation": 0.5878090568070504,
+          "demand_concentration_top6_hours": 0.39010791179164245,
+          "peak_to_average_ratio": 1.8386759443938816
+        }
+      },
+      {
+        "entity_id": "central-main-dadar",
+        "entity_name": "Dadar",
+        "pc1": 6.247009506531258,
+        "pc2": -1.2964751932986116,
+        "cluster_id": 2,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 7653.156340755082,
+          "morning_mean": 11400.927325581395,
+          "afternoon_mean": 8116.951162790698,
+          "evening_mean": 11400.21511627907,
+          "weekend_mean": 5646.647569444444,
+          "peak_demand_q95": 12500.0,
+          "variance": 16644332.298403649,
+          "coefficient_of_variation": 0.5330802633158774,
+          "demand_concentration_top6_hours": 0.37241079245091346,
+          "peak_to_average_ratio": 1.6333130336609214
+        }
+      },
+      {
+        "entity_id": "central-main-diva",
+        "entity_name": "Diva",
+        "pc1": 0.2929173119892288,
+        "pc2": 2.7019277057299953,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5853.880929332043,
+          "morning_mean": 7293.433139534884,
+          "afternoon_mean": 5963.437209302326,
+          "evening_mean": 10266.078488372093,
+          "weekend_mean": 4003.0208333333335,
+          "peak_demand_q95": 11977.75,
+          "variance": 13545790.19395383,
+          "coefficient_of_variation": 0.6287214652611667,
+          "demand_concentration_top6_hours": 0.43905656997594783,
+          "peak_to_average_ratio": 2.046121221903077
+        }
+      },
+      {
+        "entity_id": "central-main-dombivli",
+        "entity_name": "Dombivli",
+        "pc1": 4.2158804692490435,
+        "pc2": 0.7029024905014203,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_demand": 7054.946757018393,
+          "morning_mean": 9280.357558139534,
+          "afternoon_mean": 7345.932558139535,
+          "evening_mean": 11616.546511627907,
+          "weekend_mean": 5225.916666666667,
+          "peak_demand_q95": 12500.0,
+          "variance": 15814605.72030168,
+          "coefficient_of_variation": 0.5636836576234417,
+          "demand_concentration_top6_hours": 0.41157329640325346,
+          "peak_to_average_ratio": 1.7718064261172157
+        }
+      },
+      {
+        "entity_id": "central-main-ghatkopar",
+        "entity_name": "Ghatkopar",
+        "pc1": 4.801494418215339,
+        "pc2": 0.05018712227883787,
+        "cluster_id": -1,
+        "is_outlier": true,
+        "behaviour": {
+          "mean_demand": 7234.380929332043,
+          "morning_mean": 10594.101744186046,
+          "afternoon_mean": 7554.369767441861,
+          "evening_mean": 11278.177325581395,
+          "weekend_mean": 5092.116319444444,
+          "peak_demand_q95": 12500.0,
+          "variance": 17159949.44782605,
+          "coefficient_of_variation": 0.5726069686124041,
+          "demand_concentration_top6_hours": 0.38981868691741567,
+          "peak_to_average_ratio": 1.7278603548948226
+        }
+      },
+      {
+        "entity_id": "central-main-kalwa",
+        "entity_name": "Kalwa",
+        "pc1": 0.36362207945070196,
+        "pc2": 2.101520079458473,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5827.387221684415,
+          "morning_mean": 7501.377906976744,
+          "afternoon_mean": 5948.360465116279,
+          "evening_mean": 10048.561046511628,
+          "weekend_mean": 3974.5260416666665,
+          "peak_demand_q95": 11728.75,
+          "variance": 13100650.311821228,
+          "coefficient_of_variation": 0.621115761236091,
+          "demand_concentration_top6_hours": 0.4310044141908672,
+          "peak_to_average_ratio": 2.012694463885272
+        }
+      },
+      {
+        "entity_id": "central-main-kalyan",
+        "entity_name": "Kalyan",
+        "pc1": 6.535659762973322,
+        "pc2": -0.8879834027450124,
+        "cluster_id": 2,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 7764.640851887706,
+          "morning_mean": 10485.59011627907,
+          "afternoon_mean": 8227.562790697675,
+          "evening_mean": 12132.311046511628,
+          "weekend_mean": 6156.784722222223,
+          "peak_demand_q95": 12500.0,
+          "variance": 16160164.754846128,
+          "coefficient_of_variation": 0.5177278405051668,
+          "demand_concentration_top6_hours": 0.3907766281296724,
+          "peak_to_average_ratio": 1.6098619676608807
+        }
+      },
+      {
+        "entity_id": "central-main-kanjurmarg",
+        "entity_name": "Kanjurmarg",
+        "pc1": 0.5507712013847452,
+        "pc2": 0.45333764973773755,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5759.037754114231,
+          "morning_mean": 7985.180232558139,
+          "afternoon_mean": 5910.641860465116,
+          "evening_mean": 9413.372093023256,
+          "weekend_mean": 3920.2708333333335,
+          "peak_demand_q95": 10966.75,
+          "variance": 12011827.07505091,
+          "coefficient_of_variation": 0.6018033626341838,
+          "demand_concentration_top6_hours": 0.4106452918823049,
+          "peak_to_average_ratio": 1.9042677732344093
+        }
+      },
+      {
+        "entity_id": "central-main-kopar",
+        "entity_name": "Kopar",
+        "pc1": 0.22627989772863535,
+        "pc2": 3.007325076113739,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5861.358664085189,
+          "morning_mean": 7180.084302325581,
+          "afternoon_mean": 5933.813953488372,
+          "evening_mean": 10392.139534883721,
+          "weekend_mean": 3993.8958333333335,
+          "peak_demand_q95": 12096.5,
+          "variance": 13749808.739220673,
+          "coefficient_of_variation": 0.632630362066175,
+          "demand_concentration_top6_hours": 0.44319508036104827,
+          "peak_to_average_ratio": 2.0637706534015625
+        }
+      },
+      {
+        "entity_id": "central-main-kurla",
+        "entity_name": "Kurla",
+        "pc1": 5.8862796520724805,
+        "pc2": -0.897751614808727,
+        "cluster_id": 2,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 7553.37366892546,
+          "morning_mean": 11233.186046511628,
+          "afternoon_mean": 7961.3744186046515,
+          "evening_mean": 11400.337209302326,
+          "weekend_mean": 5491.989583333333,
+          "peak_demand_q95": 12500.0,
+          "variance": 16994735.702578697,
+          "coefficient_of_variation": 0.5457782663812084,
+          "demand_concentration_top6_hours": 0.37714450263283533,
+          "peak_to_average_ratio": 1.654889662274347
+        }
+      },
+      {
+        "entity_id": "central-main-masjid",
+        "entity_name": "Masjid",
+        "pc1": 0.3010038128714488,
+        "pc2": -0.45241534464947436,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5564.541626331074,
+          "morning_mean": 9257.165697674418,
+          "afternoon_mean": 5874.472093023256,
+          "evening_mean": 7894.912790697675,
+          "weekend_mean": 3810.2708333333335,
+          "peak_demand_q95": 10628.75,
+          "variance": 10757463.895895516,
+          "coefficient_of_variation": 0.5894209295837155,
+          "demand_concentration_top6_hours": 0.4058550367641044,
+          "peak_to_average_ratio": 1.910085450651568
+        }
+      },
+      {
+        "entity_id": "central-main-matunga",
+        "entity_name": "Matunga",
+        "pc1": 0.6963416199996554,
+        "pc2": -1.1240240849861278,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5660.09293320426,
+          "morning_mean": 8552.412790697674,
+          "afternoon_mean": 5880.918604651163,
+          "evening_mean": 8723.68023255814,
+          "weekend_mean": 3857.1388888888887,
+          "peak_demand_q95": 10300.25,
+          "variance": 11101359.28758801,
+          "coefficient_of_variation": 0.5886599881005428,
+          "demand_concentration_top6_hours": 0.3854874781799044,
+          "peak_to_average_ratio": 1.819802275608376
+        }
+      },
+      {
+        "entity_id": "central-main-mulund",
+        "entity_name": "Mulund",
+        "pc1": 0.39371927439394316,
+        "pc2": 1.5328040716053246,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5784.978218780252,
+          "morning_mean": 7683.828488372093,
+          "afternoon_mean": 5919.855813953488,
+          "evening_mean": 9830.02034883721,
+          "weekend_mean": 3955.9079861111113,
+          "peak_demand_q95": 11406.5,
+          "variance": 12698213.820919575,
+          "coefficient_of_variation": 0.6159842242607496,
+          "demand_concentration_top6_hours": 0.42435644158994246,
+          "peak_to_average_ratio": 1.9717446753680312
+        }
+      },
+      {
+        "entity_id": "central-main-mumbra",
+        "entity_name": "Mumbra",
+        "pc1": 0.33247887885260324,
+        "pc2": 2.3207976726615347,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5840.201839303001,
+          "morning_mean": 7411.7238372093025,
+          "afternoon_mean": 5927.890697674418,
+          "evening_mean": 10152.03488372093,
+          "weekend_mean": 3980.4357638888887,
+          "peak_demand_q95": 11804.75,
+          "variance": 13262602.126250248,
+          "coefficient_of_variation": 0.6235718676532306,
+          "demand_concentration_top6_hours": 0.4346064805682192,
+          "peak_to_average_ratio": 2.0212914424561803
+        }
+      },
+      {
+        "entity_id": "central-main-nahur",
+        "entity_name": "Nahur",
+        "pc1": 0.5096547894802482,
+        "pc2": 1.054925175076404,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5790.049854791869,
+          "morning_mean": 7814.892441860465,
+          "afternoon_mean": 5927.355813953488,
+          "evening_mean": 9680.20058139535,
+          "weekend_mean": 3959.1232638888887,
+          "peak_demand_q95": 11243.5,
+          "variance": 12398307.622393493,
+          "coefficient_of_variation": 0.6081334618812528,
+          "demand_concentration_top6_hours": 0.41847004301281765,
+          "peak_to_average_ratio": 1.9418658356965328
+        }
+      },
+      {
+        "entity_id": "central-main-parel",
+        "entity_name": "Parel",
+        "pc1": 0.6386786411502866,
+        "pc2": -1.1810937427364652,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5633.439012584705,
+          "morning_mean": 8755.380813953489,
+          "afternoon_mean": 5883.304651162791,
+          "evening_mean": 8469.383720930233,
+          "weekend_mean": 3837.9305555555557,
+          "peak_demand_q95": 10267.25,
+          "variance": 10947392.048797477,
+          "coefficient_of_variation": 0.5873293969544328,
+          "demand_concentration_top6_hours": 0.3872573530362824,
+          "peak_to_average_ratio": 1.8225545669463517
+        }
+      },
+      {
+        "entity_id": "central-main-sandhurst-road",
+        "entity_name": "Sandhurst Road",
+        "pc1": 0.40354913986523766,
+        "pc2": -0.7573865057736984,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5582.765730880929,
+          "morning_mean": 9142.677325581395,
+          "afternoon_mean": 5872.137209302326,
+          "evening_mean": 8003.520348837209,
+          "weekend_mean": 3800.265625,
+          "peak_demand_q95": 10497.0,
+          "variance": 10667491.715689132,
+          "coefficient_of_variation": 0.5850348712506397,
+          "demand_concentration_top6_hours": 0.40093842195070967,
+          "peak_to_average_ratio": 1.8802508480583568
+        }
+      },
+      {
+        "entity_id": "central-main-sion",
+        "entity_name": "Sion",
+        "pc1": 0.6819898326668533,
+        "pc2": -0.8573807889566064,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5679.755566311714,
+          "morning_mean": 8488.607558139534,
+          "afternoon_mean": 5865.504651162791,
+          "evening_mean": 8854.578488372093,
+          "weekend_mean": 3882.2673611111113,
+          "peak_demand_q95": 10396.75,
+          "variance": 11283434.043349946,
+          "coefficient_of_variation": 0.591413183611856,
+          "demand_concentration_top6_hours": 0.38999138590290144,
+          "peak_to_average_ratio": 1.8304925059920105
+        }
+      },
+      {
+        "entity_id": "central-main-thakurli",
+        "entity_name": "Thakurli",
+        "pc1": 0.1546390379426894,
+        "pc2": 3.5905899842274978,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5879.136011616651,
+          "morning_mean": 6980.688953488372,
+          "afternoon_mean": 5954.583720930233,
+          "evening_mean": 10596.171511627907,
+          "weekend_mean": 4032.144097222222,
+          "peak_demand_q95": 12334.75,
+          "variance": 14187673.544424364,
+          "coefficient_of_variation": 0.6406813557149946,
+          "demand_concentration_top6_hours": 0.4504360729499454,
+          "peak_to_average_ratio": 2.0980548801095313
+        }
+      },
+      {
+        "entity_id": "central-main-thane",
+        "entity_name": "Thane",
+        "pc1": 6.271225358231771,
+        "pc2": -0.9228569432859229,
+        "cluster_id": 2,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 7678.439012584705,
+          "morning_mean": 10960.71511627907,
+          "afternoon_mean": 8090.869767441861,
+          "evening_mean": 11783.412790697674,
+          "weekend_mean": 5839.355902777777,
+          "peak_demand_q95": 12500.0,
+          "variance": 16639800.773870079,
+          "coefficient_of_variation": 0.5312526653469332,
+          "demand_concentration_top6_hours": 0.3836250461902295,
+          "peak_to_average_ratio": 1.627935050276875
+        }
+      },
+      {
+        "entity_id": "central-main-vidyavihar",
+        "entity_name": "Vidyavihar",
+        "pc1": 0.6167623940828475,
+        "pc2": -0.3063318506665901,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5702.17279767667,
+          "morning_mean": 8269.71511627907,
+          "afternoon_mean": 5886.146511627907,
+          "evening_mean": 9116.313953488372,
+          "weekend_mean": 3899.527777777778,
+          "peak_demand_q95": 10608.75,
+          "variance": 11538342.745068358,
+          "coefficient_of_variation": 0.5957051350423443,
+          "demand_concentration_top6_hours": 0.39905235838595754,
+          "peak_to_average_ratio": 1.860475011266319
+        }
+      },
+      {
+        "entity_id": "central-main-vikhroli",
+        "entity_name": "Vikhroli",
+        "pc1": 0.615300930828463,
+        "pc2": 0.2270251676832171,
+        "cluster_id": 0,
+        "is_outlier": false,
+        "behaviour": {
+          "mean_demand": 5756.282671829623,
+          "morning_mean": 8089.069767441861,
+          "afternoon_mean": 5932.472093023256,
+          "evening_mean": 9355.380813953489,
+          "weekend_mean": 3913.8506944444443,
+          "peak_demand_q95": 10910.75,
+          "variance": 11886601.853300896,
+          "coefficient_of_variation": 0.5989447265572821,
+          "demand_concentration_top6_hours": 0.40638986546730216,
+          "peak_to_average_ratio": 1.895450696574642
+        }
+      }
+    ],
+    "interpretation_note": "Cluster IDs and noise labels are algorithm outputs, not source-provided entity types. No manual cluster labels are assigned.",
+    "system_id": "mumbai-local-central",
+    "city": "Mumbai",
+    "mode": "SUBURBAN",
+    "operator": "Central Railway"
+  },
+  "artifacts": {
+    "bundle": "transitcrowd.joblib",
+    "report": "model_report.json",
+    "station_analytics": "station_analytics.json"
+  },
+  "limitations": [
+    "Only the registered Central Railway SUBURBAN family 'mumbai-local-central' has a trained model in this project; no India-wide, network-wide, live, bus, or other-operator prediction is implied by its numbers.",
+    "The target is passengers per hour per hour. It is not onboard load, occupancy, capacity utilisation, crowding safety level, or the number of people currently on a train or platform.",
+    "No weather, disruption, fare-change, event, transfer, origin-destination or service-frequency variable is joined to the model beyond the columns this dataset publishes.",
+    "Tree and linear models cannot extrapolate beyond the observed feature range; forecasts far past the data frontier regress toward recent levels rather than inventing new ones.",
+    "The source series ends 2026-10-06. It begins 2026-06-09. A request for a date or hour after that frontier is returned as a model forecast and labelled as one; a value inside it is a historical replay of an observation, never a live reading.",
+    "This family's values are synthetic development data and are served as a demo: every response carries the synthetic disclosure, and no metric here is evidence about real passengers. The architecture is the point; the numbers are illustrative.",
+    "Models were fitted on 152,640 of 354,888 available rows (120 days from 2026-06-09 to 2026-10-06) because a wider fit exceeds the memory of the runner that produced them; the complete stored history is still served as observations, and every metric above describes that window.",
+    "Forecasts past the most recent observation are recursive one-hour model calls, limited to 336 hours from the data frontier; the uncertainty of those calls is not calibrated and is reported as historical-relative bands, never as a confidence percentage.",
+    "No confidence percentage is produced. A missing observation must never be read as zero demand, and a forecast must never be read as a measurement."
+  ]
+}

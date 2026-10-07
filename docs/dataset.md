@@ -97,6 +97,32 @@ GTFS Schedule contains public-transport service descriptions such as agencies, r
 | **Kochi Metro (KMRL) open data** | Official KMRL page provides GTFS-static routes, schedules and fares. <https://kochimetro.org/open-data/>. | KMRL's posted terms grant free, non-exclusive use/adaptation/reproduction/redistribution, including commercial and non-commercial applications, subject to KMRL attribution (“Contains data provided by Kochi Metro Rail Limited”) and no implied endorsement. Terms can change. | Network and schedule discovery only; not boardings. |
 | **Hyderabad Metro (HMRL) / Open Data Telangana** | HMRL announcement of November 25, 2025 reports publication of a GTFS dataset covering three corridors, 118 stations and 6,958 scheduled weekly trips. <https://hmrl.co.in/hyderabad-metro-rail-data-goes-live-on-google-maps/>. | The announcement describes the GTFS publication but does not pin a downloadable revision or state its data-reuse license. Recheck the portal/license before reuse; no feed is bundled. | Service/schedule discovery only; no observed-demand target or live-occupancy claim. |
 
+## Auditing a supplied file first
+
+Before anything is registered, `scripts/audit_demand_dataset.py` states what a candidate file actually
+contains - read-only, writes nothing, safe to run twice:
+
+```bash
+python3 scripts/audit_demand_dataset.py --csv incoming.csv --json /tmp/audit.json
+# or as a pre-flight inside the registration entry point:
+python3 scripts/register_demand_dataset.py --csv incoming.csv ... --print-audit
+```
+
+It reports the inventory (rows, dtypes, cardinality, missingness, duplicate rows), what the file declares
+about its own provenance (a `Data_Type = Synthetic` column is surfaced at the top, before any modelling
+decision), the measured timestamp grid, the clock times that actually occur, per-entity coverage and
+holes, which columns could be the demand target and why others were disqualified, what each
+line/corridor/direction column does to the rows, and - the mandatory part - whether a precomputed
+`Target_*` column reproduces the demand series shifted forward. A target column is accepted as ground
+truth only when it matches `demand(t + k)` for a verified grouping and offset on at least 99.9 % of
+aligned rows; otherwise the audit prints `INCONSISTENT` (or `UNVERIFIABLE` when the key structure does
+not allow the check) and the column is excluded from the label, with the supervised target derived from
+the chronological series instead.
+
+On the Mumbai research extract the tool is honest about the reason it cannot be a forecasting source:
+`measured period NONE - the modal spacing is 5616000s but accounts for only 25 % of gaps`, i.e. five
+survey days, not a series.
+
 ## Registering another observed-demand dataset (adaptive path)
 
 `scripts/register_demand_dataset.py` is the front door for a dataset nobody wrote an adapter for. It
@@ -143,8 +169,22 @@ python3 scripts/register_demand_dataset.py --csv incoming.csv --system-id pune-m
 profiled and gated - which is exactly how the two teammate 365-day synthetic CSVs were tested - but it
 fails `target_values_are_actual_observations`, is never registered as a served family, and is written
 under `data/development/` instead of `data/processed/`. Registering one requires the explicit
-`--allow-development-family` flag and marks it `development_only: true`, which `backend/app/main.py`
+`--allow-development-family` flag, which marks it `development_only: true` (`served_as: internal`) — `backend/app/main.py`
 skips, so no endpoint can serve it. The synthetic fixtures themselves are not redistributed here.
+
+### Choosing how a registered family may be served
+
+`--serve-as` decides the serving mode, and the mode decides what the gate must have shown:
+
+| Mode | Data it accepts | Gate requirement | What the API does |
+| --- | --- | --- | --- |
+| `production` | a dataset class that claims observed ground truth | every criterion, including `target_values_are_actual_observations` | normal answers |
+| `demo` | a dataset that admits it is *not* observed (synthetic / simulated / modelled / other) | every criterion except `target_values_are_actual_observations`, and that must be the only failure | answers carry `data_class: synthetic_development` and the disclosure sentence; metadata sets `metrics_are_demonstration_only: true` |
+| `internal` | anything (fixtures, development runs) | none | never built into the app: `backend/app/main.py` skips it |
+
+`auto` (the default) picks `production` for an observed class and `internal` otherwise, so nothing becomes
+public by accident. Registering an observed-class dataset as `demo` is refused: a verified dataset must not
+be hidden behind a demonstration label any more than a synthetic one may be dressed as verified.
 
 ## Reproducible commands
 

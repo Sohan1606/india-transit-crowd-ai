@@ -36,9 +36,10 @@ from ml.training.registry import get_model_family
 from ml.training.risk import RISK_ORDER, classify_demand, historical_percentile, resolve_thresholds
 
 from backend.app.inference.service import (
-    ForecastHorizonExceeded, InferenceError, InsufficientHistory, ServiceUnavailable,
-    UnknownEntity, UnknownSystem,
+    ForecastHorizonExceeded, GranularityMismatch, InferenceError, InsufficientHistory, ServiceUnavailable,
+    UnknownEntity, UnknownSystem, provenance_for,
 )
+from backend.app.inference.hierarchy import attributes_for as _attributes_for
 
 FEATURE_LABELS = {
     "day_of_week": "Target day of week (Monday=0)",
@@ -61,8 +62,8 @@ FEATURE_LABELS = {
 }
 
 
-class GranularityMismatch(InferenceError):
-    """The request asks for a resolution the loaded family's data cannot answer."""
+# ``GranularityMismatch`` is imported from the hourly service so both families raise the same
+# error type and the API maps it once.
 
 
 class DailyDemandInferenceService:
@@ -115,12 +116,18 @@ class DailyDemandInferenceService:
                 self.unavailable_detail = ("Model-family system/entity IDs do not match the normalized observed-demand "
                                            "dataset. Re-run scripts/prepare_chennai_data.py and retrain.")
                 self.bundle, self.daily = None, None
-            elif self.source_metadata.get("normalized_sha256"):
-                actual = hashlib.sha256(data_path.read_bytes()).hexdigest()
-                if actual != self.source_metadata["normalized_sha256"]:
-                    self.unavailable_detail = ("Normalized dataset checksum does not match the source metadata sidecar. "
-                                               "Re-run data preparation and model validation.")
+            else:
+                # A packaged family may be served from the compressed inference copy registered for it; the
+                # checksum verified is the one belonging to the container actually on disk, so a packaged
+                # dataset cannot silently drift from the rows the model was fitted on.
+                field = "normalized_gz_sha256" if str(data_path).endswith(".gz") else "normalized_sha256"
+                expected = self.source_metadata.get(field) or self.source_metadata.get("normalized_sha256")
+                actual = hashlib.sha256(data_path.read_bytes()).hexdigest() if expected else None
+                if expected and actual != expected:
+                    self.unavailable_detail = ("Normalized dataset checksum does not match the source metadata "
+                                               "sidecar. Re-run data preparation and model validation.")
                     self.bundle, self.daily = None, None
+
 
     # ------------------------------------------------------------------ state
     @property
@@ -176,7 +183,15 @@ class DailyDemandInferenceService:
         self._require_ready(system_id)
         normalized = str(station_id).strip()
         if normalized not in self.entity_ids:
-            raise UnknownEntity(f"Unknown or untrained station-line entity '{normalized}'. Use GET /api/stations?system_id=...")
+            from backend.app.inference import hierarchy as _hierarchy
+            alternatives = _hierarchy.choices_under(self.source_metadata, normalized)
+            detail = ""
+            if alternatives:
+                (column, values), = alternatives.items()
+                detail = (f" '{column}' is published only as: {', '.join(values[:12])}"
+                          f"{' (and more)' if len(values) > 12 else ''}")
+            raise UnknownEntity(f"Unknown or untrained station-line entity '{normalized}'. Use GET "
+                                f"/api/stations?system_id=...{detail}")
         return normalized
 
     def _station_frame(self, system_id: str, entity_id: str) -> pd.DataFrame:
@@ -262,6 +277,7 @@ class DailyDemandInferenceService:
             )
         band = self._horizon_assessment(demand, horizon)
         scoring = self._score_against_observation(frame, entity_id, target, demand, kind)
+        provenance = self._provenance()
         return {
             "system_id": system_id, "station_id": entity_id,
             "station_name": str(frame["entity_name"].iloc[0]) if len(frame) else entity_id,
@@ -285,6 +301,8 @@ class DailyDemandInferenceService:
             "is_model_forecast": horizon >= 1,
             "is_recursive_forecast": horizon > 1,
             "forecast_note": note,
+            "data_class": provenance["data_class"],
+            "disclosure": provenance["disclosure"],
             "regression_model": self.bundle.get("regression_model_key", "unknown"),
             "classification_model": self.bundle.get("classification_model_key", "unknown"),
             "training_cutoff": pd.Timestamp(self.bundle["training_cutoff"]).normalize().isoformat(),
@@ -292,6 +310,15 @@ class DailyDemandInferenceService:
             "_features": features,
             "_demand": float(demand),
         }
+
+    def _provenance(self) -> dict[str, Any]:
+        """Data class and disclosure for this family, from the bundle with a registry fallback.
+
+        A demo family is served because a demonstration has to run to be useful, so the label travels
+        with every answer instead of living only in documentation.
+        """
+        return dict(provenance_for(self.bundle, self.family,
+                                   self.source_metadata if isinstance(self.source_metadata, dict) else {}))
 
     def _horizon_assessment(self, demand: float, horizon: int) -> dict[str, Any]:
         """Measured accuracy for this horizon, plus an empirical interval when one can be justified.
@@ -577,6 +604,8 @@ class DailyDemandInferenceService:
                  "mean_daily_entries": float(row.mean_daily_entries),
                  "latest_observation": pd.Timestamp(row.latest_observation).isoformat(),
                  "observed_hours": int(row.observed_days), "observed_days": int(row.observed_days),
+                 # Whatever the dataset says this series is (line, origin, destination, published slot).
+                 "attributes": _attributes_for(self.source_metadata, row.entity_id),
                  "system_id": selected} for row in grouped.itertuples()]
 
     def station_comparison(self, system_id: str, target_date: str, target_hour: int | None = None,
@@ -621,6 +650,21 @@ class DailyDemandInferenceService:
                 "next_unobserved_date": self.next_unobserved_day.strftime("%Y-%m-%d") if ready else None,
                 "detail": None if ready else self.unavailable_detail}
 
+    def _model_scope(self, provenance: dict[str, Any]) -> str:
+        """Scope text for this family, from its own registry entry - not from the family that shipped first.
+
+        A demonstration family must not be described as verified observation anywhere, including here.
+        """
+        operator = str(self.family.get("operator") or "this operator")
+        city = str(self.family.get("city") or "")
+        subject = f"{city} {operator}".strip()
+        if provenance.get("served_as") == "demo":
+            return (f"Demonstration forecast for {subject} journey-day series. The source is synthetic modelled "
+                    f"data, not an operator measurement. Day granularity only: this family cannot answer "
+                    f"hour-of-day questions; its published time slots are part of the series identity.")
+        return (f"Verified observed-demand prediction for {subject} station-day entries. Day granularity only: "
+                f"this family cannot answer hour-of-day questions.")
+
     def metadata(self) -> dict[str, Any]:
         selected = self._require_ready()
         frame = self.daily.loc[self.daily["system_id"].astype(str).eq(selected)
@@ -628,9 +672,22 @@ class DailyDemandInferenceService:
         first, latest = pd.Timestamp(frame["timestamp"].min()), pd.Timestamp(frame["timestamp"].max())
         source = self.source_metadata or self.bundle.get("dataset_metadata", {})
         report = self.bundle.get("model_report", {})
+        from backend.app.inference import hierarchy as _hierarchy
+        hierarchy_block = _hierarchy.metadata_block(source)
         champion = next((item for item in report.get("regression", {}).get("models", [])
                          if item.get("key") == self.bundle.get("regression_model_key")), {})
+        provenance = self._provenance()
         return {
+            **hierarchy_block,
+            "served_as": provenance["served_as"],
+            "dataset_class": provenance["dataset_class"],
+            "data_class": provenance["data_class"],
+            "disclosure": provenance["disclosure"],
+            "metrics_are_demonstration_only": provenance["metrics_are_demonstration_only"],
+            # The slot level of the entity key is what the source actually publishes; the provenance default
+            # (empty for a day family) must not overwrite it, or a client cannot know which times are valid.
+            "supported_time_slots": (hierarchy_block.get("supported_time_slots")
+                                     or provenance["supported_time_slots"]),
             "forecast_horizon_policy": {
                 "granularity": self.bundle.get("granularity", "day"),
                 "max_recursive_horizon_days": int(self.bundle.get("max_recursive_horizon_days", 60)),
@@ -647,8 +704,7 @@ class DailyDemandInferenceService:
             "project": "INDIA TRANSIT CROWD AI", "tagline": "PREDICT THE CROWD. PLAN THE JOURNEY.",
             "system_id": selected, "city": self.family.get("city", "Chennai"), "mode": self.family.get("mode", "METRO"),
             "operator": self.family.get("operator", "CMRL"),
-            "model_scope": ("Verified observed-demand prediction for Chennai Metro (CMRL) station-day entries. Day "
-                            "granularity only: this family cannot answer hour-of-day questions."),
+            "model_scope": self._model_scope(provenance),
             "granularity": "day", "timezone": self.timezone,
             "dataset": {
                 "title": source.get("source_title", "CMRL passenger-flow station daily observations"),

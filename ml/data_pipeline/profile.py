@@ -22,6 +22,8 @@ from pathlib import Path
 from typing import Any, Iterable
 
 import numpy as np
+import re
+
 import pandas as pd
 
 #: Header priors. A name alone never scores above ``NAME_PRIOR_CAP``; the data decides.
@@ -35,6 +37,13 @@ TIME_NAME_HINTS = {"timestamp", "datetime", "date_time", "date", "day", "time", 
                    "observation_date", "report_date", "collection_date", "datehour", "samptime", "hour_start"}
 ENTITY_NAME_HINTS = {"station", "station_id", "station_code", "station_name", "entity", "entity_id", "stop_id",
                      "stop", "code", "id", "name", "terminal", "depot", "location", "zone"}
+#: A column named like a label is not the series: it is excluded from being the demand measure when a
+#: plain series column exists, because a precomputed target must never become the thing we learn from
+#: without the verification the project requires (see ml/data_pipeline/audit.py).
+TARGET_SHAPE_PATTERN = ("target", "targets", "label", "next_hour", "next_day", "next_period", "future_")
+#: A file that declares itself synthetic has no observed ground truth by definition, so the honesty
+#: burden sits on the serving mode and the disclosure - not on refusing to model its own numbers.
+DECLARED_SYNTHETIC_CLASSES = ("synthetic", "simulated", "modelled", "modeled", "development", "demo")
 FORECAST_MARKERS = ("forecast", "predicted", "prediction", "model", "estimated", "estimate", "projection",
                     "scenario", "planned", "projected", "interpolated", "simulated", "synthetic", "fake", "dummy")
 NAME_PRIOR_CAP = 0.30
@@ -76,11 +85,15 @@ def _name_prior(column: str, hints: Iterable[str]) -> float:
 
 def _try_datetime(series: pd.Series) -> tuple[pd.Series | None, float, str]:
     """Parse with the format that maximizes coverage; report the format that actually worked."""
+    if isinstance(series.dtype, pd.CategoricalDtype):
+        series = series.astype(object)
     best: tuple[pd.Series | None, float, str] = (None, 0.0, "unparseable")
     for fmt in _DT_INPUT_FORMATS:
         try:
             with warnings.catch_warnings():
-                warnings.simplefilter("ignore", UserWarning)
+                # pandas raises UserWarning for per-element dateutil fallback and FutureWarning for
+                # mixed-offset parsing; the profiler only needs to know whether the column parses.
+                warnings.simplefilter("ignore", (UserWarning, FutureWarning))
                 parsed = pd.to_datetime(series, errors="coerce", format=fmt) if fmt else pd.to_datetime(series, errors="coerce")
         except (TypeError, ValueError, OverflowError):
             continue
@@ -103,11 +116,21 @@ def _autocorrelation(values: np.ndarray, lag: int = 1) -> float | None:
 
 
 def profile_dataset(frame: pd.DataFrame, *, timezone: str = "Asia/Kolkata",
-                    ignore_columns: Iterable[str] = ()) -> dict[str, Any]:
+                    ignore_columns: Iterable[str] = (), dataset_class: str | None = None,
+                    timestamp_column: str | None = None) -> dict[str, Any]:
+    """`timestamp_column` forces which column carries the moment (e.g. after a file's split `Date`+`Time`
+    have been joined); the grid is then measured on that column, so a forced choice cannot contradict the
+    spacing the pipeline reports."""
     """Score every column and return a profile with evidence for each decision."""
     if frame is None or len(frame) == 0:
         raise ValueError("The dataset is empty; there is nothing to profile.")
     frame = frame.copy()
+    # A large supplied file may arrive with text columns stored as categoricals (that is how the
+    # low-memory audit read works). Categoricals have no usable min/max and compare by category
+    # order, so the profiler flattens them to values first: it analyses data, not storage.
+    categoricals = [name for name in frame.columns if isinstance(frame[name].dtype, pd.CategoricalDtype)]
+    if categoricals:
+        frame[categoricals] = frame[categoricals].astype(object)
     ignored = {_norm(name) for name in ignore_columns}
     report: dict[str, dict[str, Any]] = {}
     rows = len(frame)
@@ -155,7 +178,9 @@ def profile_dataset(frame: pd.DataFrame, *, timezone: str = "Asia/Kolkata",
             continue
         span_days = 0
         try:
-            parsed = pd.to_datetime(frame[column], errors="coerce")
+            parsed = pd.to_datetime(frame[column].astype(object)
+                                    if isinstance(frame[column].dtype, pd.CategoricalDtype)
+                                    else frame[column], errors="coerce")
             span_days = int((parsed.max() - parsed.min()).days)
         except (TypeError, ValueError):
             continue
@@ -185,6 +210,8 @@ def profile_dataset(frame: pd.DataFrame, *, timezone: str = "Asia/Kolkata",
         entity_scores[column] = round(score, 4)
 
     # --- demand candidates ----------------------------------------------------------
+    declared = str(dataset_class or "").lower()
+    accepts_modelled_series = any(token in declared for token in DECLARED_SYNTHETIC_CLASSES)
     demand_scores: dict[str, dict[str, Any]] = {}
     for column, entry in report.items():
         if float(entry.get("numeric_share") or 0.0) < 0.95:
@@ -195,7 +222,7 @@ def profile_dataset(frame: pd.DataFrame, *, timezone: str = "Asia/Kolkata",
             continue
         reasons: list[str] = []
         lowered = _norm(column)
-        if any(marker in lowered for marker in FORECAST_MARKERS):
+        if any(marker in lowered for marker in FORECAST_MARKERS) and not accepts_modelled_series:
             reasons.append(f"header marks it as modelled/simulated output ({column})")
         if minimum < 0:
             reasons.append("contains negative counts")
@@ -224,8 +251,19 @@ def profile_dataset(frame: pd.DataFrame, *, timezone: str = "Asia/Kolkata",
             return None
         return sorted(positive.items(), key=lambda item: (-item[1]["score"] if isinstance(item[1], dict) else -item[1], item[0]))[0][0]
 
-    timestamp_column = best(time_scores)
+    timestamp_column = timestamp_column if (timestamp_column and timestamp_column in frame.columns) else best(time_scores)
     entity_column = best(entity_scores)
+    # A precomputed target/label column (`Target_Next_Hour_*`, `Next_Demand`, `Label_*`) describes the
+    # answer, not the series. If the file also carries a plain series column, the label column is
+    # excluded from being the demand measure - so the supervised target is then rebuilt from the series
+    # under the project's verification rule rather than inherited from a name.
+    target_shaped = [key for key in demand_scores
+                      if any(token in _norm(key) for token in TARGET_SHAPE_PATTERN)]
+    if target_shaped and any(key not in target_shaped and not value["disqualifiers"]
+                             for key, value in demand_scores.items()):
+        for key in target_shaped:
+            demand_scores[key]["disqualifiers"].append(
+                "is a precomputed target/label column, so it describes the answer rather than the demand series")
     eligible_demand = {key: value for key, value in demand_scores.items() if not value["disqualifiers"]}
     demand_column = best(eligible_demand) if eligible_demand else None
     # Ambiguity is a near-tie, not merely the existence of other numeric columns: a column that
@@ -253,9 +291,13 @@ def profile_dataset(frame: pd.DataFrame, *, timezone: str = "Asia/Kolkata",
     if entity_column:
         # Hard requirement: exactly one label per entity key. The header only breaks ties.
         entity_cardinality = int(report[entity_column]["distinct"])
+        provenance_like = re.compile(r"^(data_type|source_type|provenance|is_\w+|.*_flag)$")
         labels = [column for column in report
-                  if column != entity_column and 1 <= report[column]["distinct"] <= max(2, int(1.4 * entity_cardinality))
-                  and report[column]["numeric_share"] < 0.5]
+                  if column != entity_column and 2 <= report[column]["distinct"]
+                  and int(entity_cardinality) * (0.5 if entity_cardinality > 3 else 1)
+                  <= report[column]["distinct"] <= max(2, int(1.4 * entity_cardinality))
+                  and report[column]["numeric_share"] < 0.5
+                  and not provenance_like.match(_norm(column))]
         scored = []
         for candidate in labels:
             pairs = frame[[entity_column, candidate]].dropna()

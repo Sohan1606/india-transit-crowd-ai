@@ -161,6 +161,36 @@ main { display: block; }
 .select-caret { position: absolute; right: 12px; color: #858b7e; font-size: 14px; pointer-events: none; }
 .form-split { display: grid; grid-template-columns: 1.03fr .97fr; gap: 12px; }
 .form-split .field-label { margin-top: 20px; }
+.entity-cascade {
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 14px;
+  padding: 0.85rem 0.9rem 0.6rem;
+  margin: 0.35rem 0 0.75rem;
+  background: rgb(255 255 255 / 3%);
+}
+.cascade-levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 0.65rem 0.75rem;
+}
+.cascade-level select { width: 100%; }
+.entity-cascade .form-hint { margin: 0.55rem 0 0; }
+.towards-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(180px, 1.4fr);
+  gap: 0.75rem;
+  align-items: end;
+  margin-top: 0.55rem;
+}
+.towards-note {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-dim, rgb(255 255 255 / 62%));
+}
+@media (max-width: 720px) {
+  .towards-row { grid-template-columns: 1fr; }
+}
 .form-hint { display: flex; align-items: center; gap: 7px; margin: 12px 0 20px; color: #70776a; font-size: 9px; line-height: 1.5; }
 .form-hint-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--acid); }
 .predict-button { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 50px; padding: 0 15px 0 17px; border: 1px solid var(--acid); background: var(--acid); color: var(--ink); cursor: pointer; font-size: 9px; font-weight: 800; letter-spacing: .14em; transition: transform .2s, background .2s, color .2s; }
@@ -972,3 +1002,30 @@ main { display: block; }
 .alternative-day-list li span { color: #858980; }
 .alternative-day-list li em { font-style: normal; color: #c7ee7b; font-size: 10.5px; letter-spacing: .08em; }
 .alternative-day-list li small { grid-column: 1 / -1; color: #767b71; font-size: 10.5px; }
+
+/* Demonstration families: served, but never presentable as measurement. */
+.demo-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.45rem;
+  border: 1px solid rgba(244, 185, 66, 0.5);
+  color: #f4b942;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.demo-note {
+  margin: 0.75rem 0 0;
+  padding: 0.6rem 0.8rem;
+  border-left: 2px solid #f4b942;
+  background: rgba(244, 185, 66, 0.07);
+  color: #ecd9b0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.demo-note strong {
+  color: #f4b942;
+}

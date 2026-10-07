@@ -28,6 +28,7 @@ from ml.training.forecast import project_future
 def horizon_bands(daily: pd.DataFrame, *, history: pd.DataFrame, predict_fn: Callable[[pd.DataFrame], float],
                   start: pd.Timestamp, end: pd.Timestamp, timezone: str = "Asia/Kolkata",
                   min_history_days: int = 28, entities: list[str] | None = None,
+                  max_entities: int | None = None,
                   max_horizon: int = 45) -> dict[str, Any]:
     """Recursive multi-day projection error per horizon, measured on held-out validation days."""
     start, end = pd.Timestamp(start), pd.Timestamp(end)
@@ -46,7 +47,16 @@ def horizon_bands(daily: pd.DataFrame, *, history: pd.DataFrame, predict_fn: Cal
     target_dispersion = float(targets.std()) if len(targets) > 2 else dispersion
     rows: list[dict[str, float]] = []
     failures = 0
-    for entity_id in (entities if entities is not None else sorted(truth.index.get_level_values(0).unique())):
+    universe = sorted(entities if entities is not None else truth.index.get_level_values(0).unique())
+    # A family with two thousand entities does not need two thousand recursive projections to
+    # establish how error grows with horizon; every tenth entity, evenly spaced, measures the same
+    # curve - and the sample is reported so the evidence is never overstated.
+    sampled = universe
+    if max_entities is not None and len(universe) > int(max_entities):
+        positions = np.linspace(0, len(universe) - 1, int(max_entities), dtype=int)
+        sampled = sorted({universe[int(position)] for position in positions})
+    entities_note = {"entities_total": len(universe), "entities_sampled": len(sampled)}
+    for entity_id in sampled:
         entity_history = history.loc[history["entity_id"].astype(str).eq(str(entity_id))]
         if entity_history.empty:
             continue
@@ -111,6 +121,8 @@ def horizon_bands(daily: pd.DataFrame, *, history: pd.DataFrame, predict_fn: Cal
         "evaluation_window": {"start": str(pd.Timestamp(start).date()), "end": str(end.date()),
                               "days": int((pd.Timestamp(end).normalize() - pd.Timestamp(start).normalize()).days + 1)},
         "evaluated_pairs": int(len(frame)), "entities": int(frame["entity_id"].nunique()),
+        **({"entities_total": entities_note["entities_total"],
+            "entities_sampled": entities_note["entities_sampled"]} if entities_note else {}),
         "entities_unprojectable": int(failures),
         "reference_dispersion": {
             "validation_target_standard_deviation": round(float(target_dispersion), 4) if np.isfinite(target_dispersion) else None,

@@ -228,8 +228,20 @@ but carry `horizon_status: "beyond_validated_range"` with the widest measured ba
 
 ## Registering another dataset
 
-The pipeline is not hard-wired to these two systems. `scripts/register_demand_dataset.py` profiles any
-candidate CSV (column roles decided from data characteristics, observation period measured from timestamp
+The pipeline is not hard-wired to these two systems. `scripts/audit_demand_dataset.py` audits any supplied CSV
+first (inventory, measured grid and time slots, duplicates, and whether a precomputed `Target_*` column really
+reproduces next-period demand - if it does not, it is ignored as ground truth). Then
+A registered family also carries a serving mode: `production` for verified observed data, `demo` for a
+dataset that admits it is synthetic (served, so the demonstration runs, with `SYNTHETIC DEMONSTRATION
+DATA` / `NOT LIVE PASSENGER RIDERSHIP` on every answer and its metrics marked demonstration-only), and
+**Mumbai is integrated under `demo`:** both supplied files were audited row by row, their
+`Target_Next_Hour_Passengers` columns were found not to describe next-hour demand (2.7 % and 1.1-2.0 %
+agreement with the chronological series) and are ignored as ground truth, and the two families are served
+with a synthetic disclosure on every response. See [docs/mumbai-local-dataset.md](docs/mumbai-local-dataset.md)
+and [docs/mumbai-metro-dataset.md](docs/mumbai-metro-dataset.md) for the audit-before-integration rule that
+any supplied file - including the Mumbai Local and Mumbai Metro files - is subject to.
+
+`scripts/register_demand_dataset.py` profiles any candidate CSV (column roles decided from data characteristics, observation period measured from timestamp
 spacing), normalizes it to the canonical schema, runs the same ten-criterion gate and - only on a clean
 pass - writes a model-family entry and trains it offline. Ambiguous targets, synthetic or modelled
 columns, and a granularity that contradicts the data are refused with reasons. See
@@ -253,3 +265,27 @@ columns, and a granularity that contradicts the data are refused with reasons. S
 - [`docs/viva-notes.md`](docs/viva-notes.md) — presentation notes and likely questions.
 - [`docs/migration.md`](docs/migration.md) — preserved/modified/removed/added migration record.
 - [`FINAL_HANDOFF.md`](FINAL_HANDOFF.md) — final checks and packaging handoff.
+
+## Training on your own GPU
+
+`docs/gpu-training.md` is the whole procedure (Windows PowerShell and bash). Nothing in it requires editing a
+Python file: GPU use is selected by installing `backend/requirements-gpu.txt` and setting
+`TRANSITCROWD_XGB_DEVICE=cuda`, after `python scripts/check_gpu.py` proves the wheel can drive the card.
+`scripts/windows_gpu_training.ps1` runs the sequence end to end and finishes by measuring inference latency.
+
+## Deployment notes
+
+- The container and Render config no longer pin one model or one dataset. `backend/app/main.py` builds one
+  service per family listed in `data/registry/model_families.json`, so an added family needs a registry entry and
+  its data - not a Dockerfile edit - and a family with missing artifacts degrades alone instead of emptying the API.
+- Serving reads small files: `data/processed` for Bengaluru and Chennai, and the committed gzip under
+  `data/inference` for families registered through the script (2.1 MB and 2.7 MB for the two Mumbai ones). The
+  79 MB and 149 MB source CSVs stay in Git LFS and are never packaged or parsed at startup.
+- The frontend is a Vite SPA; `frontend/vercel.json` builds it and rewrites to `index.html`. Set the project
+  environment variable **`VITE_API_BASE`** to the deployed API origin (for example
+  `https://india-transit-crowd-ai-api.onrender.com/api`); with it unset the app calls `/api` on its own origin,
+  which is what `docker-compose.yml` arranges with its nginx proxy. On Render, set `CORS_ORIGINS` to the
+  frontend origin.
+- Mumbai families are labelled demonstrations everywhere the label matters: `/api/metadata`, every prediction
+  response, the prediction panel, the reports and the docs. Training them on faster hardware does not change what
+  the data is.

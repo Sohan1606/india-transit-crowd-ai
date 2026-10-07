@@ -292,9 +292,14 @@ def list_systems(service=None, services: dict[str, Any] | None = None) -> list[d
     for item in items:
         system_id = item["system_id"]
         candidate = registry.get(system_id)
+        entry = _registry_entry(system_id)
+        item["served_as"] = entry.get("served_as")
+        item["dataset_class"] = entry.get("dataset_class")
         if candidate is None:
             item["station_count"] = None
             item["data_period"] = []
+            item["data_class"] = None
+            item["disclosure"] = None
             continue
         ready = bool(getattr(candidate, "ready", False) and getattr(candidate, "system_id", None) == system_id)
         item["prediction_available"] = ready
@@ -303,11 +308,91 @@ def list_systems(service=None, services: dict[str, Any] | None = None) -> list[d
             candidate.unavailable_detail or "Model artifacts and normalized observed-demand data are not loaded."
         )
         item["station_count"] = len(candidate.stations) if ready else None
-        item["granularity"] = "hour" if system_id == BMRCL_SYSTEM_ID else "day"
+        # Granularity comes from the registered family, not from a per-city branch: a newly
+        # registered 15-minute or day family must be reported as what it is.
+        item["granularity"] = str(entry.get("granularity") or ("hour" if system_id == BMRCL_SYSTEM_ID else "day"))
+        provenance = getattr(candidate, "_provenance", None)
+        flags = dict(provenance()) if callable(provenance) else {}
+        item["data_class"] = flags.get("data_class") or entry.get("data_class")
+        item["disclosure"] = flags.get("disclosure")
+        item["metrics_are_demonstration_only"] = bool(flags.get("metrics_are_demonstration_only"))
         item["data_period"] = candidate.metadata()["dataset"].get("source_periods", []) if ready else []
+    listed = {str(item["system_id"]) for item in items}
+    try:
+        from ml.training.registry import serving_families
+    except ImportError:  # pragma: no cover - the registry is part of this repository
+        return items
+    for system_id, family in sorted(serving_families().items()):
+        if system_id in listed:
+            continue
+        item = _registry_only_item(system_id, dict(family), registry.get(system_id))
+        if item["prediction_available"] or system_id in registry:
+            items.append(item)
+            listed.add(system_id)
     return items
+
+
+def _registry_only_item(system_id: str, family: dict[str, Any], candidate: Any) -> dict[str, Any]:
+    """A catalog entry for a served family the hand-written candidate list never described.
+
+    Discovery follows registration. When a family has been verified enough to serve, it has to appear in
+    ``GET /api/systems`` with its own granularity, mode, operator and disclosure - otherwise a client has
+    no way to learn that it exists, and the only way to use a new city would be to edit this file too.
+    Nothing here knows which city that is: every field comes from the registry entry and the loaded service.
+    """
+    ready = bool(candidate is not None and getattr(candidate, "ready", False))
+    metadata = candidate.metadata() if (ready and hasattr(candidate, "metadata")) else {}
+    dataset = metadata.get("dataset", {}) if isinstance(metadata, dict) else {}
+    provenance = getattr(candidate, "_provenance", None) if candidate is not None else None
+    flags = dict(provenance()) if callable(provenance) else {}
+    granularity = str(family.get("granularity") or "day")
+    statement = str(family.get("provenance_statement") or dataset.get("provenance_statement") or "")
+    return {
+        "system_id": system_id,
+        "system_name": str(family.get("system_name")
+                           or f"{family.get('city', '')} {family.get('operator', '')} {granularity}".strip()),
+        "city": str(family.get("city") or ""), "state": str(family.get("state") or "not recorded"),
+        "mode": str(family.get("mode") or ""), "operator": str(family.get("operator") or ""),
+        "prediction_available": ready,
+        "prediction_status": "AVAILABLE" if ready else "UNAVAILABLE_ARTIFACT_OR_DATA_NOT_READY",
+        "prediction_unavailable_reason": None if ready else (getattr(candidate, "unavailable_detail", None)
+                                                             or "Model artifacts or the normalized data are not loaded."),
+        "observed_demand_status": statement or (f"Registered model family ({family.get('dataset_class')}); "
+                                                "its dataset sidecar carries the provenance."),
+        "demand_source_url": dataset.get("source_url"),
+        "network_reference_url": dataset.get("source_url"),
+        "network_reference_kind": "registered demand dataset sidecar; no separate network reference is bundled",
+        "network_reference_note": ("The dataset's own columns describe its network (lines, stations, order and "
+                                   "published slots). Nothing in this project invents a route map, coordinates or "
+                                   "a timetable for a family whose file does not contain them."),
+        "granularity": granularity if granularity in ("hour", "day") else None,
+        "served_as": family.get("served_as"), "dataset_class": family.get("dataset_class"),
+        "data_class": flags.get("data_class") or family.get("data_class"),
+        "disclosure": flags.get("disclosure"),
+        "metrics_are_demonstration_only": bool(flags.get("metrics_are_demonstration_only")),
+        "station_count": (len(candidate.stations) if hasattr(candidate, "stations") else None) if ready else None,
+        "data_period": dataset.get("source_periods", []) if ready else [],
+    }
+
+
+def _registry_entry(system_id: str) -> dict[str, Any]:
+    """The registered family for a system, if any - the only source of granularity and serving mode."""
+    try:
+        from ml.training.registry import MODEL_FAMILIES
+        return dict(MODEL_FAMILIES.get(str(system_id), {}))
+    except (ImportError, ValueError):
+        return {}
 
 
 def known_system(system_id: str) -> dict[str, Any] | None:
     item = SYSTEM_CATALOG.get(str(system_id))
-    return deepcopy(item) if item else None
+    if item is not None:
+        return deepcopy(item)
+    # A registered, served family is a known system even when the candidate list predates it.
+    entry = _registry_entry(system_id)
+    if not entry:
+        return None
+    from ml.training.registry import effective_served_as
+    if effective_served_as(entry) == "internal":
+        return None
+    return _registry_only_item(str(system_id), entry, None)

@@ -65,7 +65,7 @@ any compatible CSV -> profile (ml/data_pipeline/profile.py)   column roles + mea
 A registered family carries its own `granularity`, `period_seconds`, `target`, `measure`,
 `dataset_relative_path` and `metadata_relative_path`, so the API routes a request to the right service
 by family metadata (`backend/app/api/routes.py::_granularity`) rather than by a per-city branch.
-`development_only: true` families are loaded by the tooling and skipped by
+`served_as` decides who may answer a request: `production` (verified observed data), `demo` (a family whose data is not observed ground truth — it *is* served, because a demonstration has to run to be useful, and every response carries `data_class: synthetic_development` plus the disclosure sentence, with `metrics_are_demonstration_only: true` so no metric can be read as real-world accuracy) and `internal` (`development_only: true`, loaded by the tooling and skipped by
 `backend/app/main.py::_build_services`, so a synthetic family can exist in a development checkout
 without ever becoming answerable.
 

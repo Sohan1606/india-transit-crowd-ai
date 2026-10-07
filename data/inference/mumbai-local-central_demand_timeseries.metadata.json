@@ -1,0 +1,835 @@
+{
+  "system_id": "mumbai-local-central",
+  "generated_at_utc": "2026-10-07T05:08:30+00:00",
+  "source_file": "data\\development\\synthetic\\mumbai_local_all_central_stations_2026_synthetic-1.csv",
+  "source_title": "Central Railway observed passenger demand (synthetic_development)",
+  "source_url": "https://github.com/Sohan1606/india-transit-crowd-ai/tree/feature/future-demand-dataset/data/development/synthetic",
+  "upstream_commit": "01f8be4",
+  "source_sha256": "f54eb33127c3445ff32839a5ea9ae7a2be9fc164219b0c86a135fe85b653b831",
+  "normalized_sha256": "7317155cd12886feb859ce22f502d496e1f15387f2040dd418530a34285574fd",
+  "license": "Provided by the dataset owner for development use; not a public feed",
+  "license_note": null,
+  "redistribution": "Supplied private file; never redistributed. Regenerate with scripts/fetch_lfs_object.py.",
+  "provenance_statement": "Synthetic Central-suburb demand table supplied for development. Data_Type=Synthetic on per Line+station series. Served as a labelled demonstration family, never as live ridership.",
+  "observation_class": "synthetic_development",
+  "rows_excluded_as_unobserved_future": 109392,
+  "entity_attributes": {
+    "central-main-csmt": {
+      "Line": "Central Main",
+      "Source_Station": "CSMT",
+      "Station_Position": "0",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-masjid": {
+      "Line": "Central Main",
+      "Source_Station": "Masjid",
+      "Station_Position": "1",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-sandhurst-road": {
+      "Line": "Central Main",
+      "Source_Station": "Sandhurst Road",
+      "Station_Position": "2",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-byculla": {
+      "Line": "Central Main",
+      "Source_Station": "Byculla",
+      "Station_Position": "3",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-chinchpokli": {
+      "Line": "Central Main",
+      "Source_Station": "Chinchpokli",
+      "Station_Position": "4",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-currey-road": {
+      "Line": "Central Main",
+      "Source_Station": "Currey Road",
+      "Station_Position": "5",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-parel": {
+      "Line": "Central Main",
+      "Source_Station": "Parel",
+      "Station_Position": "6",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-dadar": {
+      "Line": "Central Main",
+      "Source_Station": "Dadar",
+      "Station_Position": "7",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-matunga": {
+      "Line": "Central Main",
+      "Source_Station": "Matunga",
+      "Station_Position": "8",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-sion": {
+      "Line": "Central Main",
+      "Source_Station": "Sion",
+      "Station_Position": "9",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-kurla": {
+      "Line": "Central Main",
+      "Source_Station": "Kurla",
+      "Station_Position": "10",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-vidyavihar": {
+      "Line": "Central Main",
+      "Source_Station": "Vidyavihar",
+      "Station_Position": "11",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-ghatkopar": {
+      "Line": "Central Main",
+      "Source_Station": "Ghatkopar",
+      "Station_Position": "12",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-vikhroli": {
+      "Line": "Central Main",
+      "Source_Station": "Vikhroli",
+      "Station_Position": "13",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-kanjurmarg": {
+      "Line": "Central Main",
+      "Source_Station": "Kanjurmarg",
+      "Station_Position": "14",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-bhandup": {
+      "Line": "Central Main",
+      "Source_Station": "Bhandup",
+      "Station_Position": "15",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-nahur": {
+      "Line": "Central Main",
+      "Source_Station": "Nahur",
+      "Station_Position": "16",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-mulund": {
+      "Line": "Central Main",
+      "Source_Station": "Mulund",
+      "Station_Position": "17",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-thane": {
+      "Line": "Central Main",
+      "Source_Station": "Thane",
+      "Station_Position": "18",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-kalwa": {
+      "Line": "Central Main",
+      "Source_Station": "Kalwa",
+      "Station_Position": "19",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-mumbra": {
+      "Line": "Central Main",
+      "Source_Station": "Mumbra",
+      "Station_Position": "20",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-diva": {
+      "Line": "Central Main",
+      "Source_Station": "Diva",
+      "Station_Position": "21",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-kopar": {
+      "Line": "Central Main",
+      "Source_Station": "Kopar",
+      "Station_Position": "22",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-dombivli": {
+      "Line": "Central Main",
+      "Source_Station": "Dombivli",
+      "Station_Position": "23",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-thakurli": {
+      "Line": "Central Main",
+      "Source_Station": "Thakurli",
+      "Station_Position": "24",
+      "Peak_Direction": "Mixed"
+    },
+    "central-main-kalyan": {
+      "Line": "Central Main",
+      "Source_Station": "Kalyan",
+      "Station_Position": "25",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-kalyan": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Kalyan",
+      "Station_Position": "0",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-shahad": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Shahad",
+      "Station_Position": "1",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-ambivli": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Ambivli",
+      "Station_Position": "2",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-titwala": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Titwala",
+      "Station_Position": "3",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-khadavli": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Khadavli",
+      "Station_Position": "4",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-vasind": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Vasind",
+      "Station_Position": "5",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-asangaon": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Asangaon",
+      "Station_Position": "6",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-atgaon": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Atgaon",
+      "Station_Position": "7",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-thansit": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Thansit",
+      "Station_Position": "8",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-khardi": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Khardi",
+      "Station_Position": "9",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-umbermali": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Umbermali",
+      "Station_Position": "10",
+      "Peak_Direction": "Mixed"
+    },
+    "central-kasara-branch-kasara": {
+      "Line": "Central Kasara Branch",
+      "Source_Station": "Kasara",
+      "Station_Position": "11",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-kalyan": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Kalyan",
+      "Station_Position": "0",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-vithalwadi": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Vithalwadi",
+      "Station_Position": "1",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-ulhasnagar": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Ulhasnagar",
+      "Station_Position": "2",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-ambernath": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Ambernath",
+      "Station_Position": "3",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-badlapur": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Badlapur",
+      "Station_Position": "4",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-vangani": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Vangani",
+      "Station_Position": "5",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-shelu": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Shelu",
+      "Station_Position": "6",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-neral": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Neral",
+      "Station_Position": "7",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-bhivpuri-road": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Bhivpuri Road",
+      "Station_Position": "8",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-karjat": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Karjat",
+      "Station_Position": "9",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-palasdari": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Palasdari",
+      "Station_Position": "10",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-kelavli": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Kelavli",
+      "Station_Position": "11",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-dolavli": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Dolavli",
+      "Station_Position": "12",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-lowjee": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Lowjee",
+      "Station_Position": "13",
+      "Peak_Direction": "Mixed"
+    },
+    "central-karjat-khopoli-branch-khopoli": {
+      "Line": "Central Karjat/Khopoli Branch",
+      "Source_Station": "Khopoli",
+      "Station_Position": "14",
+      "Peak_Direction": "Mixed"
+    }
+  },
+  "entity_hierarchy": [
+    {
+      "column": "Line",
+      "label": "Corridor"
+    },
+    {
+      "column": "Source_Station",
+      "label": "From"
+    }
+  ],
+  "route_context": {
+    "group_column": "Line",
+    "station_column": "Source_Station",
+    "position_column": "Station_Position",
+    "routes": {
+      "Central Karjat/Khopoli Branch": {
+        "ordered_stations": [
+          "Kalyan",
+          "Vithalwadi",
+          "Ulhasnagar",
+          "Ambernath",
+          "Badlapur",
+          "Vangani",
+          "Shelu",
+          "Neral",
+          "Bhivpuri Road",
+          "Karjat",
+          "Palasdari",
+          "Kelavli",
+          "Dolavli",
+          "Lowjee",
+          "Khopoli"
+        ],
+        "endpoints": [
+          "Kalyan",
+          "Khopoli"
+        ]
+      },
+      "Central Kasara Branch": {
+        "ordered_stations": [
+          "Kalyan",
+          "Shahad",
+          "Ambivli",
+          "Titwala",
+          "Khadavli",
+          "Vasind",
+          "Asangaon",
+          "Atgaon",
+          "Thansit",
+          "Khardi",
+          "Umbermali",
+          "Kasara"
+        ],
+        "endpoints": [
+          "Kalyan",
+          "Kasara"
+        ]
+      },
+      "Central Main": {
+        "ordered_stations": [
+          "CSMT",
+          "Masjid",
+          "Sandhurst Road",
+          "Byculla",
+          "Chinchpokli",
+          "Currey Road",
+          "Parel",
+          "Dadar",
+          "Matunga",
+          "Sion",
+          "Kurla",
+          "Vidyavihar",
+          "Ghatkopar",
+          "Vikhroli",
+          "Kanjurmarg",
+          "Bhandup",
+          "Nahur",
+          "Mulund",
+          "Thane",
+          "Kalwa",
+          "Mumbra",
+          "Diva",
+          "Kopar",
+          "Dombivli",
+          "Thakurli",
+          "Kalyan"
+        ],
+        "endpoints": [
+          "CSMT",
+          "Kalyan"
+        ]
+      }
+    },
+    "towards_for_entity": {
+      "central-main-csmt": [
+        "Towards Kalyan"
+      ],
+      "central-main-masjid": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-sandhurst-road": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-byculla": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-chinchpokli": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-currey-road": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-parel": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-dadar": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-matunga": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-sion": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-kurla": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-vidyavihar": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-ghatkopar": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-vikhroli": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-kanjurmarg": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-bhandup": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-nahur": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-mulund": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-thane": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-kalwa": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-mumbra": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-diva": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-kopar": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-dombivli": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-thakurli": [
+        "Towards CSMT",
+        "Towards Kalyan"
+      ],
+      "central-main-kalyan": [
+        "Towards CSMT"
+      ],
+      "central-kasara-branch-kalyan": [
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-shahad": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-ambivli": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-titwala": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-khadavli": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-vasind": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-asangaon": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-atgaon": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-thansit": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-khardi": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-umbermali": [
+        "Towards Kalyan",
+        "Towards Kasara"
+      ],
+      "central-kasara-branch-kasara": [
+        "Towards Kalyan"
+      ],
+      "central-karjat-khopoli-branch-kalyan": [
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-vithalwadi": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-ulhasnagar": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-ambernath": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-badlapur": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-vangani": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-shelu": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-neral": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-bhivpuri-road": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-karjat": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-palasdari": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-kelavli": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-dolavli": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-lowjee": [
+        "Towards Kalyan",
+        "Towards Khopoli"
+      ],
+      "central-karjat-khopoli-branch-khopoli": [
+        "Towards Kalyan"
+      ]
+    },
+    "towards_kind": "route context derived from station ordering; this dataset publishes no destination-specific passenger counts, so no directional demand figure is claimed"
+  },
+  "granularity": "hour",
+  "period_seconds": 3600,
+  "timezone": "Asia/Kolkata",
+  "measure": "passengers_per_hour",
+  "column_mapping": {
+    "timestamp": "_composed_timestamp",
+    "entity": "Source_Station",
+    "demand": "Estimated_Passenger_Count",
+    "entity_name": "Source_Station"
+  },
+  "profiler_scores": {
+    "timestamp": {
+      "Record_ID": 0.4583,
+      "Date": 1.0,
+      "Time": 0.6583,
+      "Day_Number": 0.5583,
+      "Is_Weekend": 0.4583,
+      "Month": 0.4583,
+      "Is_Indian_Holiday": 0.5583,
+      "Station_Position": 0.4583,
+      "Stations_On_Route": 0.4583,
+      "Rainfall_mm": 0.4583,
+      "Temperature_C": 0.4583,
+      "Train_Capacity": 0.4583,
+      "Estimated_Passenger_Count": 0.4583,
+      "Capacity_Utilization_Pct": 0.4583,
+      "Target_Next_Hour_Passengers": 0.5583,
+      "_composed_timestamp": 0.9
+    },
+    "entity": {
+      "Record_ID": -1.0,
+      "Date": 0.8498,
+      "Time": 0.85,
+      "Day_of_Week": 0.85,
+      "Day_Number": 0.75,
+      "Is_Weekend": 0.75,
+      "Month": 0.75,
+      "Season": 0.85,
+      "Is_Indian_Holiday": 0.9,
+      "Source_Station": 1.0,
+      "Line": 0.85,
+      "Station_Position": 0.9,
+      "Stations_On_Route": 0.9,
+      "Peak_Period": 0.85,
+      "Peak_Direction": 0.85,
+      "Rainfall_mm": 0.7499,
+      "Temperature_C": 0.7498,
+      "Estimated_Passenger_Count": 0.7414,
+      "Capacity_Utilization_Pct": 0.7414,
+      "Crowd_Density": 0.85,
+      "Target_Next_Hour_Passengers": 0.7413,
+      "Target_Next_Hour_Crowd": 0.85,
+      "_composed_timestamp": 0.8453
+    }
+  },
+  "ambiguous_demand_columns": [],
+  "measure_relations": {},
+  "timestamp_min": "2026-01-01 00:00:00+05:30",
+  "timestamp_max": "2026-10-06 23:00:00+05:30",
+  "unique_days": 279,
+  "observed_rows": 354888,
+  "station_count": 53,
+  "station_ids": [
+    "central-karjat-khopoli-branch-ambernath",
+    "central-karjat-khopoli-branch-badlapur",
+    "central-karjat-khopoli-branch-bhivpuri-road",
+    "central-karjat-khopoli-branch-dolavli",
+    "central-karjat-khopoli-branch-kalyan",
+    "central-karjat-khopoli-branch-karjat",
+    "central-karjat-khopoli-branch-kelavli",
+    "central-karjat-khopoli-branch-khopoli",
+    "central-karjat-khopoli-branch-lowjee",
+    "central-karjat-khopoli-branch-neral",
+    "central-karjat-khopoli-branch-palasdari",
+    "central-karjat-khopoli-branch-shelu",
+    "central-karjat-khopoli-branch-ulhasnagar",
+    "central-karjat-khopoli-branch-vangani",
+    "central-karjat-khopoli-branch-vithalwadi",
+    "central-kasara-branch-ambivli",
+    "central-kasara-branch-asangaon",
+    "central-kasara-branch-atgaon",
+    "central-kasara-branch-kalyan",
+    "central-kasara-branch-kasara",
+    "central-kasara-branch-khadavli",
+    "central-kasara-branch-khardi",
+    "central-kasara-branch-shahad",
+    "central-kasara-branch-thansit",
+    "central-kasara-branch-titwala",
+    "central-kasara-branch-umbermali",
+    "central-kasara-branch-vasind",
+    "central-main-bhandup",
+    "central-main-byculla",
+    "central-main-chinchpokli",
+    "central-main-csmt",
+    "central-main-currey-road",
+    "central-main-dadar",
+    "central-main-diva",
+    "central-main-dombivli",
+    "central-main-ghatkopar",
+    "central-main-kalwa",
+    "central-main-kalyan",
+    "central-main-kanjurmarg",
+    "central-main-kopar",
+    "central-main-kurla",
+    "central-main-masjid",
+    "central-main-matunga",
+    "central-main-mulund",
+    "central-main-mumbra",
+    "central-main-nahur",
+    "central-main-parel",
+    "central-main-sandhurst-road",
+    "central-main-sion",
+    "central-main-thakurli",
+    "central-main-thane",
+    "central-main-vidyavihar",
+    "central-main-vikhroli"
+  ],
+  "station_names": {
+    "central-karjat-khopoli-branch-ambernath": "Ambernath",
+    "central-karjat-khopoli-branch-badlapur": "Badlapur",
+    "central-karjat-khopoli-branch-bhivpuri-road": "Bhivpuri Road",
+    "central-karjat-khopoli-branch-dolavli": "Dolavli",
+    "central-karjat-khopoli-branch-kalyan": "Kalyan",
+    "central-karjat-khopoli-branch-karjat": "Karjat",
+    "central-karjat-khopoli-branch-kelavli": "Kelavli",
+    "central-karjat-khopoli-branch-khopoli": "Khopoli",
+    "central-karjat-khopoli-branch-lowjee": "Lowjee",
+    "central-karjat-khopoli-branch-neral": "Neral",
+    "central-karjat-khopoli-branch-palasdari": "Palasdari",
+    "central-karjat-khopoli-branch-shelu": "Shelu",
+    "central-karjat-khopoli-branch-ulhasnagar": "Ulhasnagar",
+    "central-karjat-khopoli-branch-vangani": "Vangani",
+    "central-karjat-khopoli-branch-vithalwadi": "Vithalwadi",
+    "central-kasara-branch-ambivli": "Ambivli",
+    "central-kasara-branch-asangaon": "Asangaon",
+    "central-kasara-branch-atgaon": "Atgaon",
+    "central-kasara-branch-kalyan": "Kalyan",
+    "central-kasara-branch-kasara": "Kasara",
+    "central-kasara-branch-khadavli": "Khadavli",
+    "central-kasara-branch-khardi": "Khardi",
+    "central-kasara-branch-shahad": "Shahad",
+    "central-kasara-branch-thansit": "Thansit",
+    "central-kasara-branch-titwala": "Titwala",
+    "central-kasara-branch-umbermali": "Umbermali",
+    "central-kasara-branch-vasind": "Vasind",
+    "central-main-bhandup": "Bhandup",
+    "central-main-byculla": "Byculla",
+    "central-main-chinchpokli": "Chinchpokli",
+    "central-main-csmt": "CSMT",
+    "central-main-currey-road": "Currey Road",
+    "central-main-dadar": "Dadar",
+    "central-main-diva": "Diva",
+    "central-main-dombivli": "Dombivli",
+    "central-main-ghatkopar": "Ghatkopar",
+    "central-main-kalwa": "Kalwa",
+    "central-main-kalyan": "Kalyan",
+    "central-main-kanjurmarg": "Kanjurmarg",
+    "central-main-kopar": "Kopar",
+    "central-main-kurla": "Kurla",
+    "central-main-masjid": "Masjid",
+    "central-main-matunga": "Matunga",
+    "central-main-mulund": "Mulund",
+    "central-main-mumbra": "Mumbra",
+    "central-main-nahur": "Nahur",
+    "central-main-parel": "Parel",
+    "central-main-sandhurst-road": "Sandhurst Road",
+    "central-main-sion": "Sion",
+    "central-main-thakurli": "Thakurli",
+    "central-main-thane": "Thane",
+    "central-main-vidyavihar": "Vidyavihar",
+    "central-main-vikhroli": "Vikhroli"
+  },
+  "explicit_zero_observations": 0,
+  "missing_station_days_filled": 0,
+  "missing_hours_filled": 0,
+  "cleaning_report": {
+    "rows_in": 354888,
+    "rows_out": 354888,
+    "system_id": "mumbai-local-central",
+    "entity_count": 53,
+    "timestamp_min": "2026-01-01T00:00:00+05:30",
+    "timestamp_max": "2026-10-06T23:00:00+05:30",
+    "explicit_zero_observations": 0,
+    "missing_observations_filled": 0,
+    "timezone": "Asia/Kolkata"
+  },
+  "is_live": false,
+  "dataset_class": "synthetic_development",
+  "production_eligible": false,
+  "how_to_fetch": "python3 scripts/register_demand_dataset.py --csv <file> ... (this run)",
+  "normalized_gz_sha256": "66c2a315d00e1da755cf09f713f2ef5519f441577b5a96bc0e3e2ce93939ef8e",
+  "inference_copy": {
+    "dataset_relative_path": "data\\inference\\mumbai-local-central_demand_timeseries.csv.gz",
+    "rows": 354888,
+    "note": "gzip of the identical normalized file; the service verifies this container's own checksum, so a packaged family cannot silently drift from the rows it was trained on"
+  }
+}

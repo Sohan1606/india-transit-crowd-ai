@@ -2,7 +2,9 @@
 
 **Handoff date:** 2026-10-06 (Asia/Kolkata)  
 **Project:** `/home/user/repo` (git branch `feature/future-demand-dataset`)  
-**Delivered archive:** `/home/user/TransitCrowd-AI-INDIA-FINAL.zip`, built from the committed tree of this branch.  
+**Delivered archive (final pass):** `/home/user/India-Transit-Crowd-AI-FINAL-FUTURE-FORECAST.zip` - clean
+`git archive` of the branch tip, extract-verified. The earlier `/home/user/TransitCrowd-AI-INDIA-FINAL.zip` is
+superseded by it; both are built from committed state, neither contains uncommitted work.  
 **Delivery scope:** India-focused multimodal transit discovery; verified passenger-demand prediction is enabled for two gate-passed families — Bengaluru Namma Metro / BMRCL (station-hour) and **Chennai Metro / CMRL (station-day, added on this branch)**. Mumbai suburban rail carries a verified historical survey dataset and is deliberately **not** prediction-enabled.
 
 ## Executive handoff
@@ -267,9 +269,13 @@ The downloader checks the pinned archive checksum. Replacing the upstream revisi
   gate reports, `backend/requirements.txt`, `.gitignore`, README, four docs and this file.
   **Deleted:** nothing.
 - **Working tree:** clean (`git status --short` → 0 lines) at the time of packaging.
-- **Push status:** not pushed, and it cannot be pushed from this environment. `git remote -v` returns nothing,
-  `GITHUB_TOKEN`/`GH_TOKEN` are unset and the `gh` CLI is not installed, so the only available attempt failed with
-  `fatal: 'origin' does not appear to be a git repository`. From a machine with credentials:
+- **Remote:** `origin` was missing from `.git/config` (that file is excluded from workspace snapshots, not from the
+  project) and has been restored from the clone record: `https://github.com/Sohan1606/india-transit-crowd-ai.git`.
+  Anonymous read works - `git ls-remote --heads origin` returns `3abfe22… refs/heads/main`, which is the commit
+  `main` is still at.
+- **Push status: NOT pushed; it cannot be pushed from this environment.** `GITHUB_TOKEN`/`GH_TOKEN` are unset, there is
+  no `~/.ssh`, no credential helper, and the `gh` CLI is not installed. The exact failure is:
+  `fatal: could not read Username for 'https://github.com': terminal prompts disabled`. From a machine with credentials:
   `git remote add origin https://github.com/<owner>/india-transit-crowd-ai && git push -u origin feature/future-demand-dataset`.
   Nothing else about this delivery depends on that push; the code, artifacts, tests and docs are all in the branch and in the ZIP.
 - **Archive:** `/home/user/TransitCrowd-AI-INDIA-FINAL.zip` (16.4 MB, 129 files) built with
@@ -283,6 +289,127 @@ The downloader checks the pinned archive checksum. Replacing the upstream revisi
   redistributed (run `scripts/download_cmrl_data.py` then `scripts/prepare_chennai_data.py`, and `--refresh-only`
   retraining is not needed: the saved artifacts ship).
 
+## Pre-registration audit tooling (added on this pass)
+
+`ml/data_pipeline/audit.py` + `scripts/audit_demand_dataset.py` (also reachable as
+`register_demand_dataset.py --print-audit`) produce the verified fact sheet any supplied file needs
+before a line of integration code is written: inventory, self-declared provenance class, measured
+timestamp grid, the clock times that actually exist, entity coverage and holes, duplicate-key
+structure, demand-target candidates, what each corridor/line/direction column does to the rows, and a
+verdict on every precomputed `Target_*` column - `CONSISTENT`, `PARTIALLY_CONSISTENT`,
+`INCONSISTENT` or `UNVERIFIABLE`, each with the alignment evidence behind it. It is read-only and
+idempotent, covered by `backend/tests/test_dataset_audit.py` (10 tests), and it is the tool that must
+be run on the Mumbai Local / Mumbai Metro files before their structure is asserted anywhere.
+
+## Mumbai integration pass - audited, integrated, served as demonstrations
+
+The three supplied files are now in the repository history (`origin/feature/future-demand-dataset`,
+commit `01f8be4`, stored through Git LFS) and were materialised with `scripts/fetch_lfs_object.py`, which
+verifies each object against the pointer's size and sha256 before replacing it. Both large files matched
+byte for byte: `f54eb33127c3…` 78,945,924 bytes for the Local table and `8d9db473…` 148,837,459 bytes for
+the Metro table. `git lfs` itself is not installed in this environment, so the batch-API fetch script is
+the supported path here and is committed for that reason.
+
+The audit ran on the real bytes (`scripts/audit_demand_dataset.py --low-memory`, whose categorical
+low-memory reader is now safe for timestamp candidates) and it changed the integration:
+
+* **Mumbai Local** - 464,280 rows × 26 columns = 53 (corridor, station) series × 365 days × 24 hourly
+  labels, exact grid, no duplicates. Three corridors only (`Central Main` 26 stations, `Central Kasara
+  Branch` 15, `Central Karjat/Khopoli Branch` 12); 51 distinct stations, so two are interchanges appearing
+  on more than one corridor - which is why the entity key is the pair, never the station alone.
+  `Data_Type = Synthetic` on every row; `Train_Capacity` is the constant 8200.
+* **Its `Target_Next_Hour_Passengers` column is not next-hour demand.** Against the chronological series
+  with the correct grouping it reproduces 2.74 % of values (median absolute error 677 passengers), no
+  offset from +1 h to +24 h does better than 2.2 %, and the correlation of 0.837 is what makes it dangerous
+  rather than harmless. `Target_Next_Hour_Crowd` holds band labels. Both are ignored as ground truth and the
+  target is derived from `Estimated_Passenger_Count` shifted one hour per series. For the record, the first
+  row of `CSMT / Central Main` reads demand 2842 at 00:00 and 2227 at 01:00 while its "next hour" target
+  says 2151.
+* **Mumbai Metro** - 683,280 rows × 27 columns = 312 direction-segmented (line, origin, destination) series
+  × 6 published slots (08:00, 09:00, 13:00, 16:00, 18:00, 20:00 - verified as exactly six distinct values)
+  × 365 days, zero duplicate rows. The slot grid is not continuous, so the family is registered at day
+  granularity with the slot inside the series identity: a forecast is "the same slot of a later day", and a
+  slot the file never published is refused rather than interpolated. Its `Travel_Direction` equals
+  "Source -> Destination" on every row and all 312 pairs agree with the station reference's ordering, so a
+  direction-aware structure is justified by the data; the reference file itself holds 168 rows, 12 lines,
+  164 stations and six `Operational_Status` values (69 stations Operational, 60 Under Construction, 20
+  Under Construction / Partial, 8 Operational / Phase-wise, 6 Under Development, 5 Planned / Under
+  Development), which the API publishes per entity so a reader can see that most of that network is not
+  open. Its target column failed the same test (1.1-2.0 % agreement).
+* **What the audits forced into the shared code**, in each case as a rule for any file of that shape:
+  `--timestamp-columns Date,Time` (a file may split the moment across columns; the joined value is what the
+  grid is measured from); label-shaped columns are no longer eligible to be the demand *series*; a
+  constant or provenance column can no longer win the entity-name role; a caller-forced timestamp column
+  re-measures the grid instead of contradicting it; `--exclude-unobserved-future` refuses to train on rows
+  dated today or later (which is what makes `genuine_future_test_period_exists` true rather than a formality,
+  and the frontier is now compared as calendar days so hourly and daily files are treated alike);
+  `--entity-attribute-columns` / `--entity-hierarchy-columns` publish what each series is, and
+  `--fit-window-days` bounds the *fit* while leaving the served history complete; a wide family's entity
+  column is encoded ordinally because densifying 1,872 one-hot columns asked for 2.74 GiB and scanning them
+  at every tree split is not trainable; and the horizon scan samples entities evenly (80 of 1,872) instead
+  of projecting every series 55 days.
+* **Discovery follows registration**: `backend/app/catalog.py` synthesizes the systems-list entry for a
+  served family that the hand-written candidate table never described, so a registered family is discoverable
+  without editing a Python list, and `known_system` recognises it too. This is what made the two Mumbai
+  families visible after they were registered; before it they were answerable but invisible.
+* **Model limitations are generated** by `ml/training/limitations.py` from the family's own record. Both
+  trainers had hard-coded caveat lists - the day trainer was asserting "Target is CMRL station entries per
+  day" about a Mumbai file and the hourly one was reasserting Bengaluru's 2025 snapshot gap - so an artifact
+  could carry prose about the wrong city. `scripts/refresh_family_reports.py` rewrites that text into
+  existing reports without refitting anything.
+
+Architecture work that does not depend on the files is complete and tested:
+
+* **serving modes** - `ml/training/registry.py` gained `served_as: production | demo | internal`, with
+  `effective_served_as` keeping pre-existing `development_only` entries unserved. `demo` is a real third
+  state: a synthetic family is *served*, because a demonstration that cannot run demonstrates nothing, while
+  `data_class: synthetic_development` plus the disclosure sentence travel on every answer and metadata sets
+  `metrics_are_demonstration_only: true`. A `PredictionResponse` for a verified family carries
+  `disclosure: null`, which is what makes the label mean something.
+* **registration** - `scripts/register_demand_dataset.py --serve-as {auto,production,demo,internal}`. The gate
+  stays a conjunction; for `demo` the only tolerated failure is `target_values_are_actual_observations`, and a
+  file that passes even that is told to register as production instead of hiding behind a demo label.
+  Registering a synthetic family as `production` is refused.
+* **provenance inside the artifact** - `ml/training/train_daily.py` writes `served_as`, `dataset_class` and
+  `supported_time_slots` into the bundle, so labels survive a load with no registry file present, and an older
+  bundle falls back to its registry entry rather than defaulting to "verified".
+* **supported-time governance** - `backend/app/inference/service.py` raises `UnsupportedTimeSlot` (409, listing
+  the supported clock times) for an hour the family never observed; a complete hourly family and a bundle
+  without the field stay unrestricted, so Bengaluru is unchanged.
+* **API surface** - `PredictionResponse` gained `data_class`/`disclosure`; `SystemItem` gained
+  `served_as`, `dataset_class`, `data_class`, `disclosure`, `metrics_are_demonstration_only`; `/api/metadata`
+  gained those plus `supported_time_note`. `backend/app/catalog.py` now takes granularity from the registered
+  family instead of `if system_id == BMRCL_SYSTEM_ID`, so any third family reports its own resolution.
+* **frontend** - the demo banner (`SYNTHETIC DEMONSTRATION DATA` / `NOT LIVE PASSENGER RIDERSHIP`), the
+  per-answer disclosure line and a `synthetic demo` chip on the system card are driven by
+  `metadata.served_as` / `result.disclosure`; the hour dropdown is built from `supported_time_slots` when the
+  family is slot-limited. No Mumbai-specific branch was added anywhere in the UI.
+
+Packaging and extraction check (this pass): `git archive` produced
+`/home/user/India-Transit-Crowd-AI-FINAL-FUTURE-FORECAST.zip` (136 files, 16.0 MB) from the committed tree -
+no `.git`, no `node_modules`, no caches, no build output, no secrets, and none of the operator-copyrighted
+CMRL CSVs (only the ODbL-pinned BMRCL source snapshot and the license notices ship). It was extracted to a
+clean directory and verified there: backend **87 passed, 1 skipped** (the skip is the non-redistributed
+Mumbai source PDF), `npx tsc -b` clean, frontend **23 passed** after `npm install`, `/api/systems` reports
+both families with `served_as: production` and `data_class: verified_observed`, a Bengaluru prediction returns
+`predicted_boardings 2026.11` with `actual_observed_demand 2048.0` and `absolute_error 21.889`, and the audit
+CLI runs against the shipped dataset. The committed `data/registry/model_families.json` is read by the app in
+that extraction, which is what makes registered families survive packaging.
+
+Verification for this pass: backend **87 passed** (`test_dataset_audit.py` 10 + `test_synthetic_demo_family.py`
+12 on top of the previous 65), frontend **23 passed**, `npx tsc -b` clean, `npm run build` OK. The demo test
+trains the real day pipeline on a clearly-labelled generated fixture and asserts the whole chain (bundle
+carries the mode -> metadata stamps it -> every answer carries the disclosure -> the answer is still a
+persisted-model forecast with `actual_observed_demand: null`). The same fixture carries one honest and one
+fabricated precomputed target column; the test asserts the audit accepts the first and rejects the second.
+
+Still blocked on the files: Mumbai Local/Metro ingestion, reference-driven `FROM -> TOWARDS` selection, the
+`mumbai-local-central` and `mumbai-metro` registrations, their horizon policies and forecasts, and the
+request's Mumbai scenario tests. One design item is already identified for the slot-based Metro file: the
+recurring time slot must enter the composite entity key (`--entity-key-columns ...,<slot column>`) so a
+six-slot day is modelled as day x slot instead of a broken hourly series - decided against the real file, not
+guessed at.
+
 ## Limits to carry into a presentation
 
 - **Chennai is 8.4 months of data.** 255 days carry weekly seasonality and holidays but no annual cycle; one day of publication lag is permanent unless the collector keeps running; every station currently uses system-level risk cuts (`system_training_fallback`) because per-entity thresholds need 500 targets and each entity has 227.
@@ -294,3 +421,74 @@ The downloader checks the pinned archive checksum. Replacing the upstream revisi
 - Boardings are station entry counts, not the number onboard a train. No capacity/occupancy field, delay, disruption, weather, event or current timetable input is joined to the model.
 - Recursive projection is bounded to 336 hours from a station’s latest source frontier and error can compound. No calibrated uncertainty interval is available.
 - GTFS and other network/schedule data must not be described as ridership. Do not claim India-wide prediction, live vehicles, real-time crowding, safety ratings or availability of unsupported model families.
+
+## Final gap-closure pass (2026-10-07)
+
+Closed the gaps the earlier handoff left open, and verified each one by running it rather than describing it.
+
+- **Portability.** The registry no longer points into git-ignored `data/development/`. Each family registered
+  through the script now also publishes a compressed inference copy under `data/inference/`
+  (`mumbai-local-central…csv.gz` 2,089,076 B / 354,888 rows, `mumbai-metro…csv.gz` 2,710,328 B / 522,288 rows)
+  plus its sidecar, and the registry entry points at those; `training_dataset_relative_path` still names the
+  development file for audit. The sidecar records `normalized_gz_sha256` and each service verifies the checksum of
+  whichever container it actually loaded. `test_registered_family_paths_resolve_inside_the_repository` fails if a
+  registry path ever stops resolving.
+- **Mumbai journey UX.** Corridors, station order and endpoints are derived from `Station_Position` within `Line`
+  at registration (3 corridors, 51 stations, 53 TOWARDS sets; Kalyan is the branch point at position 0 of both
+  branch corridors and an endpoint of Central Main, so it is offered `Towards CSMT` only). TOWARDS is context, is
+  labelled as such by `route_context.towards_kind`, and is not sent as a filter - the file has no
+  destination-specific counts and none were invented. Metro renders `Line → From → Towards → Time slot` from its
+  own key columns via `--entity-hierarchy-labels`, and the raw `Travel_Direction` string never reaches the picker.
+- **No dead parameters.** `PredictionRequest` is `extra="forbid"` with exactly four fields; there is no
+  `corridor_id`/`direction` half-implementation. `test_prediction_request_carries_no_unused_fields` pins it.
+- **Historical vs future, observed.** For the hourly family a past-frontier date returns
+  `forecast_kind = historical_replay` with Actual + Error; an unobserved date returns
+  `post_snapshot_projection` with `absolute_error = null`. For the day family, the same split with
+  `is_model_forecast`. A `target_hour` on a day family raises `GranularityMismatch`, and a slot the source does
+  not publish is refused naming the six it does. `backend/tests/test_mumbai_serving_contract.py` (6 tests) covers
+  all of this against the loaded services.
+- **Latency.** `scripts/benchmark_inference.py` (in `docs/gpu-training.md`): Local p50 1362 ms / p95 1532 ms,
+  Metro p50 1584 ms / p95 3250 ms on this CPU sandbox after a ~4 s cold load, artifact mtime unchanged throughout.
+- **Deploy.** `backend/Dockerfile` and `render.yaml` no longer pin Bengaluru's model, data and sidecar; the image
+  copies `data/registry`, `data/processed`, `data/inference` and `backend/models`, so it can see every family it is
+  asked to serve. `docker-compose.yml` drops the single-family env pins. `frontend/vercel.json` added; the real
+  variable is `VITE_API_BASE` (not `VITE_API_BASE_URL`).
+- **GPU kit.** `backend/requirements-gpu.txt`, `scripts/check_gpu.py` (rejects a CPU wheel that only warns about
+  CUDA - observed here: exit 2), `TRANSITCROWD_XGB_DEVICE` read by both trainers for their XGBoost candidates,
+  `scripts/windows_gpu_training.ps1`, and `test_the_two_training_entry_points_agree_on_flags` keeping the Windows
+  and bash entry points identical.
+- **Language.** The series/station labels in the prediction panel are now class-aware: a `synthetic_development`
+  family reads `SERIES · Central Railway SYNTHETIC DEMONSTRATION DATA`, never `OBSERVED DATA`. The day service's
+  `model_scope` string no longer hard-codes "Chennai Metro (CMRL)" for every day family, and the OpenAPI
+  description enumerates what is served as production versus demonstration.
+- **Artifacts policy.** `backend/models/mumbai-*/transitcrowd.joblib` (44.8 MB and 50.7 MB) are git-ignored
+  CPU-fit development evidence and are excluded from the package; the reports and station analytics are committed.
+  Sandbox numbers in the docs are the ones this CPU fit produced; the GPU fit is expected to reproduce the same
+  pipeline and may differ in the XGBoost rows of the comparison table.
+
+### Found by extracting the package, not by testing the workspace
+
+Unzipping the built package and starting the API there exposed something the repository could not show:
+`data/processed/chennai_metro_demand_timeseries.csv` is deliberately git-ignored (operator-copyrighted CMRL
+counts, regenerated by `scripts/prepare_chennai_data.py`), so a fresh clone or Render image resolves Chennai to
+`503 Normalized observed-demand data not found`. That is the correct outcome for a non-redistributable file, but
+silence was not. Two changes:
+
+- the registry entry for Chennai now carries `data_preparation_command` + a note, and `register_demand_dataset.py`
+  records `development_rebuild_command` for every family it registers, so an entry that points away from an
+  uncommitted file also states how to produce it;
+- `test_no_registry_entry_points_at_an_absent_file_without_saying_how_to_rebuild_it` now walks every served
+  family through the same resolution the app uses (registry first, then the legacy `FAMILY_DATASETS` map, which
+  is why the earlier path test could not see Chennai at all), asserts the file exists and is not an unmaterialized
+  LFS pointer, and otherwise requires the rebuild command to be present *and* the script to exist in the repo.
+- `backend/Dockerfile` and `render.yaml` document the one build step that makes Chennai serve-able in a deploy.
+
+Verified from the extraction: the two Mumbai source CSVs materialise from their committed pointers with checksums
+matching (`78,945,924 B f54eb331…`, `148,837,459 B`), `scripts/register_demand_dataset.py` re-normalises to
+exactly `354,888` rows and re-publishes `data/inference/mumbai-local-central_demand_timeseries.csv.gz` at exactly
+`2,089,076` bytes - byte-identical to what the repository carries - and `scripts/train_models.py` retrains there
+to the same champions and the same numbers (Random Forest regression, XGBoost classification macro-F1 0.6614,
+severe recall 0.101), after which the API in that extracted tree answered `mumbai-local-central` with
+`prediction_available: true`, the three derived corridors with `Central Main → [CSMT, Kalyan]`, 53 TOWARDS sets,
+`central-main-kalyan → ["Towards CSMT"]`, and the synthetic disclosure string. `mumbai-metro` in the same tree
+returns 503 because its bundle is not shipped, and says so.
