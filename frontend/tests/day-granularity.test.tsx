@@ -89,7 +89,7 @@ describe('day-granularity family presentation', () => {
     renderPredict()
     expect(screen.getByLabelText('TARGET DATE · IST')).toBeInTheDocument()
     expect(screen.queryByLabelText('TARGET HOUR')).not.toBeInTheDocument()
-    expect(screen.getByLabelText(/STATION · CMRL OBSERVED DATA/)).toBeInTheDocument()
+    expect(screen.getByLabelText('STATION · CMRL')).toBeInTheDocument()
     expect(screen.getByText('NEXT DAY STATION ENTRIES')).toBeInTheDocument()
     expect(screen.getAllByText(/255 observed days/).length).toBeGreaterThan(0)
     expect(screen.getByText('CMRL DAILY SNAPSHOT · IST · NOT LIVE')).toBeInTheDocument()

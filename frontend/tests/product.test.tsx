@@ -99,7 +99,7 @@ describe('system discovery and prediction workflow', () => {
   it('submits a selected city, mode, operator, station, date and target hour', async () => {
     const user = userEvent.setup()
     const { props } = renderPredict()
-    await user.selectOptions(screen.getByLabelText('STATION · BMRCL OBSERVED DATA'), 'majestic')
+    await user.selectOptions(screen.getByLabelText('STATION · BMRCL'), 'majestic')
     fireEvent.change(screen.getByLabelText('TARGET DATE · IST'), { target: { value: '2025-09-03' } })
     await user.selectOptions(screen.getByLabelText('TARGET HOUR'), '11')
     await user.click(screen.getByRole('button', { name: 'PREDICT STATION DEMAND' }))
@@ -166,7 +166,7 @@ describe('observed station data visualizations', () => {
 
   it('does not draw a blank source cell as zero demand', () => {
     const cells = Array.from({ length: 168 }, (_, index) => ({
-      day_of_week: Math.floor(index / 24), day_name: 'Monday', hour: index % 24,
+      day_of_week: Math.floor(index / 24), day_name: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][Math.floor(index / 24)], hour: index % 24,
       mean_observed_boardings: index === 0 ? null : 100, observations: index === 0 ? 0 : 3,
     }))
     render(<StationDemandSection history={null} heatmap={{ system_id: 'bengaluru-namma-metro', station_id: 'central', cells, measure: 'hourly_station_boardings', source: 'observed' }} stations={stations} stationId="central" onPickHour={vi.fn()} available />)
